@@ -10,14 +10,15 @@ from typing import List, Dict, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from ..models import ReportMetadata
 from ..exceptions import DownloadError
-from ..config import TIMEOUT, CHUNK_SIZE, MAX_CONCURRENT_DOWNLOADS, RATE_LIMIT_DELAY
+from ..config import TIMEOUT, CHUNK_SIZE, MAX_CONCURRENT_DOWNLOADS, RATE_LIMIT_DELAY, MIN_FILE_SIZE_TO_SKIP
 import logging
 
 class DownloadManager:
     """Simple, working PDF download manager for MOPS."""
     
-    def __init__(self, verify_ssl: bool = False):
+    def __init__(self, verify_ssl: bool = False, only_missing_files: bool = False):
         self.logger = logging.getLogger("mops_downloader.download")
+        self.only_missing_files = only_missing_files
         
         # Create SSL context
         if verify_ssl:
@@ -27,6 +28,11 @@ class DownloadManager:
             self.ssl_context.check_hostname = False
             self.ssl_context.verify_mode = ssl.CERT_NONE
             self.logger.info("SSL verification disabled for PDF downloads")
+        
+        if only_missing_files:
+            self.logger.info("File skip mode enabled: Will skip existing files > 100KB")
+        else:
+            self.logger.info("Force download mode: Will re-download files even if they exist")
     
     def _extract_pdf_url_from_html(self, html_content: str, filename: str) -> Optional[str]:
         """Extract PDF URL from HTML using simple string matching."""
@@ -98,11 +104,11 @@ class DownloadManager:
             # Create output directory
             output_path.parent.mkdir(parents=True, exist_ok=True)
             
-            # Check if file already exists and is reasonable size
-            if output_path.exists():
+            # Check if file already exists and is reasonable size (only if only_missing_files is True)
+            if self.only_missing_files and output_path.exists():
                 existing_size = output_path.stat().st_size
-                if existing_size > 100000:  # More than 100KB = probably valid
-                    self.logger.info(f"File already exists: {report.filename} ({existing_size:,} bytes)")
+                if existing_size > MIN_FILE_SIZE_TO_SKIP:  # More than 100KB = probably valid
+                    self.logger.info(f"📁 File already exists: {report.filename} ({existing_size:,} bytes) - skipping")
                     return {
                         'success': True,
                         'filename': report.filename,
@@ -110,6 +116,11 @@ class DownloadManager:
                         'size': existing_size,
                         'skipped': True
                     }
+                else:
+                    self.logger.info(f"🔄 File exists but too small ({existing_size:,} bytes) - re-downloading")
+            elif output_path.exists():
+                existing_size = output_path.stat().st_size
+                self.logger.info(f"🔄 File exists ({existing_size:,} bytes) but force download mode - re-downloading")
             
             # STEP 1: Get HTML page with PDF link
             self.logger.debug(f"Step 1: Getting HTML page from {report.download_url}")

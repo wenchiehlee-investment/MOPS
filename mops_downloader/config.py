@@ -17,6 +17,7 @@ RATE_LIMIT_DELAY = 1.0  # seconds between requests
 # File Settings
 CHUNK_SIZE = 8192  # bytes for file download
 MAX_CONCURRENT_DOWNLOADS = 3
+MIN_FILE_SIZE_TO_SKIP = 100000  # 100KB - minimum size to consider file valid for skipping
 
 # Year Validation
 MIN_YEAR = 1912  # ROC establishment
@@ -44,8 +45,8 @@ TARGET_FILE_PATTERNS = [
 # EXCLUDED only for English and clearly non-individual types
 EXCLUDED_KEYWORDS = [
     "英文版",            # English versions
-    "AIA\.pdf",         # English consolidated (from real data)
-    "AE2\.pdf"          # English parent-subsidiary (from real data)
+    r"AIA\.pdf",        # English consolidated (from real data)
+    r"AE2\.pdf"         # English parent-subsidiary (from real data)
 ]
 
 # FLEXIBLE mode - when no strict targets found, include reasonable alternatives

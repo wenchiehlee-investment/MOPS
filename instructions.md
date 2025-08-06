@@ -20,6 +20,8 @@ The MOPS Downloader System is a Python-based tool designed to automatically down
 ├── README.md
 ├── requirements.txt
 ├── StockID_TWSE_TPEX.csv
+├── .github/workflow
+│           ├── Download.yaml  <--- Github Actions for download PDFs
 ├── downloads/
 ├── logs/
 ├── mops_downloader/

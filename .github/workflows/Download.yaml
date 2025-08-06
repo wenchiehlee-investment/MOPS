@@ -28,12 +28,17 @@ on:
         description: 'Delay between downloads (seconds)'
         required: false
         type: string
-        default: '2.0'
+        default: '10.0'
       start_from:
         description: 'Start from specific company ID (optional)'
         required: false
         type: string
         default: '2412'
+      only_missing_files:
+        description: 'Skip files that already exist locally (size > 100KB)'
+        required: false
+        type: boolean
+        default: true
   
   # Scheduled trigger - runs quarterly on the 15th day of each quarter
   schedule:
@@ -86,8 +91,8 @@ jobs:
         # Verify mops_downloader can be imported
         python -c "import mops_downloader; print('✅ mops_downloader package imported successfully')"
         
-        # Test CLI script
-        python scripts/mops_downloader.py --version || echo "CLI script check completed"
+        # Test CLI script (with basic help check)
+        python scripts/mops_downloader.py --help || echo "CLI script check completed"
         
         # Verify main components
         python -c "from mops_downloader.main import MOPSDownloader; print('✅ MOPSDownloader class imported successfully')"
@@ -126,6 +131,14 @@ jobs:
         echo "Quarter: ${{ inputs.quarter }}"
         echo "Delay: ${{ inputs.delay }}"
         echo "Start From: ${{ inputs.start_from || 'Beginning' }}"
+        echo "Only Missing Files: ${{ inputs.only_missing_files }}"
+        
+        # Show skip behavior info
+        if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+          echo "📁 Skip mode enabled: Will skip existing files > 100KB"
+        else
+          echo "🔄 Force download mode: Will re-download all files even if they exist"
+        fi
         
         # Build command arguments for DownloadAll.py (based on actual CLI interface)
         CMD_ARGS=""
@@ -138,16 +151,31 @@ jobs:
           CMD_ARGS="$CMD_ARGS --start-from ${{ inputs.start_from }}"
         fi
         
+        # Add only-missing-files if enabled
+        if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+          CMD_ARGS="$CMD_ARGS --only-missing-files"
+        fi
+        
         echo "Running: python DownloadAll.py $CMD_ARGS"
         python DownloadAll.py $CMD_ARGS || {
           echo "❌ DownloadAll.py failed, trying alternative approach..."
           
           # Fallback: Use individual CLI calls for a few companies as test
           echo "Testing individual downloads..."
+          
+          # Build CLI args for fallback
+          CLI_ARGS="--year ${{ inputs.year }} --quarter ${{ inputs.quarter }} --log_level INFO"
+          if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+            CLI_ARGS="$CLI_ARGS --only-missing-files"
+            echo "📁 Fallback using skip mode: Will skip existing files > 100KB"
+          else
+            echo "🔄 Fallback using force download mode"
+          fi
+          
           head -5 StockID_TWSE_TPEX.csv | tail -n +2 | while IFS=, read -r company_id company_name exchange || [ -n "$company_id" ]; do
             if [ -n "$company_id" ]; then
               echo "Testing download for company: $company_id"
-              python scripts/mops_downloader.py --company_id "$company_id" --year ${{ inputs.year }} --quarter ${{ inputs.quarter }} --log_level INFO || echo "Failed for company $company_id"
+              python scripts/mops_downloader.py --company_id "$company_id" $CLI_ARGS || echo "Failed for company $company_id"
             fi
           done
         }
@@ -181,7 +209,10 @@ jobs:
         fi
         
         echo "🚀 Scheduled MOPS download: Year=$YEAR, Quarter=$QUARTER"
-        python DownloadAll.py --year $YEAR --quarter $QUARTER --delay 3.0
+        echo "📁 Scheduled runs use skip mode by default (only download missing files)"
+        
+        # Scheduled runs default to only-missing-files to avoid redundant downloads
+        python DownloadAll.py --year $YEAR --quarter $QUARTER --delay 3.0 --only-missing-files
     
     - name: Check download results
       run: |
@@ -229,6 +260,7 @@ jobs:
         
         YEAR="${{ inputs.year || '2025' }}"
         QUARTER="${{ inputs.quarter || '1' }}"
+        ONLY_MISSING="${{ inputs.only_missing_files || 'true' }}"
         
         if [ "${{ github.event_name }}" == "schedule" ]; then
           MONTH=$(date +%m)
@@ -245,6 +277,7 @@ jobs:
             QUARTER=4
             YEAR=$(date +%Y)
           fi
+          ONLY_MISSING="true"  # Scheduled runs always use skip mode
         fi
         
         # Create a summary file
@@ -252,6 +285,7 @@ jobs:
         echo "MOPS Download Summary" > "$SUMMARY_FILE"
         echo "Year: $YEAR, Quarter: $QUARTER" >> "$SUMMARY_FILE"
         echo "Download Date: $(date)" >> "$SUMMARY_FILE"
+        echo "Skip Existing Files: $ONLY_MISSING" >> "$SUMMARY_FILE"
         echo "=================" >> "$SUMMARY_FILE"
         
         if [ -d "downloads" ]; then
@@ -289,7 +323,11 @@ jobs:
         else
           # Determine commit message based on trigger type
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            COMMIT_MSG="📄 MOPS PDFs Download - ${{ inputs.year }} Q${{ inputs.quarter }}"
+            if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+              COMMIT_MSG="📁 MOPS PDFs Download (Skip Mode) - ${{ inputs.year }} Q${{ inputs.quarter }}"
+            else
+              COMMIT_MSG="🔄 MOPS PDFs Download (Force Mode) - ${{ inputs.year }} Q${{ inputs.quarter }}"
+            fi
           else
             YEAR=$(date +%Y)
             MONTH=$(date +%m)
@@ -298,7 +336,7 @@ jobs:
             elif [ "$MONTH" -eq 7 ]; then QUARTER=3
             elif [ "$MONTH" -eq 10 ]; then QUARTER=4
             else QUARTER=1; fi
-            COMMIT_MSG="📄 Scheduled MOPS Download - ${YEAR} Q${QUARTER}"
+            COMMIT_MSG="📁 Scheduled MOPS Download (Skip Mode) - ${YEAR} Q${QUARTER}"
           fi
           
           # Count downloaded files for commit message
@@ -346,6 +384,7 @@ jobs:
         - Quarter: ${{ inputs.quarter }}
         - Delay: ${{ inputs.delay }}s
         - Start from: ${{ inputs.start_from || 'Beginning' }}
+        - Skip existing files: ${{ inputs.only_missing_files }}
         
         **Results:**
         $RESULTS_TEXT
@@ -407,6 +446,10 @@ jobs:
           echo "- Quarter: ${{ inputs.quarter }}" >> status_report.md
           echo "- Delay: ${{ inputs.delay }}s" >> status_report.md
           echo "- Start From: ${{ inputs.start_from || 'Beginning' }}" >> status_report.md
+          echo "- Skip Existing Files: ${{ inputs.only_missing_files }}" >> status_report.md
+        else
+          echo "**Parameters:**" >> status_report.md
+          echo "- Skip Existing Files: true (default for scheduled runs)" >> status_report.md
         fi
         
         echo "" >> status_report.md

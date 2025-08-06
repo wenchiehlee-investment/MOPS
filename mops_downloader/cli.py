@@ -17,6 +17,7 @@ Examples:
   %(prog)s --company_id 2330 --year 2024
   %(prog)s --company_id 8272 --year 2023 --quarter 2
   %(prog)s --company_id 2382 --year 2023 --quarter all --output ./reports
+  %(prog)s --company_id 2330 --year 2024 --only-missing-files
         """
     )
     
@@ -50,7 +51,13 @@ Examples:
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
         default='INFO',
         help='Logging level (default: INFO)'
+    )    
+    parser.add_argument(
+        '--only-missing-files',
+        action='store_true',
+        help='Skip files that already exist locally (size > 100KB). Without this flag, files will be re-downloaded even if they exist.'
     )
+
     
     parser.add_argument(
         '--version', '-v',
@@ -96,7 +103,8 @@ def main():
         # Initialize downloader
         downloader = MOPSDownloader(
             download_dir=args.output,
-            log_level=args.log_level
+            log_level=args.log_level,
+            only_missing_files=args.only_missing_files
         )
         
         # Convert quarter argument
@@ -110,7 +118,14 @@ def main():
                 print(f"Error: Invalid quarter '{args.quarter}'. Must be 1, 2, 3, 4, or 'all'")
                 return 1
         
-        # Perform download
+        
+        # Show skip behavior info
+        if args.only_missing_files:
+            print(f"📁 Skip mode enabled: Will skip existing files > 100KB")
+        else:
+            print(f"🔄 Force download mode: Will re-download all files even if they exist")
+
+                # Perform download
         print(f"Downloading reports for company {args.company_id}, year {args.year}, quarter {quarter}...")
         result = downloader.download(args.company_id, args.year, quarter)
         

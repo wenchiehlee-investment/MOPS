@@ -15,20 +15,31 @@ import logging
 class MOPSDownloader:
     """Main class for downloading MOPS financial reports."""
     
-    def __init__(self, download_dir: Path = None, log_level: str = "INFO"):
-        """Initialize MOPS downloader."""
+    def __init__(self, download_dir: Path = None, log_level: str = "INFO", only_missing_files: bool = False):
+        """Initialize MOPS downloader.
+        
+        Args:
+            download_dir: Directory to save downloads (default: ./downloads)
+            log_level: Logging level (default: INFO)
+            only_missing_files: Skip files that already exist locally (size > 100KB)
+        """
         self.download_dir = Path(download_dir) if download_dir else DOWNLOAD_DIR
         self.download_dir.mkdir(exist_ok=True)
+        self.only_missing_files = only_missing_files
         
         # Set up logging
         self.logger = setup_logging(log_level, log_to_file=True)
         self.logger.info(f"MOPS Downloader initialized, download directory: {self.download_dir}")
+        if only_missing_files:
+            self.logger.info("Skip mode enabled: Will skip existing files > 100KB")
+        else:
+            self.logger.info("Force download mode: Will re-download all files even if they exist")
         
         # Initialize components
         self.validator = InputValidator()
         self.navigator = WebNavigator()
         self.parser = DocumentParser()
-        self.download_manager = DownloadManager()
+        self.download_manager = DownloadManager(only_missing_files=only_missing_files)
         self.file_manager = FileManager(self.download_dir)
     
     def download(self, company_id: str, year: int, quarter: Union[str, int] = "all") -> DownloadResult:
