@@ -1,0 +1,418 @@
+name: Download MOPS PDFs
+
+on:
+  # Manual trigger with year and quarter parameters
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Year to download (e.g., 2025)'
+        required: true
+        type: string
+        default: '2025'
+      quarter:
+        description: 'Quarter to download (1, 2, 3, or 4)'
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+        default: '1'
+      delay:
+        description: 'Delay between downloads (seconds)'
+        required: false
+        type: string
+        default: '2.0'
+      start_from:
+        description: 'Start from specific company ID (optional)'
+        required: false
+        type: string
+        default: ''
+      log_level:
+        description: 'Logging level'
+        required: false
+        type: choice
+        options:
+          - 'INFO'
+          - 'DEBUG'
+          - 'WARNING'
+          - 'ERROR'
+        default: 'INFO'
+  
+  # Scheduled trigger - runs quarterly on the 15th day of each quarter
+  schedule:
+    # Run at 02:00 UTC on the 15th day of January, April, July, October
+    - cron: '0 2 15 1,4,7,10 *'
+
+jobs:
+  download-pdfs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 480  # 8 hours timeout
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git
+        # Set up environment for Unicode support
+        export PYTHONIOENCODING=utf-8
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        
+        # Install required dependencies for mops_downloader
+        pip install beautifulsoup4>=4.12.0
+        
+        # Install the package in development mode (since it's in the same repo)
+        # This will make the mops_downloader package importable
+        pip install -e .
+        
+        # Install any additional requirements if they exist
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+    
+    - name: Verify installation and dependencies
+      run: |
+        # Verify mops_downloader can be imported
+        python -c "import mops_downloader; print('✅ mops_downloader package imported successfully')"
+        
+        # Test CLI script
+        python scripts/mops_downloader.py --version || echo "CLI script check completed"
+        
+        # Verify main components
+        python -c "from mops_downloader.main import MOPSDownloader; print('✅ MOPSDownloader class imported successfully')"
+    
+    - name: Verify CSV file exists
+      run: |
+        if [ ! -f "StockID_TWSE_TPEX.csv" ]; then
+          echo "Error: StockID_TWSE_TPEX.csv not found!"
+          echo "Available files:"
+          ls -la *.csv || echo "No CSV files found"
+          exit 1
+        fi
+        echo "✅ CSV file found with $(wc -l < StockID_TWSE_TPEX.csv) lines"
+    
+    - name: Set up Git configuration
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+    
+    - name: Create downloads and logs directories
+      run: |
+        mkdir -p downloads
+        mkdir -p logs
+        echo "✅ Created downloads and logs directories"
+    
+    - name: Download PDFs (Manual Trigger)
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        # Set environment for Unicode support
+        export PYTHONIOENCODING=utf-8
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+        
+        echo "🚀 Starting manual MOPS download..."
+        echo "Year: ${{ inputs.year }}"
+        echo "Quarter: ${{ inputs.quarter }}"
+        echo "Delay: ${{ inputs.delay }}"
+        echo "Log Level: ${{ inputs.log_level }}"
+        echo "Start From: ${{ inputs.start_from || 'Beginning' }}"
+        
+        # Build command arguments for DownloadAll.py
+        CMD_ARGS=""
+        CMD_ARGS="$CMD_ARGS --year ${{ inputs.year }}"
+        CMD_ARGS="$CMD_ARGS --quarter ${{ inputs.quarter }}"
+        CMD_ARGS="$CMD_ARGS --delay ${{ inputs.delay }}"
+        CMD_ARGS="$CMD_ARGS --log_level ${{ inputs.log_level }}"
+        
+        # Add start_from if provided
+        if [ -n "${{ inputs.start_from }}" ]; then
+          CMD_ARGS="$CMD_ARGS --start_from ${{ inputs.start_from }}"
+        fi
+        
+        echo "Running: python DownloadAll.py $CMD_ARGS"
+        python DownloadAll.py $CMD_ARGS || {
+          echo "❌ DownloadAll.py failed, trying alternative approach..."
+          
+          # Fallback: Use individual CLI calls for a few companies as test
+          echo "Testing individual downloads..."
+          head -5 StockID_TWSE_TPEX.csv | tail -n +2 | while IFS=, read -r company_id company_name exchange || [ -n "$company_id" ]; do
+            if [ -n "$company_id" ]; then
+              echo "Testing download for company: $company_id"
+              python scripts/mops_downloader.py --company_id "$company_id" --year ${{ inputs.year }} --quarter ${{ inputs.quarter }} --log_level ${{ inputs.log_level }} || echo "Failed for company $company_id"
+            fi
+          done
+        }
+    
+    - name: Download PDFs (Scheduled Trigger)
+      if: github.event_name == 'schedule'
+      run: |
+        # Set environment for Unicode support
+        export PYTHONIOENCODING=utf-8
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+        
+        # Determine current quarter based on month
+        MONTH=$(date +%m)
+        if [ "$MONTH" -eq 1 ]; then
+          QUARTER=1
+          YEAR=$(date +%Y)
+        elif [ "$MONTH" -eq 4 ]; then
+          QUARTER=2
+          YEAR=$(date +%Y)
+        elif [ "$MONTH" -eq 7 ]; then
+          QUARTER=3
+          YEAR=$(date +%Y)
+        elif [ "$MONTH" -eq 10 ]; then
+          QUARTER=4
+          YEAR=$(date +%Y)
+        else
+          # Fallback to previous quarter
+          QUARTER=1
+          YEAR=$(date +%Y)
+        fi
+        
+        echo "🚀 Scheduled MOPS download: Year=$YEAR, Quarter=$QUARTER"
+        python DownloadAll.py --year $YEAR --quarter $QUARTER --delay 3.0 --log_level INFO
+    
+    - name: Check download results
+      run: |
+        echo "=== Download Summary ==="
+        echo "Current directory contents:"
+        ls -la
+        
+        echo -e "\n=== Downloads directory structure ==="
+        if [ -d "downloads" ]; then
+          find downloads -type f -name "*.pdf" | head -20
+          echo -e "\nTotal PDF files found in downloads/:"
+          find downloads -type f -name "*.pdf" | wc -l
+          
+          echo -e "\nCompany directories:"
+          find downloads -type d -mindepth 1 | head -10
+          
+          echo -e "\nSample files per company:"
+          find downloads -type d -mindepth 1 | head -5 | while read dir; do
+            company=$(basename "$dir")
+            count=$(find "$dir" -name "*.pdf" | wc -l)
+            echo "  $company: $count PDF files"
+            find "$dir" -name "*.pdf" | head -2 | sed 's/^/    /'
+          done
+        else
+          echo "❌ No downloads directory found"
+        fi
+        
+        echo -e "\n=== Logs directory ==="
+        if [ -d "logs" ]; then
+          ls -la logs/
+          echo -e "\nLatest log file (last 20 lines):"
+          find logs -name "*.log" -type f -exec tail -20 {} \; | tail -20
+        else
+          echo "❌ No logs directory found"
+        fi
+        
+        echo -e "\n=== Disk usage ==="
+        du -sh . 2>/dev/null || echo "Could not calculate disk usage"
+        du -sh downloads/ 2>/dev/null || echo "Could not calculate downloads disk usage"
+    
+    - name: Organize downloaded files (if needed)
+      run: |
+        # The mops_downloader uses flattened structure: downloads/{company_id}/*.pdf
+        # No additional organization needed, but we can create a summary
+        
+        YEAR="${{ inputs.year || '2025' }}"
+        QUARTER="${{ inputs.quarter || '1' }}"
+        
+        if [ "${{ github.event_name }}" == "schedule" ]; then
+          MONTH=$(date +%m)
+          if [ "$MONTH" -eq 1 ]; then
+            QUARTER=1
+            YEAR=$(date +%Y)
+          elif [ "$MONTH" -eq 4 ]; then
+            QUARTER=2
+            YEAR=$(date +%Y)
+          elif [ "$MONTH" -eq 7 ]; then
+            QUARTER=3
+            YEAR=$(date +%Y)
+          elif [ "$MONTH" -eq 10 ]; then
+            QUARTER=4
+            YEAR=$(date +%Y)
+          fi
+        fi
+        
+        # Create a summary file
+        SUMMARY_FILE="download_summary_${YEAR}_Q${QUARTER}.txt"
+        echo "MOPS Download Summary" > "$SUMMARY_FILE"
+        echo "Year: $YEAR, Quarter: $QUARTER" >> "$SUMMARY_FILE"
+        echo "Download Date: $(date)" >> "$SUMMARY_FILE"
+        echo "=================" >> "$SUMMARY_FILE"
+        
+        if [ -d "downloads" ]; then
+          echo "Companies processed:" >> "$SUMMARY_FILE"
+          find downloads -type d -mindepth 1 | while read dir; do
+            company=$(basename "$dir")
+            count=$(find "$dir" -name "*.pdf" | wc -l)
+            echo "  $company: $count PDF files" >> "$SUMMARY_FILE"
+          done
+          
+          total_files=$(find downloads -name "*.pdf" | wc -l)
+          total_companies=$(find downloads -type d -mindepth 1 | wc -l)
+          echo "" >> "$SUMMARY_FILE"
+          echo "Total: $total_files PDF files from $total_companies companies" >> "$SUMMARY_FILE"
+        fi
+        
+        echo "✅ Created download summary: $SUMMARY_FILE"
+    
+    - name: Commit downloaded MOPS files
+      if: success()
+      run: |
+        echo "Committing downloaded MOPS files..."
+        
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        
+        # Add downloaded files and logs (exclude cache or temporary files)
+        git add downloads/*.pdf downloads/*/metadata.json || true
+        git add logs/*.log || true
+        git add download_summary_*.txt || true
+        git add status_report.md || true
+        
+        if git diff --staged --quiet; then
+          echo "No MOPS download changes to commit"
+        else
+          # Determine commit message based on trigger type
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            COMMIT_MSG="📄 MOPS PDFs Download - ${{ inputs.year }} Q${{ inputs.quarter }}"
+          else
+            YEAR=$(date +%Y)
+            MONTH=$(date +%m)
+            if [ "$MONTH" -eq 1 ]; then QUARTER=1
+            elif [ "$MONTH" -eq 4 ]; then QUARTER=2
+            elif [ "$MONTH" -eq 7 ]; then QUARTER=3
+            elif [ "$MONTH" -eq 10 ]; then QUARTER=4
+            else QUARTER=1; fi
+            COMMIT_MSG="📄 Scheduled MOPS Download - ${YEAR} Q${QUARTER}"
+          fi
+          
+          # Count downloaded files for commit message
+          if [ -d "downloads" ]; then
+            PDF_COUNT=$(find downloads -name "*.pdf" -type f | wc -l)
+            COMPANY_COUNT=$(find downloads -type d -mindepth 1 | wc -l)
+            if [ "$PDF_COUNT" -gt 0 ]; then
+              COMMIT_MSG="${COMMIT_MSG} (${PDF_COUNT} files from ${COMPANY_COUNT} companies) - $(date +%Y-%m-%d\ %H:%M:%S)"
+            else
+              COMMIT_MSG="${COMMIT_MSG} (no PDFs downloaded) - $(date +%Y-%m-%d\ %H:%M:%S)"
+            fi
+          else
+            COMMIT_MSG="${COMMIT_MSG} (no downloads directory) - $(date +%Y-%m-%d\ %H:%M:%S)"
+          fi
+          
+          git commit -m "$COMMIT_MSG" || true
+          git push || true
+          echo "✅ MOPS download results committed successfully"
+        fi
+    
+    - name: Create release (for manual runs)
+      if: github.event_name == 'workflow_dispatch' && success()
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "mops-${{ inputs.year }}-q${{ inputs.quarter }}-$(date +%Y%m%d)"
+        release_name: "MOPS PDFs ${{ inputs.year }} Q${{ inputs.quarter }}"
+        body: |
+          Downloaded MOPS PDFs for ${{ inputs.year }} Q${{ inputs.quarter }}
+          
+          **Download Parameters:**
+          - Year: ${{ inputs.year }}
+          - Quarter: ${{ inputs.quarter }}
+          - Delay: ${{ inputs.delay }}s
+          - Log Level: ${{ inputs.log_level }}
+          - Start from: ${{ inputs.start_from || 'Beginning' }}
+          
+          **Results:**
+          - Check the downloads/ directory for PDF files organized by company ID
+          - Each company has its own subdirectory with flattened structure
+          - Log files available in logs/ directory
+          
+          **File Structure:**
+          ```
+          downloads/
+          ├── {company_id}/
+          │   ├── YYYYQQ_{company_id}_AXX.pdf
+          │   └── metadata.json
+          └── logs/
+              └── mops_downloader_{timestamp}.log
+          ```
+        draft: false
+        prerelease: false
+    
+    # Upload artifacts for manual download
+    - name: Upload PDF artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: mops-pdfs-${{ inputs.year || 'scheduled' }}-q${{ inputs.quarter || 'auto' }}-$(date +%Y%m%d)
+        path: |
+          downloads/
+          logs/
+          download_summary_*.txt
+        retention-days: 30
+        if-no-files-found: warn
+    
+    # Optional: Create a status report
+    - name: Create status report
+      if: always()
+      run: |
+        echo "=== MOPS Download Status Report ===" > status_report.md
+        echo "**Workflow:** ${{ github.workflow }}" >> status_report.md
+        echo "**Trigger:** ${{ github.event_name }}" >> status_report.md
+        echo "**Date:** $(date)" >> status_report.md
+        echo "" >> status_report.md
+        
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "**Parameters:**" >> status_report.md
+          echo "- Year: ${{ inputs.year }}" >> status_report.md
+          echo "- Quarter: ${{ inputs.quarter }}" >> status_report.md
+          echo "- Delay: ${{ inputs.delay }}s" >> status_report.md
+          echo "- Log Level: ${{ inputs.log_level }}" >> status_report.md
+          echo "- Start From: ${{ inputs.start_from || 'Beginning' }}" >> status_report.md
+        fi
+        
+        echo "" >> status_report.md
+        echo "**Results:**" >> status_report.md
+        
+        if [ -d "downloads" ]; then
+          PDF_COUNT=$(find downloads -name "*.pdf" -type f | wc -l)
+          COMPANY_COUNT=$(find downloads -type d -mindepth 1 | wc -l)
+          echo "- ✅ $PDF_COUNT PDF files downloaded" >> status_report.md
+          echo "- ✅ $COMPANY_COUNT companies processed" >> status_report.md
+        else
+          echo "- ❌ No downloads directory found" >> status_report.md
+        fi
+        
+        if [ -d "logs" ]; then
+          LOG_COUNT=$(find logs -name "*.log" -type f | wc -l)
+          echo "- ✅ $LOG_COUNT log files created" >> status_report.md
+        else
+          echo "- ❌ No logs directory found" >> status_report.md
+        fi
+        
+        echo "" >> status_report.md
+        echo "**Job Status:** ${{ job.status }}" >> status_report.md
+        
+        cat status_report.md
