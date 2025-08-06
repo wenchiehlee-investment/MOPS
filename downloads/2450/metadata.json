@@ -1,0 +1,20 @@
+{
+  "downloads": {
+    "2025_20250806_035845": {
+      "timestamp": "2025-08-06T03:58:45.775003",
+      "company_id": "2450",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2450_AI1.pdf",
+          "path": "downloads/2450/202501_2450_AI1.pdf",
+          "size": 1936160,
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-06T03:58:45.775010",
+  "company_id": "2450"
+}
