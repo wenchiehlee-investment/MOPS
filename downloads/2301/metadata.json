@@ -1,0 +1,90 @@
+{
+  "downloads": {
+    "2025_20250805_124033": {
+      "timestamp": "2025-08-05T12:40:33.421285",
+      "company_id": "2301",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2301_AI1.pdf",
+          "path": "downloads\\2301\\202501_2301_AI1.pdf",
+          "size": 1679175,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_124307": {
+      "timestamp": "2025-08-05T12:43:07.385723",
+      "company_id": "2301",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2301_AI1.pdf",
+          "path": "downloads\\2301\\202501_2301_AI1.pdf",
+          "size": 1679175,
+          "skipped": true
+        }
+      ]
+    },
+    "2025_20250805_124348": {
+      "timestamp": "2025-08-05T12:43:48.588169",
+      "company_id": "2301",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2301_AI1.pdf",
+          "path": "downloads\\2301\\202501_2301_AI1.pdf",
+          "size": 1679175,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250805_125903": {
+      "timestamp": "2025-08-05T12:59:03.435027",
+      "company_id": "2301",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2301_AI1.pdf",
+          "path": "downloads\\2301\\202404_2301_AI1.pdf",
+          "size": 1908157,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2301_AI3.pdf",
+          "path": "downloads\\2301\\202404_2301_AI3.pdf",
+          "size": 2327707,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_131349": {
+      "timestamp": "2025-08-05T13:13:49.052304",
+      "company_id": "2301",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2301_AI1.pdf",
+          "path": "downloads\\2301\\202404_2301_AI1.pdf",
+          "size": 1908157,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2301_AI3.pdf",
+          "path": "downloads\\2301\\202404_2301_AI3.pdf",
+          "size": 2327707,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:13:49.052313",
+  "company_id": "2301"
+}

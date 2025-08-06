@@ -1,0 +1,255 @@
+{
+  "downloads": {
+    "2024_20250805_110000": {
+      "timestamp": "2025-08-05T11:00:00.137124",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202401_2330_AI1.pdf",
+          "error": "HTTPSConnectionPool(host='doc.twse.com.tw', port=443): Max retries exceeded with url: /server-java/t57sb01?step=9&kind=A&co_id=2330&filename=202401_2330_AI1.pdf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_110028": {
+      "timestamp": "2025-08-05T11:00:28.358910",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202401_2330_AI1.pdf",
+          "error": "HTTPSConnectionPool(host='doc.twse.com.tw', port=443): Max retries exceeded with url: /server-java/t57sb01?step=9&kind=A&co_id=2330&filename=202401_2330_AI1.pdf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_114348": {
+      "timestamp": "2025-08-05T11:43:48.865063",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202401_2330_AI1.pdf",
+          "error": "HTTPSConnectionPool(host='doc.twse.com.tw', port=443): Max retries exceeded with url: /server-java/t57sb01?step=9&kind=A&co_id=2330&filename=202401_2330_AI1.pdf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Missing Subject Key Identifier (_ssl.c:1028)')))",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_114518": {
+      "timestamp": "2025-08-05T11:45:18.586232",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2330_AI1.pdf",
+          "path": "downloads\\2330\\2024\\202401_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_114747": {
+      "timestamp": "2025-08-05T11:47:47.955591",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2330_AI1.pdf",
+          "path": "downloads\\2330\\2024\\202401_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_115426": {
+      "timestamp": "2025-08-05T11:54:26.687544",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2330_AI1.pdf",
+          "path": "downloads\\2330\\202401_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_115438": {
+      "timestamp": "2025-08-05T11:54:38.082697",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202403_2330_AI1.pdf",
+          "path": "downloads\\2330\\202403_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI1.pdf",
+          "path": "downloads\\2330\\202404_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202401_2330_AI1.pdf",
+          "path": "downloads\\2330\\202401_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2330_AI1.pdf",
+          "path": "downloads\\2330\\202402_2330_AI1.pdf",
+          "size": 403,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI3.pdf",
+          "path": "downloads\\2330\\202404_2330_AI3.pdf",
+          "size": 403,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_115503": {
+      "timestamp": "2025-08-05T11:55:03.436345",
+      "company_id": "2330",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2330_AI1.pdf",
+          "path": "downloads\\2330\\202501_2330_AI1.pdf",
+          "size": 469,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_121143": {
+      "timestamp": "2025-08-05T12:11:43.287007",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2330_AI1.pdf",
+          "path": "downloads\\2330\\202401_2330_AI1.pdf",
+          "size": 8048457,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2330_AI1.pdf",
+          "path": "downloads\\2330\\202402_2330_AI1.pdf",
+          "size": 7553823,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2330_AI1.pdf",
+          "path": "downloads\\2330\\202403_2330_AI1.pdf",
+          "size": 8593156,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI1.pdf",
+          "path": "downloads\\2330\\202404_2330_AI1.pdf",
+          "size": 9814510,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI3.pdf",
+          "path": "downloads\\2330\\202404_2330_AI3.pdf",
+          "size": 8558423,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_121217": {
+      "timestamp": "2025-08-05T12:12:17.321300",
+      "company_id": "2330",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2330_AI1.pdf",
+          "path": "downloads\\2330\\202501_2330_AI1.pdf",
+          "size": 5715493,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_124407": {
+      "timestamp": "2025-08-05T12:44:07.811404",
+      "company_id": "2330",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2330_AI1.pdf",
+          "path": "downloads\\2330\\202501_2330_AI1.pdf",
+          "size": 5715493,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250805_125932": {
+      "timestamp": "2025-08-05T12:59:32.401880",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2330_AI1.pdf",
+          "path": "downloads\\2330\\202404_2330_AI1.pdf",
+          "size": 9814510,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI3.pdf",
+          "path": "downloads\\2330\\202404_2330_AI3.pdf",
+          "size": 8558423,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250805_131431": {
+      "timestamp": "2025-08-05T13:14:31.890395",
+      "company_id": "2330",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2330_AI1.pdf",
+          "path": "downloads\\2330\\202404_2330_AI1.pdf",
+          "size": 9814510,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2330_AI3.pdf",
+          "path": "downloads\\2330\\202404_2330_AI3.pdf",
+          "size": 8558423,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:14:31.890400",
+  "company_id": "2330"
+}

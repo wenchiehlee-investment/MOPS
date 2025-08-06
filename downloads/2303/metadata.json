@@ -1,0 +1,76 @@
+{
+  "downloads": {
+    "2025_20250805_124325": {
+      "timestamp": "2025-08-05T12:43:25.286994",
+      "company_id": "2303",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2303_AI1.pdf",
+          "path": "downloads\\2303\\202501_2303_AI1.pdf",
+          "size": 3040073,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_124352": {
+      "timestamp": "2025-08-05T12:43:52.171843",
+      "company_id": "2303",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2303_AI1.pdf",
+          "path": "downloads\\2303\\202501_2303_AI1.pdf",
+          "size": 3040073,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250805_125908": {
+      "timestamp": "2025-08-05T12:59:08.925761",
+      "company_id": "2303",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2303_AI1.pdf",
+          "path": "downloads\\2303\\202404_2303_AI1.pdf",
+          "size": 2751182,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2303_AI3.pdf",
+          "path": "downloads\\2303\\202404_2303_AI3.pdf",
+          "size": 2617249,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_131357": {
+      "timestamp": "2025-08-05T13:13:57.560860",
+      "company_id": "2303",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2303_AI1.pdf",
+          "path": "downloads\\2303\\202404_2303_AI1.pdf",
+          "size": 2751182,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2303_AI3.pdf",
+          "path": "downloads\\2303\\202404_2303_AI3.pdf",
+          "size": 2617249,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:13:57.560870",
+  "company_id": "2303"
+}

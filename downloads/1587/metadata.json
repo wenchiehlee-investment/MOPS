@@ -1,0 +1,104 @@
+{
+  "downloads": {
+    "2025_20250805_124019": {
+      "timestamp": "2025-08-05T12:40:19.192707",
+      "company_id": "1587",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_1587_AI1.pdf",
+          "path": "downloads\\1587\\202501_1587_AI1.pdf",
+          "size": 1391281,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250805_124102": {
+      "timestamp": "2025-08-05T12:41:02.824508",
+      "company_id": "1587",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_1587_AI1.pdf",
+          "path": "downloads\\1587\\202501_1587_AI1.pdf",
+          "size": 1391281,
+          "skipped": true
+        }
+      ]
+    },
+    "2025_20250805_124254": {
+      "timestamp": "2025-08-05T12:42:54.817067",
+      "company_id": "1587",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_1587_AI1.pdf",
+          "path": "downloads\\1587\\202501_1587_AI1.pdf",
+          "size": 1391281,
+          "skipped": true
+        }
+      ]
+    },
+    "2025_20250805_124345": {
+      "timestamp": "2025-08-05T12:43:45.041091",
+      "company_id": "1587",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_1587_AI1.pdf",
+          "path": "downloads\\1587\\202501_1587_AI1.pdf",
+          "size": 1391281,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250805_125857": {
+      "timestamp": "2025-08-05T12:58:57.963559",
+      "company_id": "1587",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_1587_AI1.pdf",
+          "path": "downloads\\1587\\202404_1587_AI1.pdf",
+          "size": 3878902,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_1587_AI3.pdf",
+          "path": "downloads\\1587\\202404_1587_AI3.pdf",
+          "size": 3961446,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_131340": {
+      "timestamp": "2025-08-05T13:13:40.516204",
+      "company_id": "1587",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_1587_AI1.pdf",
+          "path": "downloads\\1587\\202404_1587_AI1.pdf",
+          "size": 3878902,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_1587_AI3.pdf",
+          "path": "downloads\\1587\\202404_1587_AI3.pdf",
+          "size": 3961446,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:13:40.516218",
+  "company_id": "1587"
+}

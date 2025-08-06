@@ -13,8 +13,176 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20250806_124232": {
+      "timestamp": "2025-08-06T12:42:32.341159",
+      "company_id": "2412",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2412_AI1.pdf",
+          "path": "downloads\\2412\\202401_2412_AI1.pdf",
+          "size": 5628156,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2412_AI1.pdf",
+          "path": "downloads\\2412\\202402_2412_AI1.pdf",
+          "size": 6546504,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2412_AI1.pdf",
+          "path": "downloads\\2412\\202403_2412_AI1.pdf",
+          "size": 6869477,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI1.pdf",
+          "path": "downloads\\2412\\202404_2412_AI1.pdf",
+          "size": 8559765,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI3.pdf",
+          "path": "downloads\\2412\\202404_2412_AI3.pdf",
+          "size": 7600654,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250806_124440": {
+      "timestamp": "2025-08-06T12:44:40.747040",
+      "company_id": "2412",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2412_AI1.pdf",
+          "path": "downloads\\2412\\202401_2412_AI1.pdf",
+          "size": 5628156,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202402_2412_AI1.pdf",
+          "path": "downloads\\2412\\202402_2412_AI1.pdf",
+          "size": 6546504,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202403_2412_AI1.pdf",
+          "path": "downloads\\2412\\202403_2412_AI1.pdf",
+          "size": 6869477,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI1.pdf",
+          "path": "downloads\\2412\\202404_2412_AI1.pdf",
+          "size": 8559765,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI3.pdf",
+          "path": "downloads\\2412\\202404_2412_AI3.pdf",
+          "size": 7600654,
+          "skipped": true
+        }
+      ]
+    },
+    "2024_20250806_124844": {
+      "timestamp": "2025-08-06T12:48:44.750348",
+      "company_id": "2412",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2412_AI1.pdf",
+          "path": "downloads\\2412\\202401_2412_AI1.pdf",
+          "size": 5628156,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202402_2412_AI1.pdf",
+          "path": "downloads\\2412\\202402_2412_AI1.pdf",
+          "size": 6546504,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202403_2412_AI1.pdf",
+          "path": "downloads\\2412\\202403_2412_AI1.pdf",
+          "size": 6869477,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI1.pdf",
+          "path": "downloads\\2412\\202404_2412_AI1.pdf",
+          "size": 8559765,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2412_AI3.pdf",
+          "path": "downloads\\2412\\202404_2412_AI3.pdf",
+          "size": 7600654,
+          "skipped": true
+        }
+      ]
+    },
+    "2023_20250806_124915": {
+      "timestamp": "2025-08-06T12:49:15.870564",
+      "company_id": "2412",
+      "year": 2023,
+      "results": [
+        {
+          "success": true,
+          "filename": "202301_2412_AI1.pdf",
+          "path": "downloads\\2412\\202301_2412_AI1.pdf",
+          "size": 8896037,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202302_2412_AI1.pdf",
+          "path": "downloads\\2412\\202302_2412_AI1.pdf",
+          "size": 6423937,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202303_2412_AI1.pdf",
+          "path": "downloads\\2412\\202303_2412_AI1.pdf",
+          "size": 6283916,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202304_2412_AI1.pdf",
+          "path": "downloads\\2412\\202304_2412_AI1.pdf",
+          "size": 6745488,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202304_2412_AI3.pdf",
+          "path": "downloads\\2412\\202304_2412_AI3.pdf",
+          "size": 6427916,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-06T03:58:19.111740",
+  "last_updated": "2025-08-06T12:49:15.870569",
   "company_id": "2412"
 }

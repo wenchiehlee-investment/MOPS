@@ -1,0 +1,27 @@
+{
+  "downloads": {
+    "2024_20250805_131853": {
+      "timestamp": "2025-08-05T13:18:53.254777",
+      "company_id": "2395",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2395_AI1.pdf",
+          "path": "downloads\\2395\\202404_2395_AI1.pdf",
+          "size": 6824326,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2395_AI3.pdf",
+          "path": "downloads\\2395\\202404_2395_AI3.pdf",
+          "size": 5800544,
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:18:53.254785",
+  "company_id": "2395"
+}

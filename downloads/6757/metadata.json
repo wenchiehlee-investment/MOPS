@@ -1,0 +1,46 @@
+{
+  "downloads": {
+    "2025_20250805_124811": {
+      "timestamp": "2025-08-05T12:48:11.980766",
+      "company_id": "6757",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_6757_AI2.pdf",
+          "path": "downloads\\6757\\202501_6757_AI2.pdf",
+          "size": 1118830,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_130418": {
+      "timestamp": "2025-08-05T13:04:18.989072",
+      "company_id": "6757",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202404_6757_AI2.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_132920": {
+      "timestamp": "2025-08-05T13:29:20.321701",
+      "company_id": "6757",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202404_6757_AI2.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:29:20.321708",
+  "company_id": "6757"
+}

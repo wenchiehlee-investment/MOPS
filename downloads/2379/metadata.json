@@ -1,0 +1,48 @@
+{
+  "downloads": {
+    "2024_20250805_130057": {
+      "timestamp": "2025-08-05T13:00:57.919927",
+      "company_id": "2379",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2379_AI1.pdf",
+          "path": "downloads\\2379\\202404_2379_AI1.pdf",
+          "size": 6752501,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2379_AI3.pdf",
+          "path": "downloads\\2379\\202404_2379_AI3.pdf",
+          "size": 6720728,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_131818": {
+      "timestamp": "2025-08-05T13:18:18.078335",
+      "company_id": "2379",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2379_AI1.pdf",
+          "path": "downloads\\2379\\202404_2379_AI1.pdf",
+          "size": 6752501,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2379_AI3.pdf",
+          "path": "downloads\\2379\\202404_2379_AI3.pdf",
+          "size": 6720728,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:18:18.078344",
+  "company_id": "2379"
+}

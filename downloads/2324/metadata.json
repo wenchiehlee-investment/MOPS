@@ -1,0 +1,62 @@
+{
+  "downloads": {
+    "2025_20250805_124404": {
+      "timestamp": "2025-08-05T12:44:04.204451",
+      "company_id": "2324",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2324_AI1.pdf",
+          "path": "downloads\\2324\\202501_2324_AI1.pdf",
+          "size": 1522994,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_125927": {
+      "timestamp": "2025-08-05T12:59:27.857808",
+      "company_id": "2324",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2324_AI1.pdf",
+          "path": "downloads\\2324\\202404_2324_AI1.pdf",
+          "size": 2116990,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2324_AI3.pdf",
+          "path": "downloads\\2324\\202404_2324_AI3.pdf",
+          "size": 2042079,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250805_131423": {
+      "timestamp": "2025-08-05T13:14:23.295546",
+      "company_id": "2324",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_2324_AI1.pdf",
+          "path": "downloads\\2324\\202404_2324_AI1.pdf",
+          "size": 2116990,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202404_2324_AI3.pdf",
+          "path": "downloads\\2324\\202404_2324_AI3.pdf",
+          "size": 2042079,
+          "skipped": true
+        }
+      ]
+    }
+  },
+  "last_updated": "2025-08-05T13:14:23.295551",
+  "company_id": "2324"
+}
