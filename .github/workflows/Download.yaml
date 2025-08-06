@@ -364,7 +364,7 @@ jobs:
     # Upload artifacts for manual download
     - name: Upload PDF artifacts
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mops-pdfs-${{ inputs.year || 'scheduled' }}-q${{ inputs.quarter || 'auto' }}-$(date +%Y%m%d)
         path: |
