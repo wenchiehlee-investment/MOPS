@@ -1,0 +1,9 @@
+/site
+.DS_Store
+page-authors.json
+*.bak
+__pycache__
+.env
+/logs
+*.pyc
+*.pyo
