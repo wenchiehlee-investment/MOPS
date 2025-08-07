@@ -39,11 +39,21 @@ on:
         required: false
         type: boolean
         default: true
+      upload_to_sheets:
+        description: 'Upload matrix to Google Sheets after download'
+        required: false
+        type: boolean
+        default: true
   
   # Scheduled trigger - runs quarterly on the 15th day of each quarter
   schedule:
     # Run at 02:00 UTC on the 15th day of January, April, July, October
     - cron: '0 2 15 1,4,7,10 *'
+
+env:
+  # Google Sheets credentials (add these to your repository secrets)
+  GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+  GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
 
 jobs:
   download-pdfs:
@@ -75,7 +85,7 @@ jobs:
         python -m pip install --upgrade pip
         
         # Install required dependencies for mops_downloader
-        pip install beautifulsoup4>=4.12.0
+        pip install -r requirements.txt
         
         # Install the package in development mode (since it's in the same repo)
         # This will make the mops_downloader package importable
@@ -96,6 +106,10 @@ jobs:
         
         # Verify main components
         python -c "from mops_downloader.main import MOPSDownloader; print('✅ MOPSDownloader class imported successfully')"
+        
+        # Verify sheets uploader dependencies
+        python -c "import pandas; print('✅ pandas imported successfully')"
+        python -c "import gspread; print('✅ gspread imported successfully')" || echo "⚠️ gspread not available - sheets upload will be skipped"
     
     - name: Verify CSV file exists
       run: |
@@ -132,6 +146,7 @@ jobs:
         echo "Delay: ${{ inputs.delay }}"
         echo "Start From: ${{ inputs.start_from || 'Beginning' }}"
         echo "Only Missing Files: ${{ inputs.only_missing_files }}"
+        echo "Upload to Sheets: ${{ inputs.upload_to_sheets }}"
         
         # Show skip behavior info
         if [ "${{ inputs.only_missing_files }}" == "true" ]; then
@@ -210,6 +225,7 @@ jobs:
         
         echo "🚀 Scheduled MOPS download: Year=$YEAR, Quarter=$QUARTER"
         echo "📁 Scheduled runs use skip mode by default (only download missing files)"
+        echo "📊 Scheduled runs automatically upload to Google Sheets"
         
         # Scheduled runs default to only-missing-files to avoid redundant downloads
         python DownloadAll.py --year $YEAR --quarter $QUARTER --delay 3.0 --only-missing-files
@@ -252,6 +268,117 @@ jobs:
         echo -e "\n=== Disk usage ==="
         du -sh . 2>/dev/null || echo "Could not calculate disk usage"
         du -sh downloads/ 2>/dev/null || echo "Could not calculate downloads disk usage"
+
+    - name: Upload matrix to Google Sheets
+      if: always() && (github.event_name == 'schedule' || inputs.upload_to_sheets == 'true')
+      run: |
+        echo "📊 Starting MOPS Sheets Uploader..."
+        
+        # Set environment for Unicode support
+        export PYTHONIOENCODING=utf-8
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+        
+        # Check if required environment variables are available
+        if [ -z "$GOOGLE_SHEETS_CREDENTIALS" ] || [ -z "$GOOGLE_SHEET_ID" ]; then
+          echo "⚠️ Google Sheets credentials not configured"
+          echo "   GOOGLE_SHEETS_CREDENTIALS: ${GOOGLE_SHEETS_CREDENTIALS:+SET}"
+          echo "   GOOGLE_SHEET_ID: ${GOOGLE_SHEET_ID:+SET}"
+          echo "   Skipping Google Sheets upload, will generate CSV backup only"
+          
+          # Run in CSV-only mode
+          python scripts/sheets_uploader.py --csv-only --output data/mops_matrix_$(date +%Y%m%d_%H%M%S).csv || {
+            echo "❌ CSV-only upload failed, trying manual matrix generation..."
+            
+            # Fallback: Create a simple summary manually
+            echo "Creating manual download summary..."
+            SUMMARY_FILE="matrix_summary_$(date +%Y%m%d_%H%M%S).csv"
+            echo "代號,名稱,總報告數,最新季度" > "$SUMMARY_FILE"
+            
+            if [ -d "downloads" ]; then
+              find downloads -type d -mindepth 1 | while read dir; do
+                company=$(basename "$dir")
+                count=$(find "$dir" -name "*.pdf" | wc -l)
+                latest=$(find "$dir" -name "*.pdf" | sort | tail -1 | xargs basename 2>/dev/null || echo "無")
+                echo "$company,待查詢,$count,$latest" >> "$SUMMARY_FILE"
+              done
+            fi
+            
+            echo "✅ Manual summary created: $SUMMARY_FILE"
+          }
+        else
+          echo "✅ Google Sheets credentials configured"
+          echo "📊 Uploading matrix to Google Sheets..."
+          
+          # Try to upload to Google Sheets with CSV fallback
+          python scripts/sheets_uploader.py --upload || {
+            echo "⚠️ Google Sheets upload failed, falling back to CSV only..."
+            python scripts/sheets_uploader.py --csv-only --output data/mops_matrix_$(date +%Y%m%d_%H%M%S).csv || {
+              echo "❌ CSV fallback also failed"
+              exit 0  # Don't fail the whole workflow
+            }
+          }
+        fi
+        
+        echo "✅ Sheets uploader process completed"
+
+    - name: Verify sheets upload results
+      if: always() && (github.event_name == 'schedule' || inputs.upload_to_sheets == 'true')
+      run: |
+        echo "=== Sheets Upload Verification ==="
+        
+        # Check for CSV output files
+        if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+          echo "✅ CSV backup files found:"
+          ls -la data/mops_matrix_*.csv
+          
+          echo -e "\nCSV file preview (first 10 lines):"
+          head -10 data/mops_matrix_*.csv | head -10
+        else
+          echo "❌ No CSV backup files found"
+        fi
+        
+        # Check for sheets uploader logs
+        if ls logs/*sheets* 1> /dev/null 2>&1; then
+          echo -e "\n📊 Sheets uploader logs:"
+          ls -la logs/*sheets*
+          
+          echo -e "\nLatest sheets log (last 10 lines):"
+          find logs -name "*sheets*" -type f -exec tail -10 {} \; | tail -10
+        else
+          echo "📊 No specific sheets uploader logs found"
+        fi
+        
+        # Generate upload status report
+        UPLOAD_STATUS_FILE="sheets_upload_status.txt"
+        echo "Google Sheets Upload Status Report" > "$UPLOAD_STATUS_FILE"
+        echo "Date: $(date)" >> "$UPLOAD_STATUS_FILE"
+        echo "Trigger: ${{ github.event_name }}" >> "$UPLOAD_STATUS_FILE"
+        echo "=================" >> "$UPLOAD_STATUS_FILE"
+        
+        if [ -n "$GOOGLE_SHEETS_CREDENTIALS" ] && [ -n "$GOOGLE_SHEET_ID" ]; then
+          echo "✅ Credentials: Available" >> "$UPLOAD_STATUS_FILE"
+          echo "📊 Sheet ID: ${GOOGLE_SHEET_ID}" >> "$UPLOAD_STATUS_FILE"
+        else
+          echo "❌ Credentials: Not configured" >> "$UPLOAD_STATUS_FILE"
+        fi
+        
+        if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+          CSV_COUNT=$(ls data/mops_matrix_*.csv | wc -l)
+          echo "✅ CSV backups: $CSV_COUNT files created" >> "$UPLOAD_STATUS_FILE"
+        else
+          echo "❌ CSV backups: No files found" >> "$UPLOAD_STATUS_FILE"
+        fi
+        
+        if [ -d "downloads" ]; then
+          PDF_COUNT=$(find downloads -name "*.pdf" -type f | wc -l)
+          COMPANY_COUNT=$(find downloads -type d -mindepth 1 | wc -l)
+          echo "📁 Source data: $PDF_COUNT PDFs from $COMPANY_COUNT companies" >> "$UPLOAD_STATUS_FILE"
+        else
+          echo "❌ Source data: No downloads directory found" >> "$UPLOAD_STATUS_FILE"
+        fi
+        
+        echo "✅ Upload status report created: $UPLOAD_STATUS_FILE"
     
     - name: Organize downloaded files (if needed)
       run: |
@@ -261,6 +388,7 @@ jobs:
         YEAR="${{ inputs.year || '2025' }}"
         QUARTER="${{ inputs.quarter || '1' }}"
         ONLY_MISSING="${{ inputs.only_missing_files || 'true' }}"
+        UPLOAD_SHEETS="${{ inputs.upload_to_sheets || 'true' }}"
         
         if [ "${{ github.event_name }}" == "schedule" ]; then
           MONTH=$(date +%m)
@@ -278,14 +406,16 @@ jobs:
             YEAR=$(date +%Y)
           fi
           ONLY_MISSING="true"  # Scheduled runs always use skip mode
+          UPLOAD_SHEETS="true" # Scheduled runs always upload to sheets
         fi
         
-        # Create a summary file
+        # Create a comprehensive summary file
         SUMMARY_FILE="download_summary_${YEAR}_Q${QUARTER}.txt"
         echo "MOPS Download Summary" > "$SUMMARY_FILE"
         echo "Year: $YEAR, Quarter: $QUARTER" >> "$SUMMARY_FILE"
         echo "Download Date: $(date)" >> "$SUMMARY_FILE"
         echo "Skip Existing Files: $ONLY_MISSING" >> "$SUMMARY_FILE"
+        echo "Upload to Sheets: $UPLOAD_SHEETS" >> "$SUMMARY_FILE"
         echo "=================" >> "$SUMMARY_FILE"
         
         if [ -d "downloads" ]; then
@@ -300,6 +430,26 @@ jobs:
           total_companies=$(find downloads -type d -mindepth 1 | wc -l)
           echo "" >> "$SUMMARY_FILE"
           echo "Total: $total_files PDF files from $total_companies companies" >> "$SUMMARY_FILE"
+        fi
+        
+        # Add sheets upload status to summary
+        echo "" >> "$SUMMARY_FILE"
+        echo "Google Sheets Upload:" >> "$SUMMARY_FILE"
+        if [ "$UPLOAD_SHEETS" == "true" ]; then
+          if [ -n "$GOOGLE_SHEETS_CREDENTIALS" ]; then
+            echo "  Status: Attempted (check logs for results)" >> "$SUMMARY_FILE"
+          else
+            echo "  Status: Skipped (credentials not configured)" >> "$SUMMARY_FILE"
+          fi
+        else
+          echo "  Status: Disabled by user" >> "$SUMMARY_FILE"
+        fi
+        
+        if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+          CSV_COUNT=$(ls data/mops_matrix_*.csv | wc -l)
+          echo "  CSV Backup: $CSV_COUNT files created" >> "$SUMMARY_FILE"
+        else
+          echo "  CSV Backup: No files found" >> "$SUMMARY_FILE"
         fi
         
         echo "✅ Created download summary: $SUMMARY_FILE"
@@ -317,6 +467,8 @@ jobs:
         git add logs/*.log || true
         git add download_summary_*.txt || true
         git add status_report.md || true
+        git add sheets_upload_status.txt || true
+        git add data/mops_matrix_*.csv || true  # Add CSV matrix files
         
         if git diff --staged --quiet; then
           echo "No MOPS download changes to commit"
@@ -328,6 +480,11 @@ jobs:
             else
               COMMIT_MSG="🔄 MOPS PDFs Download (Force Mode) - ${{ inputs.year }} Q${{ inputs.quarter }}"
             fi
+            
+            # Add sheets upload info to commit message
+            if [ "${{ inputs.upload_to_sheets }}" == "true" ]; then
+              COMMIT_MSG="${COMMIT_MSG} + 📊 Matrix Upload"
+            fi
           else
             YEAR=$(date +%Y)
             MONTH=$(date +%m)
@@ -336,7 +493,7 @@ jobs:
             elif [ "$MONTH" -eq 7 ]; then QUARTER=3
             elif [ "$MONTH" -eq 10 ]; then QUARTER=4
             else QUARTER=1; fi
-            COMMIT_MSG="📁 Scheduled MOPS Download (Skip Mode) - ${YEAR} Q${QUARTER}"
+            COMMIT_MSG="📁 Scheduled MOPS Download + 📊 Matrix Upload - ${YEAR} Q${QUARTER}"
           fi
           
           # Count downloaded files for commit message
@@ -344,13 +501,21 @@ jobs:
             PDF_COUNT=$(find downloads -name "*.pdf" -type f | wc -l)
             COMPANY_COUNT=$(find downloads -type d -mindepth 1 | wc -l)
             if [ "$PDF_COUNT" -gt 0 ]; then
-              COMMIT_MSG="${COMMIT_MSG} (${PDF_COUNT} files from ${COMPANY_COUNT} companies) - $(date +%Y-%m-%d\ %H:%M:%S)"
+              COMMIT_MSG="${COMMIT_MSG} (${PDF_COUNT} files from ${COMPANY_COUNT} companies)"
             else
-              COMMIT_MSG="${COMMIT_MSG} (no PDFs downloaded) - $(date +%Y-%m-%d\ %H:%M:%S)"
+              COMMIT_MSG="${COMMIT_MSG} (no PDFs downloaded)"
+            fi
+            
+            # Add matrix info if CSV files exist
+            if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+              CSV_COUNT=$(ls data/mops_matrix_*.csv | wc -l)
+              COMMIT_MSG="${COMMIT_MSG} + Matrix CSV (${CSV_COUNT} files)"
             fi
           else
-            COMMIT_MSG="${COMMIT_MSG} (no downloads directory) - $(date +%Y-%m-%d\ %H:%M:%S)"
+            COMMIT_MSG="${COMMIT_MSG} (no downloads directory)"
           fi
+          
+          COMMIT_MSG="${COMMIT_MSG} - $(date +%Y-%m-%d\ %H:%M:%S)"
           
           git commit -m "$COMMIT_MSG" || true
           git push || true
@@ -375,6 +540,23 @@ jobs:
           RESULTS_TEXT="- ❌ No downloads found"
         fi
         
+        # Check matrix upload results
+        MATRIX_RESULTS=""
+        if [ "${{ inputs.upload_to_sheets }}" == "true" ]; then
+          if [ -n "$GOOGLE_SHEETS_CREDENTIALS" ]; then
+            MATRIX_RESULTS="- 📊 Matrix uploaded to Google Sheets (check logs for status)"
+          else
+            MATRIX_RESULTS="- ⚠️ Matrix upload skipped (credentials not configured)"
+          fi
+          
+          if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+            CSV_COUNT=$(ls data/mops_matrix_*.csv | wc -l)
+            MATRIX_RESULTS="${MATRIX_RESULTS}\n- 💾 CSV backup: $CSV_COUNT files created"
+          fi
+        else
+          MATRIX_RESULTS="- 📊 Matrix upload disabled by user"
+        fi
+        
         # Create release body
         cat > release_body.md << EOF
         Downloaded MOPS PDFs for ${{ inputs.year }} Q${{ inputs.quarter }}
@@ -385,12 +567,15 @@ jobs:
         - Delay: ${{ inputs.delay }}s
         - Start from: ${{ inputs.start_from || 'Beginning' }}
         - Skip existing files: ${{ inputs.only_missing_files }}
+        - Upload to sheets: ${{ inputs.upload_to_sheets }}
         
         **Results:**
         $RESULTS_TEXT
+        $MATRIX_RESULTS
         - Check the downloads/ directory for PDF files organized by company ID
         - Each company has its own subdirectory with flattened structure
         - Log files available in logs/ directory
+        - Matrix CSV files available in data/ directory
         
         **File Structure:**
         \`\`\`
@@ -398,9 +583,16 @@ jobs:
         ├── {company_id}/
         │   ├── YYYYQQ_{company_id}_AXX.pdf
         │   └── metadata.json
+        ├── data/
+        │   └── mops_matrix_{timestamp}.csv
         └── logs/
             └── mops_downloader_{timestamp}.log
         \`\`\`
+        
+        **Google Sheets Integration:**
+        - Matrix view available in Google Sheets (if credentials configured)
+        - Worksheet: "MOPS下載狀態"
+        - CSV backup always generated for offline access
         EOF
         
         # Try to create release using GitHub CLI
@@ -426,7 +618,9 @@ jobs:
         path: |
           downloads/
           logs/
+          data/
           download_summary_*.txt
+          sheets_upload_status.txt
         retention-days: 30
         if-no-files-found: warn
     
@@ -446,10 +640,12 @@ jobs:
           echo "- Quarter: ${{ inputs.quarter }}" >> status_report.md
           echo "- Delay: ${{ inputs.delay }}s" >> status_report.md
           echo "- Start From: ${{ inputs.start_from || 'Beginning' }}" >> status_report.md
-          echo "- Skip Existing Files: ${{ inputs.only_missing_files }}" >> status_report.md
+          echo "- Skip Existing Files: ${{ inputs.upload_to_sheets }}" >> status_report.md
+          echo "- Upload to Sheets: ${{ inputs.upload_to_sheets }}" >> status_report.md
         else
           echo "**Parameters:**" >> status_report.md
           echo "- Skip Existing Files: true (default for scheduled runs)" >> status_report.md
+          echo "- Upload to Sheets: true (default for scheduled runs)" >> status_report.md
         fi
         
         echo "" >> status_report.md
@@ -469,6 +665,24 @@ jobs:
           echo "- ✅ $LOG_COUNT log files created" >> status_report.md
         else
           echo "- ❌ No logs directory found" >> status_report.md
+        fi
+        
+        # Add sheets upload status
+        echo "" >> status_report.md
+        echo "**Google Sheets Upload:**" >> status_report.md
+        if [ -n "$GOOGLE_SHEETS_CREDENTIALS" ] && [ -n "$GOOGLE_SHEET_ID" ]; then
+          echo "- ✅ Credentials configured" >> status_report.md
+          echo "- 📊 Matrix upload attempted (check logs for details)" >> status_report.md
+        else
+          echo "- ⚠️ Credentials not configured" >> status_report.md
+          echo "- 📊 Matrix upload skipped" >> status_report.md
+        fi
+        
+        if ls data/mops_matrix_*.csv 1> /dev/null 2>&1; then
+          CSV_COUNT=$(ls data/mops_matrix_*.csv | wc -l)
+          echo "- 💾 $CSV_COUNT CSV backup files created" >> status_report.md
+        else
+          echo "- ❌ No CSV backup files found" >> status_report.md
         fi
         
         echo "" >> status_report.md
