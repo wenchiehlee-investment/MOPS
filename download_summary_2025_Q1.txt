@@ -1,15 +1,20 @@
 MOPS Download Summary
 Year: 2025, Quarter: 1
-Download Date: Wed Aug  6 04:12:31 UTC 2025
+Download Date: Thu Aug  7 08:29:58 UTC 2025
+Skip Existing Files: true
+Upload to Sheets: true
 =================
 Companies processed:
+  2376: 2 PDF files
   6597: 0 PDF files
   3048: 1 PDF files
   6182: 0 PDF files
+  2382: 12 PDF files
   3158: 1 PDF files
   6214: 0 PDF files
   6997: 0 PDF files
   6695: 0 PDF files
+  6510: 6 PDF files
   3558: 1 PDF files
   3150: 1 PDF files
   8016: 1 PDF files
@@ -20,18 +25,26 @@ Companies processed:
   2449: 1 PDF files
   3045: 1 PDF files
   8454: 1 PDF files
+  6561: 2 PDF files
   4749: 1 PDF files
-  2412: 1 PDF files
+  2412: 11 PDF files
   2474: 1 PDF files
+  2330: 6 PDF files
   7728: 1 PDF files
+  6442: 2 PDF files
   7747: 1 PDF files
+  2405: 1 PDF files
+  2303: 3 PDF files
   8045: 1 PDF files
   6669: 0 PDF files
   6125: 0 PDF files
+  6506: 2 PDF files
+  2332: 3 PDF files
   7712: 1 PDF files
   7709: 1 PDF files
   8272: 1 PDF files
   7805: 1 PDF files
+  6763: 1 PDF files
   3260: 1 PDF files
   5274: 0 PDF files
   6231: 0 PDF files
@@ -42,13 +55,16 @@ Companies processed:
   6613: 0 PDF files
   3029: 1 PDF files
   5434: 0 PDF files
+  2317: 3 PDF files
   9921: 1 PDF files
+  2357: 3 PDF files
   5269: 0 PDF files
   3026: 1 PDF files
   9917: 1 PDF files
   4938: 1 PDF files
   6996: 0 PDF files
   7749: 1 PDF files
+  6425: 2 PDF files
   4953: 1 PDF files
   3022: 1 PDF files
   2603: 1 PDF files
@@ -57,24 +73,44 @@ Companies processed:
   3035: 1 PDF files
   6123: 0 PDF files
   2480: 1 PDF files
+  2301: 3 PDF files
   7713: 1 PDF files
   7722: 1 PDF files
+  2356: 3 PDF files
   3467: 1 PDF files
   3034: 1 PDF files
+  6751: 1 PDF files
+  2354: 3 PDF files
+  6035: 1 PDF files
+  2383: 2 PDF files
+  2308: 3 PDF files
+  6462: 2 PDF files
+  2395: 2 PDF files
+  2359: 2 PDF files
   2450: 1 PDF files
+  2379: 2 PDF files
   9914: 1 PDF files
+  2377: 2 PDF files
   7732: 1 PDF files
   6720: 0 PDF files
   3293: 1 PDF files
   6962: 0 PDF files
   7765: 1 PDF files
+  2347: 3 PDF files
   5904: 0 PDF files
+  2324: 3 PDF files
   3231: 1 PDF files
+  6757: 1 PDF files
   3356: 1 PDF files
   8299: 1 PDF files
   3014: 1 PDF files
   2458: 1 PDF files
+  1587: 3 PDF files
   5203: 1 PDF files
   4114: 1 PDF files
 
-Total: 52 PDF files from 73 companies
+Total: 146 PDF files from 103 companies
+
+Google Sheets Upload:
+  Status: Skipped (credentials not configured)
+  CSV Backup: No files found
