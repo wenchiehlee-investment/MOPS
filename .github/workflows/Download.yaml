@@ -270,7 +270,7 @@ jobs:
         du -sh downloads/ 2>/dev/null || echo "Could not calculate downloads disk usage"
 
     - name: Upload matrix to Google Sheets
-      if: always() && (inputs.upload_to_sheets == 'true')
+      if: inputs.upload_to_sheets == 'true'
       run: |
         echo "📊 Starting MOPS Sheets Uploader..."
         
@@ -323,7 +323,7 @@ jobs:
         echo "✅ Sheets uploader process completed"
 
     - name: Verify sheets upload results
-      if: always() && (inputs.upload_to_sheets == 'true')
+      if: inputs.upload_to_sheets == 'true'
       run: |
         echo "=== Sheets Upload Verification ==="
         
