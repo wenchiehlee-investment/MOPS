@@ -1,6 +1,6 @@
 MOPS Download Summary
 Year: 2025, Quarter: 1
-Download Date: Thu Aug  7 08:29:58 UTC 2025
+Download Date: Thu Aug  7 09:03:32 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -112,5 +112,5 @@ Companies processed:
 Total: 146 PDF files from 103 companies
 
 Google Sheets Upload:
-  Status: Skipped (credentials not configured)
+  Status: Attempted (check logs for results)
   CSV Backup: No files found
