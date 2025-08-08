@@ -12,8 +12,22 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20250808_041925": {
+      "timestamp": "2025-08-08T04:19:25.649489",
+      "company_id": "5536",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202502_5536_AI1.pdf",
+          "path": "downloads/5536/202502_5536_AI1.pdf",
+          "size": 1416386,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-06T04:04:58.819708",
+  "last_updated": "2025-08-08T04:19:25.649495",
   "company_id": "5536"
 }

@@ -1,8 +1,8 @@
 Google Sheets Upload Status Report
-Date: Thu Aug  7 13:24:46 UTC 2025
+Date: Fri Aug  8 04:32:10 UTC 2025
 Trigger: workflow_dispatch
 =================
 ✅ Credentials: Available
 📊 Sheet ID: 1BmpE_ZeusMlgEeESoHxAzxtW7gyij6eF11RkvtjlgR0
 ❌ CSV backups: No files found
-📁 Source data: 146 PDFs from 103 companies
+📁 Source data: 166 PDFs from 104 companies
