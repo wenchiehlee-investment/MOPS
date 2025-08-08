@@ -172,8 +172,50 @@
           "skipped": true
         }
       ]
+    },
+    "2024_20250807_115946": {
+      "timestamp": "2025-08-07T11:59:46.875987",
+      "company_id": "2382",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2382_AI1.pdf",
+          "path": "downloads\\2382\\202401_2382_AI1.pdf",
+          "size": 1355601,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2382_AI1.pdf",
+          "path": "downloads\\2382\\202402_2382_AI1.pdf",
+          "size": 1396425,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2382_AI1.pdf",
+          "path": "downloads\\2382\\202403_2382_AI1.pdf",
+          "size": 1519933,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2382_AI1.pdf",
+          "path": "downloads\\2382\\202404_2382_AI1.pdf",
+          "size": 2046449,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2382_AI3.pdf",
+          "path": "downloads\\2382\\202404_2382_AI3.pdf",
+          "size": 1983555,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-05T13:18:26.626266",
+  "last_updated": "2025-08-07T11:59:46.875997",
   "company_id": "2382"
 }
