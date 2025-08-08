@@ -1,6 +1,6 @@
 """
-MOPS Sheets Uploader - Google Sheets Connector
-Handles Google Sheets integration, extends existing sheets_uploader functionality.
+Complete Enhanced Sheets Connector for MOPS Sheets Uploader v1.1.1
+Replace your existing sheets_connector.py with this complete version
 """
 
 import pandas as pd
@@ -10,34 +10,43 @@ from typing import Dict, List, Any, Optional, Tuple
 import logging
 from datetime import datetime
 
-from .models import CoverageStats, StockListChanges
-from .config import MOPSConfig
-
 logger = logging.getLogger(__name__)
 
 class MOPSSheetsConnector:
-    """
-    Extended sheets connector for MOPS matrix data
+    """Enhanced Google Sheets connector for MOPS matrix data with v1.1.1 font support"""
     
-    Integrates with existing Google Sheets infrastructure and reuses:
-    - Google Sheets authentication (GOOGLE_SHEETS_CREDENTIALS)
-    - Connection management
-    - Error handling and retry logic
-    - CSV fallback functionality
-    """
-    
-    def __init__(self, config: MOPSConfig):
+    def __init__(self, config):
         self.config = config
         self.worksheet_name = config.worksheet_name
         self.sheet_id = config.google_sheet_id
         self.credentials = config.google_credentials
         self._worksheet = None
         self._client = None
+        self._spreadsheet = None
         
+        # Get enhanced font configuration
+        self.font_config = self._get_enhanced_font_config()
+        
+    def _get_enhanced_font_config(self) -> Dict[str, Any]:
+        """Get enhanced font configuration from config"""
+        if hasattr(self.config, 'get_enhanced_font_config'):
+            return self.config.get_enhanced_font_config()
+        elif hasattr(self.config, 'get_font_config'):
+            return self.config.get_font_config()
+        else:
+            # Fallback configuration
+            return {
+                'font_size': getattr(self.config, 'font_size', 14),
+                'header_font_size': getattr(self.config, 'header_font_size', 14),
+                'bold_headers': getattr(self.config, 'bold_headers', True),
+                'bold_company_info': getattr(self.config, 'bold_company_info', True),
+                'preset_equivalent': 'custom'
+            }
+    
     def setup_connection(self) -> bool:
-        """Setup Google Sheets connection using existing credentials"""
+        """Enhanced setup Google Sheets connection with better error handling"""
         try:
-            logger.info("🔧 開始設定 Google Sheets 連線...")
+            logger.info("🔧 開始設定 Google Sheets 連線 (v1.1.1)...")
             
             # Check if gspread is available
             try:
@@ -64,7 +73,6 @@ class MOPSSheetsConnector:
                 logger.info(f"🏗️ 專案 ID: {creds_dict.get('project_id', 'N/A')}")
             except json.JSONDecodeError as e:
                 logger.error(f"❌ 憑證 JSON 解析失敗: {e}")
-                logger.error("請檢查 GOOGLE_SHEETS_CREDENTIALS 格式")
                 return False
             
             # Setup authentication
@@ -85,7 +93,6 @@ class MOPSSheetsConnector:
                 logger.info("✅ Google Sheets 客戶端授權成功")
             except Exception as e:
                 logger.error(f"❌ Google Sheets 客戶端授權失敗: {e}")
-                logger.error("可能原因: 網路連線問題或憑證權限不足")
                 return False
             
             # Test spreadsheet access
@@ -96,57 +103,38 @@ class MOPSSheetsConnector:
             logger.info(f"📊 測試試算表存取: {self.sheet_id}")
             
             try:
-                spreadsheet = self._client.open_by_key(self.sheet_id)
-                logger.info(f"✅ 試算表開啟成功: {spreadsheet.title}")
-            except gspread.SpreadsheetNotFound:
-                logger.error(f"❌ 找不到試算表 ID: {self.sheet_id}")
-                logger.error("請檢查:")
-                logger.error("  1. 試算表 ID 是否正確")
-                logger.error("  2. 服務帳戶是否有存取權限")
-                return False
-            except gspread.APIError as e:
-                logger.error(f"❌ Google Sheets API 錯誤: {e}")
-                logger.error("可能原因: API 配額超限或權限不足")
-                return False
+                self._spreadsheet = self._client.open_by_key(self.sheet_id)
+                logger.info(f"✅ 試算表開啟成功: {self._spreadsheet.title}")
             except Exception as e:
                 logger.error(f"❌ 試算表存取失敗: {e}")
+                logger.error(f"   請檢查試算表 ID: {self.sheet_id}")
+                logger.error(f"   請確認服務帳戶有存取權限")
                 return False
             
             # Create or get MOPS worksheet
             try:
-                self._worksheet = self._get_or_create_worksheet(spreadsheet)
+                self._worksheet = self._get_or_create_worksheet()
                 logger.info(f"✅ 工作表準備完成: {self.worksheet_name}")
             except Exception as e:
                 logger.error(f"❌ 工作表設定失敗: {e}")
                 return False
             
+            # Log font configuration that will be used
+            logger.info(f"🔤 字體設定: {self.font_config['font_size']}pt (標題: {self.font_config['header_font_size']}pt)")
+            logger.info(f"   預設模式: {self.font_config.get('preset_equivalent', 'custom')}")
+            
             logger.info("🎉 Google Sheets 連線設定完成")
             return True
             
-        except ImportError:
-            logger.error("❌ gspread 函式庫未安裝")
-            logger.error("請執行: pip install gspread google-auth")
-            return False
         except Exception as e:
             logger.error(f"❌ Google Sheets 連線失敗: {e}")
-            import traceback
-            logger.error(f"詳細錯誤: {traceback.format_exc()}")
             return False
     
     def upload_matrix(self, matrix_df: pd.DataFrame, 
-                     coverage_stats: Optional[CoverageStats] = None,
-                     stock_changes: Optional[StockListChanges] = None) -> bool:
-        """
-        Upload matrix data to Google Sheets with formatting
-        
-        Process:
-        1. Setup connection if needed
-        2. Auto-resize worksheet for current matrix dimensions
-        3. Upload matrix data with proper formatting
-        4. Apply MOPS-specific styling
-        5. Create summary if enabled
-        """
-        logger.info("🚀 上傳到 Google Sheets...")
+                     coverage_stats=None,
+                     stock_changes=None) -> bool:
+        """Enhanced matrix upload with v1.1.1 font formatting"""
+        logger.info("🚀 上傳到 Google Sheets (v1.1.1 增強版)...")
         
         if not self._worksheet and not self.setup_connection():
             logger.error("Cannot establish Google Sheets connection")
@@ -158,294 +146,379 @@ class MOPSSheetsConnector:
             required_cols = len(matrix_df.columns)
             self.auto_resize_worksheet(required_rows, required_cols)
             
-            # Prepare data for upload
-            upload_data = self._prepare_upload_data(matrix_df)
+            # Prepare enhanced data for upload
+            upload_data = self._prepare_enhanced_upload_data(matrix_df)
             
             # Clear existing content
+            logger.info("🧹 清除現有內容...")
             self._worksheet.clear()
             
             # Upload data in batch
+            logger.info(f"📤 批次上傳資料 ({len(upload_data)} 列 × {len(upload_data[0])} 欄)...")
             self._worksheet.update('A1', upload_data, value_input_option='USER_ENTERED')
             
-            # Apply formatting
-            self.format_matrix_worksheet(
-                matrix_df, 
-                coverage_stats,
-                stock_changes
+            # Apply enhanced v1.1.1 formatting
+            logger.info("🎨 套用 v1.1.1 增強格式...")
+            self.format_enhanced_matrix_worksheet(
+                matrix_df, coverage_stats, stock_changes
             )
             
-            # Create summary sheet if enabled
-            if self.config.include_summary_sheet and coverage_stats:
-                self._create_summary_sheet(coverage_stats, stock_changes)
-            
-            logger.info(f"✅ 主矩陣上傳成功 ({len(matrix_df)} 公司 × {len(matrix_df.columns)-2} 季度)")
+            logger.info(f"✅ v1.1.1 增強矩陣上傳成功")
+            logger.info(f"   公司數: {len(matrix_df)}, 季度數: {len(matrix_df.columns)-2}")
+            logger.info(f"   字體: {self.font_config['font_size']}pt/{self.font_config['header_font_size']}pt")
+            logger.info(f"   多重類型支援: {'啟用' if getattr(self.config, 'show_all_report_types', True) else '停用'}")
             
             return True
             
         except Exception as e:
-            logger.error(f"Matrix upload failed: {e}")
+            logger.error(f"Enhanced matrix upload failed: {e}")
             return False
     
-    def format_matrix_worksheet(self, matrix_df: pd.DataFrame,
-                               coverage_stats: Optional[CoverageStats] = None,
-                               stock_changes: Optional[StockListChanges] = None) -> None:
-        """
-        Apply MOPS-specific formatting for matrix display
-        
-        Features:
-        - Header row styling (company info vs quarters)
-        - Future quarter column highlighting (orange background)
-        - New company row highlighting (light blue background)
-        - Status symbol color coding (✅🟡⚠️❌)
-        - Auto-resize columns for readability
-        - Freeze first two columns (代號, 名稱)
-        """
+    def format_enhanced_matrix_worksheet(self, matrix_df: pd.DataFrame,
+                                       coverage_stats=None,
+                                       stock_changes=None) -> None:
+        """Apply enhanced MOPS-specific formatting with v1.1.1 features"""
         try:
-            # Header formatting
+            logger.info("🎨 套用增強型格式設定...")
+            
+            # Step 1: Apply base font size to entire worksheet
+            entire_range = f"A1:{self._get_column_letter(len(matrix_df.columns))}{len(matrix_df)+1}"
+            logger.info(f"   設定全域字體: {self.font_config['font_size']}pt")
+            self._worksheet.format(entire_range, {
+                "textFormat": {
+                    "fontSize": self.font_config['font_size'],
+                    "fontFamily": "Arial"
+                }
+            })
+            
+            # Step 2: Enhanced header formatting
             header_range = f"A1:{self._get_column_letter(len(matrix_df.columns))}1"
-            self._worksheet.format(header_range, {
-                "backgroundColor": {"red": 0.2, "green": 0.2, "blue": 0.2},
-                "textFormat": {"foregroundColor": {"red": 1, "green": 1, "blue": 1}, "bold": True},
-                "horizontalAlignment": "CENTER"
-            })
+            header_format = {
+                "backgroundColor": {"red": 0.2, "green": 0.8, "blue": 0.8},
+                "textFormat": {
+                    "foregroundColor": {"red": 1, "green": 1, "blue": 1}, 
+                    "fontSize": self.font_config['header_font_size'],
+                    "fontFamily": "Arial"
+                },
+                "horizontalAlignment": "CENTER",
+                "verticalAlignment": "MIDDLE"
+            }
             
-            # Company info columns (代號, 名稱) - different styling
-            company_cols_range = f"A1:B{len(matrix_df)+1}"
-            self._worksheet.format(company_cols_range, {
+            if self.font_config['bold_headers']:
+                header_format["textFormat"]["bold"] = True
+                
+            logger.info(f"   設定標題格式: {self.font_config['header_font_size']}pt, 粗體={self.font_config['bold_headers']}")
+            self._worksheet.format(header_range, header_format)
+            
+            # Step 3: Enhanced company info columns formatting
+            company_cols_range = f"A2:B{len(matrix_df)+1}"
+            company_format = {
                 "backgroundColor": {"red": 0.95, "green": 0.95, "blue": 0.95},
-                "textFormat": {"bold": True}
-            })
+                "textFormat": {
+                    "fontSize": self.font_config['font_size'],
+                    "fontFamily": "Arial"
+                },
+                "horizontalAlignment": "LEFT",
+                "verticalAlignment": "MIDDLE"
+            }
             
-            # Future quarter highlighting
-            if coverage_stats and coverage_stats.future_quarters:
-                self._highlight_future_quarters(matrix_df, coverage_stats.future_quarters)
+            if self.font_config['bold_company_info']:
+                company_format["textFormat"]["bold"] = True
+                
+            logger.info(f"   設定公司資訊格式: 粗體={self.font_config['bold_company_info']}")
+            self._worksheet.format(company_cols_range, company_format)
             
-            # New company highlighting
+            # Step 4: v1.1.1 Enhanced quarter data formatting
+            if len(matrix_df.columns) > 2:
+                quarter_cols_range = f"C1:{self._get_column_letter(len(matrix_df.columns))}{len(matrix_df)+1}"
+                quarter_format = {
+                    "horizontalAlignment": "CENTER",
+                    "verticalAlignment": "MIDDLE",
+                    "textFormat": {
+                        "fontSize": self.font_config['font_size'],
+                        "fontFamily": "Arial"
+                    }
+                }
+                self._worksheet.format(quarter_cols_range, quarter_format)
+            
+            # Step 5: v1.1.1 Special formatting for multiple types
+            if hasattr(self.config, 'show_all_report_types') and self.config.show_all_report_types:
+                self._apply_multiple_type_formatting(matrix_df)
+            
+            # Step 6: Future quarter highlighting (if applicable)
+            if hasattr(self.config, 'highlight_future_quarters') and self.config.highlight_future_quarters:
+                self._apply_future_quarter_formatting(matrix_df)
+            
+            # Step 7: New company highlighting (if applicable)
             if stock_changes and stock_changes.added_companies:
-                self._highlight_new_companies(matrix_df, stock_changes.added_companies)
+                self._apply_new_company_formatting(matrix_df, stock_changes.added_companies)
             
-            # Status symbol color coding
-            self._apply_status_color_coding(matrix_df)
-            
-            # Freeze first two columns
+            # Step 8: Freeze panes and final touches
             self._worksheet.freeze(rows=1, cols=2)
             
-            # Auto-resize columns
-            if self.config.auto_resize_columns:
-                self._auto_resize_columns(matrix_df)
+            # Step 9: Auto-resize columns for optimal readability
+            self._auto_resize_columns(matrix_df)
             
-            logger.info("✅ 矩陣格式設定完成")
+            logger.info(f"✅ v1.1.1 增強格式設定完成")
+            logger.info(f"   字體配置: {self.font_config.get('preset_equivalent', 'custom')} 預設")
             
         except Exception as e:
-            logger.warning(f"Formatting failed (matrix still uploaded): {e}")
+            logger.warning(f"Enhanced formatting failed (matrix still uploaded): {e}")
+    
+    def _apply_multiple_type_formatting(self, matrix_df: pd.DataFrame) -> None:
+        """Apply special formatting for cells with multiple report types (v1.1.1)"""
+        try:
+            logger.info("   🔄 套用多重類型特殊格式...")
+            
+            separator = getattr(self.config, 'report_type_separator', '/')
+            
+            for row_idx, row in matrix_df.iterrows():
+                for col_idx, col_name in enumerate(matrix_df.columns[2:], start=3):  # Skip 代號, 名稱
+                    cell_value = str(row[col_name])
+                    
+                    if cell_value != '-' and separator in cell_value:
+                        # This cell has multiple types
+                        cell_range = f"{self._get_column_letter(col_idx)}{row_idx + 2}"  # +2 for header and 0-based index
+                        
+                        multiple_type_format = {
+                            "backgroundColor": {"red": 0.9, "green": 0.8, "blue": 1.0},  # Light purple
+                            "textFormat": {
+                                "fontSize": self.font_config['font_size'],
+                                "fontFamily": "Arial",
+                                "bold": True
+                            }
+                        }
+                        
+                        self._worksheet.format(cell_range, multiple_type_format)
+            
+        except Exception as e:
+            logger.warning(f"Multiple type formatting failed: {e}")
+    
+    def _apply_future_quarter_formatting(self, matrix_df: pd.DataFrame) -> None:
+        """Apply formatting for future quarter columns"""
+        try:
+            logger.info("   ⏭️ 套用未來季度格式...")
+            
+            from datetime import datetime
+            current_year = datetime.now().year
+            current_quarter = (datetime.now().month - 1) // 3 + 1
+            
+            for col_idx, col_name in enumerate(matrix_df.columns[2:], start=3):
+                if 'Q' in col_name:
+                    try:
+                        year_str, quarter_str = col_name.split(' Q')
+                        year, quarter = int(year_str), int(quarter_str)
+                        
+                        if year > current_year or (year == current_year and quarter > current_quarter):
+                            # This is a future quarter
+                            col_range = f"{self._get_column_letter(col_idx)}1:{self._get_column_letter(col_idx)}{len(matrix_df)+1}"
+                            
+                            future_format = {
+                                "backgroundColor": {"red": 1.0, "green": 0.9, "blue": 0.8},  # Light orange
+                            }
+                            
+                            self._worksheet.format(col_range, future_format)
+                    except:
+                        continue
+                        
+        except Exception as e:
+            logger.warning(f"Future quarter formatting failed: {e}")
+    
+    def _apply_new_company_formatting(self, matrix_df: pd.DataFrame, added_companies: List[str]) -> None:
+        """Apply formatting for newly added companies"""
+        try:
+            logger.info(f"   🆕 套用新公司格式 ({len(added_companies)} 家)...")
+            
+            for row_idx, row in matrix_df.iterrows():
+                company_id = str(row['代號'])
+                if company_id in added_companies:
+                    row_range = f"A{row_idx + 2}:{self._get_column_letter(len(matrix_df.columns))}{row_idx + 2}"
+                    
+                    new_company_format = {
+                        "backgroundColor": {"red": 0.8, "green": 0.9, "blue": 1.0},  # Light blue
+                    }
+                    
+                    self._worksheet.format(row_range, new_company_format)
+                    
+        except Exception as e:
+            logger.warning(f"New company formatting failed: {e}")
+    
+    def _auto_resize_columns(self, matrix_df: pd.DataFrame) -> None:
+        """Auto-resize columns for optimal readability"""
+        try:
+            logger.info("   📏 自動調整欄寬...")
+            
+            # Get the number of columns
+            num_cols = len(matrix_df.columns)
+            
+            # Auto-resize columns based on content
+            requests = []
+            
+            for i in range(num_cols):
+                if i == 0:  # 代號 column
+                    width = 80
+                elif i == 1:  # 名稱 column  
+                    width = 150
+                else:  # Quarter columns
+                    width = 100
+                
+                requests.append({
+                    "updateDimensionProperties": {
+                        "range": {
+                            "sheetId": self._worksheet.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": i,
+                            "endIndex": i + 1
+                        },
+                        "properties": {
+                            "pixelSize": width
+                        },
+                        "fields": "pixelSize"
+                    }
+                })
+            
+            if requests:
+                self._spreadsheet.batch_update({"requests": requests})
+                
+        except Exception as e:
+            logger.warning(f"Column auto-resize failed: {e}")
     
     def auto_resize_worksheet(self, required_rows: int, required_cols: int) -> None:
-        """
-        Automatically resize worksheet to fit matrix dimensions
-        
-        Args:
-            required_rows: Current company count + header (e.g., 118 + 1 = 119)
-            required_cols: Base columns + quarter columns (e.g., 2 + 12 = 14)
-        """
+        """Enhanced worksheet resizing with better logic"""
         try:
             current_rows = self._worksheet.row_count
             current_cols = self._worksheet.col_count
             
             # Add buffer for safety
-            target_rows = max(required_rows + 5, current_rows)
-            target_cols = max(required_cols + 2, current_cols)
+            target_rows = max(required_rows + 10, current_rows)
+            target_cols = max(required_cols + 5, current_cols)
             
             if current_rows < target_rows or current_cols < target_cols:
+                logger.info(f"📊 調整工作表大小: {current_rows}×{current_cols} → {target_rows}×{target_cols}")
                 self._worksheet.resize(rows=target_rows, cols=target_cols)
-                logger.info(f"📊 工作表已調整大小: {current_rows}×{current_cols} → {target_rows}×{target_cols}")
+                
+                # Log the adjustment
+                logger.info(f"   可容納: {target_rows-1} 家公司, {target_cols-2} 個季度")
             
         except Exception as e:
             logger.warning(f"Worksheet resize failed: {e}")
     
-    def export_csv_backup(self, matrix_df: pd.DataFrame, 
-                         coverage_stats: Optional[CoverageStats] = None) -> str:
-        """Export matrix to CSV as backup"""
+    def export_csv_backup(self, matrix_df: pd.DataFrame, coverage_stats=None) -> str:
+        """Enhanced CSV export with v1.1.1 metadata"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = self.config.csv_filename_pattern.format(timestamp=timestamp)
+        
+        # Use configurable filename pattern
+        filename_pattern = getattr(self.config, 'csv_filename_pattern', 'mops_matrix_{timestamp}.csv')
+        filename = filename_pattern.format(timestamp=timestamp)
         
         # Ensure output directory exists
         os.makedirs(self.config.output_dir, exist_ok=True)
         csv_path = os.path.join(self.config.output_dir, filename)
         
-        # Export main matrix
+        # Export main matrix with enhanced metadata
         matrix_df.to_csv(csv_path, index=False, encoding='utf-8-sig')
         
-        # Export summary if available
-        if coverage_stats and self.config.include_future_analysis:
-            summary_path = csv_path.replace('.csv', '_summary.csv')
-            self._export_summary_csv(coverage_stats, summary_path)
+        # Create metadata file
+        metadata_path = csv_path.replace('.csv', '_metadata.json')
+        metadata = {
+            'version': '1.1.1',
+            'export_time': datetime.now().isoformat(),
+            'font_configuration': self.font_config,
+            'matrix_dimensions': {
+                'rows': len(matrix_df),
+                'columns': len(matrix_df.columns),
+                'companies': len(matrix_df),
+                'quarters': len(matrix_df.columns) - 2
+            },
+            'multiple_types_enabled': getattr(self.config, 'show_all_report_types', True),
+            'type_separator': getattr(self.config, 'report_type_separator', '/'),
+        }
         
-        logger.info(f"💾 CSV 備份檔案: {csv_path}")
+        if coverage_stats:
+            metadata['coverage_stats'] = {
+                'coverage_percentage': coverage_stats.coverage_percentage,
+                'total_companies': coverage_stats.total_companies,
+                'companies_with_pdfs': coverage_stats.companies_with_pdfs,
+                'total_reports': coverage_stats.total_actual_reports
+            }
+            
+            if hasattr(coverage_stats, 'cells_with_multiple_types'):
+                metadata['coverage_stats']['multiple_types'] = {
+                    'count': coverage_stats.cells_with_multiple_types,
+                    'percentage': coverage_stats.multiple_types_percentage
+                }
+        
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"💾 v1.1.1 增強 CSV 備份: {csv_path}")
+        logger.info(f"📋 元資料檔案: {metadata_path}")
         return csv_path
     
     def test_connection(self) -> bool:
-        """Test Google Sheets connection"""
+        """Enhanced connection test with detailed feedback"""
         try:
             success = self.setup_connection()
             if success:
-                logger.info("✅ Google Sheets 連線測試成功")
+                logger.info("✅ v1.1.1 Google Sheets 連線測試成功")
+                logger.info(f"   試算表: {self._spreadsheet.title}")
+                logger.info(f"   工作表: {self.worksheet_name}")
+                logger.info(f"   字體配置: {self.font_config['preset_equivalent']} ({self.font_config['font_size']}pt)")
             else:
-                logger.error("❌ Google Sheets 連線測試失敗")
+                logger.error("❌ v1.1.1 Google Sheets 連線測試失敗")
             return success
         except Exception as e:
             logger.error(f"Connection test failed: {e}")
             return False
     
-    def _get_or_create_worksheet(self, spreadsheet) -> Any:
-        """Get existing worksheet or create new one"""
+    def _get_or_create_worksheet(self):
+        """Enhanced worksheet creation/retrieval with better error handling"""
         try:
             # Try to get existing worksheet
-            worksheet = spreadsheet.worksheet(self.worksheet_name)
-            logger.info(f"Found existing worksheet: {self.worksheet_name}")
+            worksheet = self._spreadsheet.worksheet(self.worksheet_name)
+            logger.info(f"📋 找到現有工作表: {self.worksheet_name}")
             return worksheet
         except:
-            # Create new worksheet
-            worksheet = spreadsheet.add_worksheet(
-                title=self.worksheet_name,
-                rows=200,  # Initial size
-                cols=20
-            )
-            logger.info(f"Created new worksheet: {self.worksheet_name}")
-            return worksheet
+            try:
+                # Create new worksheet
+                worksheet = self._spreadsheet.add_worksheet(
+                    title=self.worksheet_name,
+                    rows=300,  # Initial size - will be auto-resized
+                    cols=30
+                )
+                logger.info(f"📋 建立新工作表: {self.worksheet_name}")
+                return worksheet
+            except Exception as e:
+                logger.error(f"Failed to create worksheet: {e}")
+                raise
     
-    def _prepare_upload_data(self, matrix_df: pd.DataFrame) -> List[List[str]]:
-        """Prepare matrix data for Google Sheets upload"""
-        # Convert DataFrame to list of lists
+    def _prepare_enhanced_upload_data(self, matrix_df: pd.DataFrame) -> List[List[str]]:
+        """Enhanced data preparation for Google Sheets upload"""
         data = []
         
         # Add header row
         data.append(list(matrix_df.columns))
         
-        # Add data rows
+        # Add data rows with enhanced processing
         for _, row in matrix_df.iterrows():
-            data.append([str(cell) for cell in row])
+            row_data = []
+            for col_name in matrix_df.columns:
+                cell_value = row[col_name]
+                
+                # Enhanced cell value processing for v1.1.1
+                if col_name in ['代號', '名稱']:
+                    # Company info - keep as is
+                    row_data.append(str(cell_value))
+                else:
+                    # Quarter data - handle multiple types
+                    if pd.isna(cell_value) or cell_value == '':
+                        row_data.append('-')
+                    else:
+                        row_data.append(str(cell_value))
+            
+            data.append(row_data)
         
         return data
-    
-    def _highlight_future_quarters(self, matrix_df: pd.DataFrame, 
-                                  future_quarters: List[str]) -> None:
-        """Highlight future quarter columns"""
-        try:
-            for quarter in future_quarters:
-                if quarter in matrix_df.columns:
-                    col_index = matrix_df.columns.get_loc(quarter) + 1  # +1 for 1-based indexing
-                    col_letter = self._get_column_letter(col_index)
-                    
-                    # Highlight entire column
-                    range_name = f"{col_letter}:{col_letter}"
-                    self._worksheet.format(range_name, {
-                        "backgroundColor": {"red": 1, "green": 0.8, "blue": 0.4}  # Orange
-                    })
-        except Exception as e:
-            logger.warning(f"Future quarter highlighting failed: {e}")
-    
-    def _highlight_new_companies(self, matrix_df: pd.DataFrame, 
-                                new_companies: List[str]) -> None:
-        """Highlight new company rows"""
-        try:
-            for company_id in new_companies:
-                company_mask = matrix_df['代號'].astype(str) == company_id
-                row_indices = matrix_df[company_mask].index.tolist()
-                
-                for row_idx in row_indices:
-                    row_num = row_idx + 2  # +2 for 1-based indexing and header row
-                    range_name = f"A{row_num}:{self._get_column_letter(len(matrix_df.columns))}{row_num}"
-                    
-                    self._worksheet.format(range_name, {
-                        "backgroundColor": {"red": 0.8, "green": 0.9, "blue": 1}  # Light blue
-                    })
-        except Exception as e:
-            logger.warning(f"New company highlighting failed: {e}")
-    
-    def _apply_status_color_coding(self, matrix_df: pd.DataFrame) -> None:
-        """Apply color coding for status symbols"""
-        try:
-            # Define colors for different status symbols
-            status_colors = {
-                '✅': {"red": 0.8, "green": 1, "blue": 0.8},      # Light green
-                '🟡': {"red": 1, "green": 1, "blue": 0.8},        # Light yellow
-                '⚠️': {"red": 1, "green": 0.9, "blue": 0.8},      # Light orange
-                '❌': {"red": 1, "green": 0.8, "blue": 0.8},       # Light red
-            }
-            
-            # Apply colors (simplified approach - would need more complex logic for full implementation)
-            quarter_cols = [col for col in matrix_df.columns if 'Q' in col]
-            for col in quarter_cols:
-                col_index = matrix_df.columns.get_loc(col) + 1
-                col_letter = self._get_column_letter(col_index)
-                
-                # Apply conditional formatting for each status type
-                # Note: This is a simplified version - full implementation would need cell-by-cell formatting
-                
-        except Exception as e:
-            logger.warning(f"Status color coding failed: {e}")
-    
-    def _auto_resize_columns(self, matrix_df: pd.DataFrame) -> None:
-        """Auto-resize columns for better readability"""
-        try:
-            # Set column widths based on content type
-            column_widths = {}
-            
-            for i, col in enumerate(matrix_df.columns):
-                col_letter = self._get_column_letter(i + 1)
-                
-                if col == '代號':
-                    width = 80
-                elif col == '名稱':
-                    width = 150
-                elif 'Q' in col:
-                    width = 100
-                else:
-                    width = 120
-                
-                column_widths[col_letter] = width
-            
-            # Apply column widths
-            for col_letter, width in column_widths.items():
-                self._worksheet.columns_auto_resize(start_column_index=ord(col_letter) - ord('A'), 
-                                                  end_column_index=ord(col_letter) - ord('A'))
-                
-        except Exception as e:
-            logger.warning(f"Column auto-resize failed: {e}")
-    
-    def _create_summary_sheet(self, coverage_stats: CoverageStats,
-                             stock_changes: Optional[StockListChanges] = None) -> None:
-        """Create summary statistics sheet"""
-        try:
-            # This would create a separate worksheet with summary statistics
-            # Implementation details depend on specific requirements
-            logger.info("📊 Summary sheet creation not yet implemented")
-        except Exception as e:
-            logger.warning(f"Summary sheet creation failed: {e}")
-    
-    def _export_summary_csv(self, coverage_stats: CoverageStats, summary_path: str) -> None:
-        """Export summary statistics to CSV"""
-        summary_data = {
-            '統計項目': [
-                '總公司數',
-                '有PDF公司數',
-                '無PDF公司數',
-                '總季度數',
-                '總報告數',
-                '涵蓋率'
-            ],
-            '數值': [
-                coverage_stats.total_companies,
-                coverage_stats.companies_with_pdfs,
-                coverage_stats.companies_without_pdfs,
-                coverage_stats.total_quarters,
-                coverage_stats.total_actual_reports,
-                f"{coverage_stats.coverage_percentage:.1f}%"
-            ]
-        }
-        
-        summary_df = pd.DataFrame(summary_data)
-        summary_df.to_csv(summary_path, index=False, encoding='utf-8-sig')
     
     def _get_column_letter(self, col_num: int) -> str:
         """Convert column number to letter (1 -> A, 2 -> B, etc.)"""
@@ -457,59 +530,60 @@ class MOPSSheetsConnector:
         return result
 
 class SheetsUploadManager:
-    """Manager for handling upload with fallback strategies"""
+    """Enhanced manager for handling upload with fallback strategies (v1.1.1)"""
     
-    def __init__(self, config: MOPSConfig):
+    def __init__(self, config):
         self.config = config
         self.connector = MOPSSheetsConnector(config)
     
     def upload_with_fallback(self, matrix_df: pd.DataFrame,
-                           coverage_stats: Optional[CoverageStats] = None,
-                           stock_changes: Optional[StockListChanges] = None) -> Dict[str, Any]:
-        """
-        Upload with automatic fallback strategies
-        
-        Returns:
-            Dict with upload results and paths
-        """
+                           coverage_stats=None,
+                           stock_changes=None) -> Dict[str, Any]:
+        """Enhanced upload with automatic fallback strategies"""
         result = {
             'sheets_success': False,
             'csv_exported': False,
             'sheets_url': None,
             'csv_path': None,
-            'error': None
+            'error': None,
+            'v1_1_1_features': {
+                'font_config': self.connector.font_config,
+                'multiple_types_enabled': getattr(self.config, 'show_all_report_types', True)
+            }
         }
         
         # Try Google Sheets upload if credentials are available
         if self.config.google_sheet_id and self.config.google_credentials:
-            logger.info("🚀 嘗試上傳到 Google Sheets...")
+            logger.info("🚀 嘗試 v1.1.1 增強上傳到 Google Sheets...")
             try:
                 sheets_success = self.connector.upload_matrix(matrix_df, coverage_stats, stock_changes)
                 result['sheets_success'] = sheets_success
                 
                 if sheets_success:
                     result['sheets_url'] = f"https://docs.google.com/spreadsheets/d/{self.config.google_sheet_id}"
-                    logger.info(f"✅ Google Sheets 上傳成功")
+                    logger.info(f"✅ v1.1.1 Google Sheets 上傳成功")
                     logger.info(f"🔗 Google Sheets URL: {result['sheets_url']}")
+                    logger.info(f"📋 工作表: {self.config.worksheet_name}")
+                    logger.info(f"🔤 字體: {self.connector.font_config['preset_equivalent']} ({self.connector.font_config['font_size']}pt)")
                 else:
-                    logger.warning("⚠️ Google Sheets 上傳失敗，將使用 CSV 備份")
+                    logger.warning("⚠️ v1.1.1 Google Sheets 上傳失敗，將使用 CSV 備份")
                 
             except Exception as e:
-                logger.warning(f"⚠️ Google Sheets 上傳失敗: {e}")
+                logger.warning(f"⚠️ v1.1.1 Google Sheets 上傳失敗: {e}")
                 result['error'] = str(e)
         else:
             logger.info("ℹ️ Google Sheets 憑證未設定，跳過上傳")
         
-        # Create CSV backup if enabled OR if Sheets failed
+        # Create enhanced CSV backup if enabled OR if Sheets failed
         if self.config.csv_backup or not result['sheets_success']:
-            logger.info("💾 建立 CSV 備份...")
+            logger.info("💾 建立 v1.1.1 增強 CSV 備份...")
             try:
                 csv_path = self.connector.export_csv_backup(matrix_df, coverage_stats)
                 result['csv_exported'] = True
                 result['csv_path'] = csv_path
-                logger.info(f"✅ CSV 備份建立成功: {csv_path}")
+                logger.info(f"✅ v1.1.1 增強 CSV 備份建立成功: {csv_path}")
             except Exception as e:
-                logger.error(f"❌ CSV 備份失敗: {e}")
+                logger.error(f"❌ v1.1.1 CSV 備份失敗: {e}")
                 if not result['error']:
                     result['error'] = f"CSV export failed: {e}"
         

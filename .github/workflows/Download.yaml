@@ -470,7 +470,7 @@ jobs:
         git add download_summary_*.txt || true
         git add status_report.md || true
         git add sheets_upload_status.txt || true
-        git add data/mops_matrix_*.csv || true  # Add CSV matrix files
+        git add data/reports/mops_matrix_*.csv || true  # Add CSV matrix files
         
         if git diff --staged --quiet; then
           echo "No MOPS download changes to commit"
