@@ -13,8 +13,104 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20250809_111134": {
+      "timestamp": "2025-08-09T11:11:34.691794",
+      "company_id": "2454",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2454_AI1.pdf",
+          "path": "downloads\\2454\\202501_2454_AI1.pdf",
+          "size": 1294164,
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250809_111156": {
+      "timestamp": "2025-08-09T11:11:56.512639",
+      "company_id": "2454",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2454_AI1.pdf",
+          "path": "downloads\\2454\\202401_2454_AI1.pdf",
+          "size": 1707604,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2454_AI1.pdf",
+          "path": "downloads\\2454\\202402_2454_AI1.pdf",
+          "size": 1001161,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2454_AI1.pdf",
+          "path": "downloads\\2454\\202403_2454_AI1.pdf",
+          "size": 1488883,
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202404_2454_AI1.pdf",
+          "error": "Could not find PDF URL for 202404_2454_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202404_2454_AI3.pdf",
+          "error": "Could not find PDF URL for 202404_2454_AI3.pdf",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250809_111230": {
+      "timestamp": "2025-08-09T11:12:30.121477",
+      "company_id": "2454",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2454_AI1.pdf",
+          "path": "downloads\\2454\\202401_2454_AI1.pdf",
+          "size": 1707604,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2454_AI1.pdf",
+          "path": "downloads\\2454\\202402_2454_AI1.pdf",
+          "size": 1001161,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2454_AI1.pdf",
+          "path": "downloads\\2454\\202403_2454_AI1.pdf",
+          "size": 1488883,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2454_AI1.pdf",
+          "path": "downloads\\2454\\202404_2454_AI1.pdf",
+          "size": 2762011,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2454_AI3.pdf",
+          "path": "downloads\\2454\\202404_2454_AI3.pdf",
+          "size": 3216548,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-06T03:59:08.090557",
+  "last_updated": "2025-08-09T11:12:30.121482",
   "company_id": "2454"
 }

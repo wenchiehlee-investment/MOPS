@@ -13,8 +13,88 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20250809_102844": {
+      "timestamp": "2025-08-09T10:28:44.040712",
+      "company_id": "8299",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_8299_AI1.pdf",
+          "path": "downloads\\8299\\202401_8299_AI1.pdf",
+          "size": 1222977,
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202402_8299_AI1.pdf",
+          "error": "Could not find PDF URL for 202402_8299_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202403_8299_AI1.pdf",
+          "error": "Could not find PDF URL for 202403_8299_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202404_8299_AI1.pdf",
+          "error": "Could not find PDF URL for 202404_8299_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202404_8299_AI3.pdf",
+          "error": "Could not find PDF URL for 202404_8299_AI3.pdf",
+          "skipped": false
+        }
+      ]
+    },
+    "2024_20250809_102919": {
+      "timestamp": "2025-08-09T10:29:19.045949",
+      "company_id": "8299",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_8299_AI1.pdf",
+          "path": "downloads\\8299\\202401_8299_AI1.pdf",
+          "size": 1222977,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_8299_AI1.pdf",
+          "path": "downloads\\8299\\202402_8299_AI1.pdf",
+          "size": 1227436,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_8299_AI1.pdf",
+          "path": "downloads\\8299\\202403_8299_AI1.pdf",
+          "size": 1240840,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_8299_AI1.pdf",
+          "path": "downloads\\8299\\202404_8299_AI1.pdf",
+          "size": 1770826,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_8299_AI3.pdf",
+          "path": "downloads\\8299\\202404_8299_AI3.pdf",
+          "size": 1692839,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-06T04:11:39.017282",
+  "last_updated": "2025-08-09T10:29:19.045962",
   "company_id": "8299"
 }
