@@ -41,8 +41,78 @@
           "skipped": true
         }
       ]
+    },
+    "2024_20250809_115112": {
+      "timestamp": "2025-08-09T11:51:12.871968",
+      "company_id": "2379",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_2379_AI1.pdf",
+          "path": "downloads\\2379\\202401_2379_AI1.pdf",
+          "size": 1754872,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_2379_AI1.pdf",
+          "path": "downloads\\2379\\202402_2379_AI1.pdf",
+          "size": 1833228,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_2379_AI1.pdf",
+          "path": "downloads\\2379\\202403_2379_AI1.pdf",
+          "size": 1935212,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2379_AI1.pdf",
+          "path": "downloads\\2379\\202404_2379_AI1.pdf",
+          "size": 6752501,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_2379_AI3.pdf",
+          "path": "downloads\\2379\\202404_2379_AI3.pdf",
+          "size": 6720728,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250809_115137": {
+      "timestamp": "2025-08-09T11:51:37.498862",
+      "company_id": "2379",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2379_AI1.pdf",
+          "path": "downloads\\2379\\202501_2379_AI1.pdf",
+          "size": 1682461,
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20250809_115151": {
+      "timestamp": "2025-08-09T11:51:51.686544",
+      "company_id": "2379",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_2379_AI1.pdf",
+          "path": "downloads\\2379\\202501_2379_AI1.pdf",
+          "size": 1682461,
+          "skipped": true
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-05T13:18:18.078344",
+  "last_updated": "2025-08-09T11:51:51.686550",
   "company_id": "2379"
 }
