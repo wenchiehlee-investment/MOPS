@@ -1,120 +1,124 @@
 MOPS Download Summary
 Year: 2025, Quarter: 2
-Download Date: Tue Aug 12 04:50:01 UTC 2025
+Download Date: Thu Aug 14 07:52:56 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
-  7712: 1 PDF files
+  6850: 1 PDF files
+  7712: 2 PDF files
   2357: 3 PDF files
-  6720: 1 PDF files
-  6425: 2 PDF files
-  4953: 1 PDF files
+  6720: 2 PDF files
+  6425: 4 PDF files
+  4953: 2 PDF files
   2382: 11 PDF files
   2354: 3 PDF files
   8454: 2 PDF files
-  6442: 2 PDF files
-  6526: 1 PDF files
-  7765: 1 PDF files
-  6510: 6 PDF files
+  6442: 4 PDF files
+  6526: 2 PDF files
+  7765: 4 PDF files
+  6510: 7 PDF files
   2383: 2 PDF files
   2449: 2 PDF files
-  2376: 2 PDF files
-  8299: 6 PDF files
-  2377: 2 PDF files
-  6695: 0 PDF files
+  2376: 3 PDF files
+  8299: 11 PDF files
+  2377: 4 PDF files
+  6695: 2 PDF files
   4938: 1 PDF files
   8016: 2 PDF files
-  6669: 1 PDF files
-  7734: 1 PDF files
+  6669: 2 PDF files
+  7734: 2 PDF files
   3558: 2 PDF files
-  6597: 1 PDF files
+  6699: 1 PDF files
+  6597: 2 PDF files
   2308: 3 PDF files
-  6214: 1 PDF files
-  3158: 1 PDF files
+  6214: 2 PDF files
+  3158: 2 PDF files
   3467: 1 PDF files
-  7547: 1 PDF files
-  6035: 1 PDF files
-  5904: 1 PDF files
-  6462: 2 PDF files
-  6757: 1 PDF files
+  7547: 2 PDF files
+  6035: 2 PDF files
+  5904: 2 PDF files
+  6462: 4 PDF files
+  6757: 2 PDF files
   2347: 3 PDF files
   2412: 12 PDF files
-  5274: 1 PDF files
-  2454: 6 PDF files
+  5274: 2 PDF files
+  2454: 7 PDF files
   2301: 3 PDF files
-  9917: 1 PDF files
+  9917: 2 PDF files
   7732: 1 PDF files
-  6902: 0 PDF files
-  4114: 1 PDF files
+  6902: 2 PDF files
+  4114: 2 PDF files
   2324: 3 PDF files
-  2356: 3 PDF files
+  2356: 7 PDF files
   3356: 2 PDF files
   8045: 2 PDF files
-  6997: 0 PDF files
-  3231: 6 PDF files
+  6997: 2 PDF files
+  3231: 7 PDF files
   2317: 3 PDF files
   2405: 1 PDF files
   2474: 2 PDF files
   6561: 2 PDF files
   2458: 2 PDF files
-  6925: 1 PDF files
+  6925: 2 PDF files
   3035: 2 PDF files
   7769: 2 PDF files
-  7728: 1 PDF files
+  7728: 2 PDF files
   1587: 3 PDF files
+  7708: 2 PDF files
   2330: 6 PDF files
-  6751: 2 PDF files
+  6751: 3 PDF files
   2379: 6 PDF files
-  3260: 1 PDF files
+  3260: 2 PDF files
   3045: 2 PDF files
   3026: 2 PDF files
-  6918: 0 PDF files
-  6763: 1 PDF files
-  8272: 5 PDF files
+  6918: 2 PDF files
+  6763: 5 PDF files
+  7737: 1 PDF files
+  8272: 6 PDF files
   4749: 1 PDF files
-  9921: 1 PDF files
-  5269: 1 PDF files
-  7736: 1 PDF files
+  9921: 2 PDF files
+  5269: 2 PDF files
+  7736: 2 PDF files
   7749: 1 PDF files
-  6962: 0 PDF files
-  7713: 1 PDF files
-  6613: 1 PDF files
-  7705: 1 PDF files
-  7704: 1 PDF files
-  6506: 3 PDF files
-  7805: 1 PDF files
-  3022: 1 PDF files
+  6962: 1 PDF files
+  7713: 2 PDF files
+  6613: 2 PDF files
+  7705: 2 PDF files
+  7704: 2 PDF files
+  6506: 4 PDF files
+  7805: 2 PDF files
+  3022: 2 PDF files
   3029: 2 PDF files
-  5536: 1 PDF files
+  5536: 2 PDF files
   5203: 2 PDF files
   2451: 2 PDF files
-  6125: 0 PDF files
+  6125: 1 PDF files
   2480: 12 PDF files
-  9914: 1 PDF files
-  6231: 0 PDF files
-  7709: 1 PDF files
+  9914: 2 PDF files
+  6231: 2 PDF files
+  7709: 2 PDF files
   2450: 2 PDF files
   2332: 3 PDF files
-  3048: 1 PDF files
+  3048: 2 PDF files
   3034: 12 PDF files
-  7703: 1 PDF files
-  2603: 1 PDF files
+  7703: 2 PDF files
+  2603: 2 PDF files
   3014: 2 PDF files
-  5434: 1 PDF files
+  5434: 2 PDF files
   7747: 2 PDF files
   2359: 2 PDF files
-  2646: 1 PDF files
-  3293: 1 PDF files
-  3150: 1 PDF files
-  2395: 2 PDF files
-  7722: 1 PDF files
-  6996: 1 PDF files
+  2646: 2 PDF files
+  3293: 2 PDF files
+  3150: 2 PDF files
+  2395: 4 PDF files
+  7722: 2 PDF files
+  6996: 8 PDF files
   2303: 3 PDF files
-  6123: 0 PDF files
-  6182: 0 PDF files
+  6123: 2 PDF files
+  6182: 2 PDF files
 
-Total: 228 PDF files from 108 companies
+Total: 328 PDF files from 112 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
