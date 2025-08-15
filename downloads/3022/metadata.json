@@ -27,8 +27,29 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20250815_111442": {
+      "timestamp": "2025-08-15T11:14:42.239783",
+      "company_id": "3022",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202404_3022_AI1.pdf",
+          "path": "downloads/3022/202404_3022_AI1.pdf",
+          "size": 1778107,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_3022_AI3.pdf",
+          "path": "downloads/3022/202404_3022_AI3.pdf",
+          "size": 1798467,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-14T07:34:13.417286",
+  "last_updated": "2025-08-15T11:14:42.239789",
   "company_id": "3022"
 }

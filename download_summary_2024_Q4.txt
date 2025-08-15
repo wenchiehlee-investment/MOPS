@@ -1,0 +1,126 @@
+MOPS Download Summary
+Year: 2024, Quarter: 4
+Download Date: Fri Aug 15 11:39:59 UTC 2025
+Skip Existing Files: true
+Upload to Sheets: true
+=================
+Companies processed:
+  6850: 3 PDF files
+  7712: 4 PDF files
+  2357: 4 PDF files
+  6720: 4 PDF files
+  6425: 4 PDF files
+  4953: 2 PDF files
+  2382: 12 PDF files
+  2354: 4 PDF files
+  8454: 4 PDF files
+  6442: 4 PDF files
+  6526: 4 PDF files
+  7765: 5 PDF files
+  6510: 7 PDF files
+  2383: 3 PDF files
+  2449: 4 PDF files
+  2376: 4 PDF files
+  8299: 12 PDF files
+  2377: 4 PDF files
+  6695: 4 PDF files
+  4938: 2 PDF files
+  8016: 4 PDF files
+  6669: 4 PDF files
+  7734: 4 PDF files
+  3558: 2 PDF files
+  6699: 3 PDF files
+  6597: 3 PDF files
+  2308: 4 PDF files
+  6214: 4 PDF files
+  3158: 4 PDF files
+  3467: 3 PDF files
+  7547: 2 PDF files
+  6035: 2 PDF files
+  5904: 2 PDF files
+  6462: 4 PDF files
+  6757: 3 PDF files
+  2347: 4 PDF files
+  2412: 12 PDF files
+  5274: 2 PDF files
+  2454: 7 PDF files
+  2301: 4 PDF files
+  9917: 2 PDF files
+  7732: 4 PDF files
+  6902: 4 PDF files
+  4114: 2 PDF files
+  2324: 4 PDF files
+  2356: 7 PDF files
+  3356: 4 PDF files
+  8045: 4 PDF files
+  6997: 2 PDF files
+  3231: 7 PDF files
+  2317: 4 PDF files
+  2405: 2 PDF files
+  2474: 4 PDF files
+  6561: 4 PDF files
+  2458: 4 PDF files
+  6925: 2 PDF files
+  3035: 4 PDF files
+  7769: 4 PDF files
+  7728: 4 PDF files
+  1587: 4 PDF files
+  2345: 3 PDF files
+  7708: 2 PDF files
+  2330: 7 PDF files
+  6751: 3 PDF files
+  2379: 7 PDF files
+  3260: 4 PDF files
+  3045: 4 PDF files
+  3026: 4 PDF files
+  6918: 2 PDF files
+  6763: 7 PDF files
+  7737: 2 PDF files
+  8272: 6 PDF files
+  4749: 2 PDF files
+  9921: 2 PDF files
+  5269: 2 PDF files
+  7736: 4 PDF files
+  7749: 2 PDF files
+  6962: 1 PDF files
+  7713: 4 PDF files
+  6613: 4 PDF files
+  7705: 2 PDF files
+  7704: 2 PDF files
+  6506: 4 PDF files
+  7805: 4 PDF files
+  3022: 4 PDF files
+  3029: 4 PDF files
+  5536: 2 PDF files
+  5203: 2 PDF files
+  2451: 4 PDF files
+  6125: 4 PDF files
+  2480: 12 PDF files
+  9914: 4 PDF files
+  6231: 4 PDF files
+  7709: 3 PDF files
+  2450: 4 PDF files
+  2332: 4 PDF files
+  3048: 4 PDF files
+  3034: 12 PDF files
+  7703: 2 PDF files
+  2603: 4 PDF files
+  3014: 4 PDF files
+  5434: 2 PDF files
+  7747: 3 PDF files
+  2359: 3 PDF files
+  2646: 3 PDF files
+  3293: 4 PDF files
+  3150: 3 PDF files
+  2395: 4 PDF files
+  7722: 4 PDF files
+  6996: 8 PDF files
+  2303: 4 PDF files
+  6123: 2 PDF files
+  6182: 4 PDF files
+
+Total: 452 PDF files from 113 companies
+
+Google Sheets Upload:
+  Status: Attempted (check logs for results)
+  CSV Backup: No files found

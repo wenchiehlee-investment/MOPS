@@ -41,8 +41,27 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20250815_112014": {
+      "timestamp": "2025-08-15T11:20:14.427782",
+      "company_id": "4938",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202404_4938_AI1.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202404_4938_AI3.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-15T09:11:20.120276",
+  "last_updated": "2025-08-15T11:20:14.427788",
   "company_id": "4938"
 }
