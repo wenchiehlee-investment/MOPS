@@ -1,26 +1,26 @@
 MOPS Download Summary
 Year: 2025, Quarter: 2
-Download Date: Fri Aug 15 09:24:37 UTC 2025
+Download Date: Fri Aug 15 09:36:01 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
   6850: 1 PDF files
   7712: 2 PDF files
-  2357: 3 PDF files
+  2357: 4 PDF files
   6720: 2 PDF files
   6425: 4 PDF files
   4953: 2 PDF files
-  2382: 11 PDF files
-  2354: 3 PDF files
+  2382: 12 PDF files
+  2354: 4 PDF files
   8454: 2 PDF files
   6442: 4 PDF files
   6526: 2 PDF files
   7765: 5 PDF files
   6510: 7 PDF files
-  2383: 2 PDF files
+  2383: 3 PDF files
   2449: 2 PDF files
-  2376: 3 PDF files
+  2376: 4 PDF files
   8299: 12 PDF files
   2377: 4 PDF files
   6695: 2 PDF files
@@ -31,7 +31,7 @@ Companies processed:
   3558: 2 PDF files
   6699: 1 PDF files
   6597: 2 PDF files
-  2308: 3 PDF files
+  2308: 4 PDF files
   6214: 2 PDF files
   3158: 2 PDF files
   3467: 2 PDF files
@@ -40,23 +40,23 @@ Companies processed:
   5904: 2 PDF files
   6462: 4 PDF files
   6757: 2 PDF files
-  2347: 3 PDF files
+  2347: 4 PDF files
   2412: 12 PDF files
   5274: 2 PDF files
   2454: 7 PDF files
-  2301: 3 PDF files
+  2301: 4 PDF files
   9917: 2 PDF files
   7732: 2 PDF files
   6902: 2 PDF files
   4114: 2 PDF files
-  2324: 3 PDF files
+  2324: 4 PDF files
   2356: 7 PDF files
   3356: 2 PDF files
   8045: 2 PDF files
   6997: 2 PDF files
   3231: 7 PDF files
-  2317: 3 PDF files
-  2405: 1 PDF files
+  2317: 4 PDF files
+  2405: 2 PDF files
   2474: 2 PDF files
   6561: 2 PDF files
   2458: 2 PDF files
@@ -64,11 +64,12 @@ Companies processed:
   3035: 2 PDF files
   7769: 2 PDF files
   7728: 2 PDF files
-  1587: 3 PDF files
+  1587: 4 PDF files
+  2345: 1 PDF files
   7708: 2 PDF files
-  2330: 6 PDF files
+  2330: 7 PDF files
   6751: 3 PDF files
-  2379: 6 PDF files
+  2379: 7 PDF files
   3260: 2 PDF files
   3045: 2 PDF files
   3026: 2 PDF files
@@ -99,7 +100,7 @@ Companies processed:
   6231: 2 PDF files
   7709: 2 PDF files
   2450: 2 PDF files
-  2332: 3 PDF files
+  2332: 4 PDF files
   3048: 2 PDF files
   3034: 12 PDF files
   7703: 2 PDF files
@@ -107,18 +108,18 @@ Companies processed:
   3014: 2 PDF files
   5434: 2 PDF files
   7747: 2 PDF files
-  2359: 2 PDF files
+  2359: 3 PDF files
   2646: 2 PDF files
   3293: 2 PDF files
   3150: 2 PDF files
   2395: 4 PDF files
   7722: 2 PDF files
   6996: 8 PDF files
-  2303: 3 PDF files
+  2303: 4 PDF files
   6123: 2 PDF files
   6182: 2 PDF files
 
-Total: 335 PDF files from 112 companies
+Total: 353 PDF files from 113 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
