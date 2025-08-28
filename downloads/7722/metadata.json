@@ -48,8 +48,91 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20250828_150442": {
+      "timestamp": "2025-08-28T15:04:42.137847",
+      "company_id": "7722",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202401_7722_AI1.pdf",
+          "path": "downloads\\7722\\202401_7722_AI1.pdf",
+          "size": 1403754,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202402_7722_AI1.pdf",
+          "path": "downloads\\7722\\202402_7722_AI1.pdf",
+          "size": 1467792,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202403_7722_AI1.pdf",
+          "path": "downloads\\7722\\202403_7722_AI1.pdf",
+          "size": 1463382,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_7722_AI1.pdf",
+          "path": "downloads\\7722\\202404_7722_AI1.pdf",
+          "size": 1466256,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202404_7722_AI3.pdf",
+          "path": "downloads\\7722\\202404_7722_AI3.pdf",
+          "size": 1933838,
+          "skipped": false
+        }
+      ]
+    },
+    "2023_20250828_150456": {
+      "timestamp": "2025-08-28T15:04:56.738247",
+      "company_id": "7722",
+      "year": 2023,
+      "results": [
+        {
+          "success": false,
+          "filename": "202302_7722_AI2.pdf",
+          "error": "Could not find PDF URL for 202302_7722_AI2.pdf",
+          "skipped": false
+        }
+      ]
+    },
+    "2023_20250828_150530": {
+      "timestamp": "2025-08-28T15:05:30.308937",
+      "company_id": "7722",
+      "year": 2023,
+      "results": [
+        {
+          "success": true,
+          "filename": "202302_7722_AI2.pdf",
+          "path": "downloads\\7722\\202302_7722_AI2.pdf",
+          "size": 1880205,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202304_7722_AI1.pdf",
+          "path": "downloads\\7722\\202304_7722_AI1.pdf",
+          "size": 1513437,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202304_7722_AI3.pdf",
+          "path": "downloads\\7722\\202304_7722_AI3.pdf",
+          "size": 1967008,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-15T11:33:42.855955",
+  "last_updated": "2025-08-28T15:05:30.308949",
   "company_id": "7722"
 }
