@@ -12,15 +12,17 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 - **Smart Report Detection**: Uses flexible targeting to find the best available reports (individual reports preferred, consolidated as fallback)
 - **Organized File Management**: Downloads are systematically organized by company with consistent naming
 - **Handles Real-World Complexity**: Different companies have different report types available - this tool adapts automatically
+- **GitHub Actions Integration**: Automated quarterly downloads aligned with MOPS filing deadlines
 
 ## ✨ Key Features
 
-- 🔍 **Flexible Targeting System**: Prioritizes individual financial reports but falls back to consolidated reports when needed
+- 📥 **Flexible Targeting System**: Prioritizes individual financial reports but falls back to consolidated reports when needed
 - 📁 **Clean Organization**: Files saved in `downloads/{company_id}/` with standardized naming
 - 🛡️ **Robust Error Handling**: Handles SSL issues, encoding problems, and missing reports gracefully  
 - 📊 **Comprehensive Analysis**: Shows exactly what reports were found and why they were selected/rejected
 - 🔄 **Two Operating Modes**: Flexible mode (default) for maximum success, strict mode for individual reports only
 - 📝 **Detailed Logging**: Complete audit trail of all operations and decisions
+- 🤖 **Automated Scheduling**: GitHub Actions workflow runs on MOPS filing deadlines with 5-day retry windows
 
 ## 🚀 Quick Start
 
@@ -62,7 +64,7 @@ python scripts/mops_downloader.py --company_id 2330 --year 2024 --strict_mode
 python Get觀察名單.py
 
 # Then download reports for all companies in the list
-python DownloadAll.py
+python DownloadAll.py --year 2024 --quarter 1
 ```
 
 ## 📋 Input Parameters
@@ -149,6 +151,120 @@ python scripts/mops_downloader.py --company_id 2382 --year 2023
 ❌ Missing: Q1, Q2, Q3 (only consolidated reports available, individual reports found for Q4 only)
 ```
 
+## 🤖 Automated Downloads
+
+### GitHub Actions Integration
+
+The system includes automated quarterly downloads that run on a schedule aligned with Taiwan's MOPS filing deadlines.
+
+#### MOPS Filing Schedule
+
+Taiwan's Market Observation Post System (MOPS) requires companies to file quarterly reports by specific deadlines. Our automated system downloads reports immediately after these deadlines:
+
+| Quarter | Period | Filing Deadline | Auto-Download Window |
+|---------|--------|----------------|----------------------|
+| **Q1** | Jan-Mar | **May 15** | May 15-19 (5 days) |
+| **Q2** | Apr-Jun | **Aug 14** | Aug 14-18 (5 days) |
+| **Q3** | Jul-Sep | **Nov 14** | Nov 14-18 (5 days) |
+| **Q4** | Oct-Dec | **March 31** (next year) | March 31 - April 4 (5 days) |
+
+#### How It Works
+
+1. **Automatic Execution**: GitHub Actions runs on filing deadline dates at 02:00 UTC
+2. **5-Day Retry Window**: Attempts download for 5 consecutive days to catch late filings
+3. **Smart Skip Logic**: Only downloads missing files (won't re-download existing PDFs)
+4. **Matrix Upload**: Automatically uploads status matrix to Google Sheets (if configured)
+5. **Auto-Commit**: Commits all downloaded PDFs and metadata to the repository
+6. **Comprehensive Logging**: Creates detailed logs and status reports for each run
+
+#### Why Downloads Run AFTER Filing Deadlines
+
+Reports are published **after** quarters end, so downloads are scheduled accordingly:
+
+**Example: Q1 2025 Timeline**
+```
+├── Quarter Period: January 1 - March 31, 2025
+├── Quarter Ends: March 31, 2025
+├── Filing Deadline: May 15, 2025 ← Companies must file by this date
+└── Auto-Download: May 15-19, 2025 ✅ Reports are now available!
+
+Why the delay?
+- Q1 doesn't end until March 31
+- Companies need time to prepare financial statements
+- Legal filing deadline is May 15 (45 days after quarter end)
+- Most companies file near the deadline
+- 5-day window ensures we catch all filings
+```
+
+**Example: Q4 2025 Timeline**
+```
+├── Quarter Period: October 1 - December 31, 2025
+├── Quarter Ends: December 31, 2025
+├── Filing Deadline: March 31, 2026 ← Next year!
+└── Auto-Download: March 31 - April 4, 2026 ✅ Reports are now available!
+
+Why March 2026?
+- Q4 2025 is the annual report (full year)
+- Companies get until March 31 of NEXT year to file
+- This is 90 days after year-end for comprehensive audit
+- Auto-download runs in March/April 2026 for Q4 2025 data
+```
+
+#### Manual Trigger
+
+You can manually trigger downloads via GitHub Actions without waiting for the scheduled runs:
+
+**Steps:**
+1. Go to your repository on GitHub
+2. Click the **"Actions"** tab
+3. Select **"Download MOPS PDFs"** workflow from the left sidebar
+4. Click **"Run workflow"** button (top right)
+5. Configure parameters:
+   - **Year**: Target year (e.g., 2025, 2024)
+   - **Quarter**: Specific quarter (1, 2, 3, or 4)
+   - **Delay**: Seconds between downloads (default: 10.0)
+   - **Start from**: Optional company ID to start from (default: 2412)
+   - **Skip existing files**: ✅ Recommended (only download missing files)
+   - **Upload to sheets**: ✅ Enable for Google Sheets matrix view
+6. Click **"Run workflow"** to start
+
+**Use Cases for Manual Trigger:**
+- Download historical data for past years
+- Re-download specific quarters if needed
+- Test the workflow with custom parameters
+- Download immediately without waiting for scheduled run
+
+#### Monitoring Downloads
+
+**Check Download Status:**
+
+- **Actions Tab**: View real-time workflow execution logs
+  - See which companies are being processed
+  - Track download progress and errors
+  - View retry attempts (1/5, 2/5, etc.)
+
+- **Commits**: Look for automated commit messages
+  - `📥 Scheduled MOPS Download (Retry 1/5) - 2025 Q1`
+  - `📥 Scheduled MOPS Download (Retry 2/5) - 2025 Q1`
+  - Shows number of files downloaded
+
+- **Google Sheets**: Matrix view (if configured)
+  - Worksheet: "MOPS下載狀態"
+  - Shows comprehensive download status for all companies
+  - Updated automatically after each run
+
+- **Repository Files**: Direct file inspection
+  - Check `downloads/` folder for new PDFs
+  - Review `logs/` for detailed execution logs
+  - Check `data/reports/` for CSV matrix backups
+
+**Example Commit Messages:**
+```
+📥 Scheduled MOPS Download (Retry 1/5) + 📊 Matrix Upload - 2025 Q1 (95 files from 110 companies)
+📥 Scheduled MOPS Download (Retry 2/5) + 📊 Matrix Upload - 2025 Q1 (8 files from 12 companies)
+📥 Scheduled MOPS Download (Retry 3/5) + 📊 Matrix Upload - 2025 Q1 (2 files from 3 companies)
+```
+
 ## 🔧 Python API Usage
 
 ```python
@@ -226,6 +342,17 @@ DOWNLOAD_CONFIG = {
 }
 ```
 
+### GitHub Actions Setup
+
+To enable automated downloads, configure these repository secrets:
+
+1. Go to **Settings** → **Secrets and variables** → **Actions**
+2. Add the following secrets:
+   - `GOOGLE_SHEETS_CREDENTIALS`: Your Google service account JSON (optional)
+   - `GOOGLE_SHEET_ID`: Your Google Sheets spreadsheet ID (optional)
+
+**Note**: Google Sheets integration is optional. The system will generate CSV backups even without Sheets credentials.
+
 ## 🔍 Troubleshooting
 
 ### Common Issues
@@ -251,6 +378,14 @@ This is normal - not all companies have all report types for all quarters
 Check the detailed log output for explanation
 ```
 
+**GitHub Actions Not Running**:
+```
+Check:
+1. Workflow file is in .github/workflows/Download.yaml
+2. Actions are enabled in repository settings
+3. Scheduled time hasn't arrived yet (check cron schedule)
+```
+
 ### Debug Mode
 ```bash
 python scripts/mops_downloader.py --company_id 2330 --year 2024 --log_level DEBUG
@@ -268,6 +403,8 @@ mops-downloader/
 │   └── web/                  # Web navigation
 ├── scripts/
 │   └── mops_downloader.py    # Main CLI script
+├── .github/workflows/
+│   └── Download.yaml         # GitHub Actions automation
 ├── DownloadAll.py            # Batch download all companies
 ├── Get觀察名單.py             # Update stock list
 ├── StockID_TWSE_TPEX.csv    # Taiwan stock company list
@@ -282,6 +419,7 @@ mops-downloader/
 - **Dependencies**: See `requirements.txt`
 - **Network**: Internet connection for MOPS access
 - **Disk Space**: Varies by usage (PDFs are typically 1-5 MB each)
+- **GitHub Actions**: Optional, for automated downloads
 
 ## 🤝 Contributing
 
@@ -298,12 +436,13 @@ mops-downloader/
 - **Documentation**: See `instructions.md` for detailed technical specifications
 - **Issues**: Report bugs or request features via GitHub issues
 - **Logs**: Check `logs/` directory for detailed error information
+- **Actions**: Monitor GitHub Actions tab for automated download status
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🔄 Version History
+## 📝 Version History
 
 ### v2.0.0 (Current)
 - ✅ Flexible targeting system with intelligent fallbacks
@@ -311,6 +450,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - ✅ Comprehensive report analysis and categorization
 - ✅ Enhanced error handling and logging
 - ✅ Support for modern MOPS file patterns
+- ✅ GitHub Actions automation with MOPS deadline alignment
+- ✅ 5-day retry window for maximum success rate
+- ✅ Google Sheets matrix integration
 
 ### v1.0.0
 - Basic individual report downloading
@@ -319,4 +461,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Note**: This tool is designed to work with Taiwan's MOPS system and handles the complexities of real-world financial report availability. The flexible targeting system ensures maximum download success while providing clear explanations for any missing reports.
+**Note**: This tool is designed to work with Taiwan's MOPS system and handles the complexities of real-world financial report availability. The flexible targeting system ensures maximum download success while providing clear explanations for any missing reports. Automated downloads run on Taiwan's official filing deadlines to ensure reports are available when downloaded.

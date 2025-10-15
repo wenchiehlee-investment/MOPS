@@ -20,10 +20,11 @@ The MOPS Downloader System is a Python-based tool designed to automatically down
 ├── README.md
 ├── requirements.txt
 ├── StockID_TWSE_TPEX.csv
-├── .github/workflow
-│           ├── Download.yaml  <--- Github Actions for download PDFs
+├── .github/workflows
+│   └── Download.yaml  <--- Github Actions for automated downloads
 ├── downloads/
 ├── logs/
+├── data/reports/      <--- CSV matrix backups
 ├── mops_downloader/
 │   ├── cli.py
 │   ├── config.py
@@ -54,6 +55,97 @@ The MOPS Downloader System is a Python-based tool designed to automatically down
     └── mops_downloader.py
 ```
 
+## 🤖 Automated Downloads via GitHub Actions
+
+The system includes automated quarterly downloads via GitHub Actions that align with Taiwan's MOPS filing deadlines.
+
+### MOPS Filing Deadlines
+
+Taiwan's MOPS requires companies to file quarterly reports by these deadlines:
+
+| Quarter | Period | Filing Deadline | Auto-Download Window |
+|---------|--------|----------------|---------------------|
+| **Q1** | Jan-Mar | **May 15** | May 15-19 (5-day retry) |
+| **Q2** | Apr-Jun | **Aug 14** | Aug 14-18 (5-day retry) |
+| **Q3** | Jul-Sep | **Nov 14** | Nov 14-18 (5-day retry) |
+| **Q4** | Oct-Dec | **March 31** (next year) | March 31 - April 4 (5-day retry) |
+
+### GitHub Actions Workflow
+
+**Location**: `.github/workflows/Download.yaml`
+
+**Scheduled Triggers**:
+- Runs automatically on filing deadline dates at 02:00 UTC
+- 5-day retry window for each quarter
+- Downloads previous quarter's reports (reports published AFTER quarter ends)
+- Uses `--only-missing-files` flag to skip existing downloads
+
+**Example Schedule**:
+```yaml
+# Q1 reports (Jan-Mar) - Available by May 15
+- cron: '0 2 15 5 *'      # May 15 - First attempt
+- cron: '0 2 16 5 *'      # May 16 - Retry 1
+- cron: '0 2 17 5 *'      # May 17 - Retry 2
+- cron: '0 2 18 5 *'      # May 18 - Retry 3
+- cron: '0 2 19 5 *'      # May 19 - Final retry
+
+# Q4 reports (Oct-Dec previous year) - Available by March 31
+- cron: '0 2 31 3 *'      # March 31 - First attempt
+- cron: '0 2 1 4 *'       # April 1 - Retry 1
+- cron: '0 2 2 4 *'       # April 2 - Retry 2
+- cron: '0 2 3 4 *'       # April 3 - Retry 3
+- cron: '0 2 4 4 *'       # April 4 - Final retry
+```
+
+**Manual Trigger**:
+The workflow can also be triggered manually via GitHub Actions UI with custom parameters:
+- `year`: Target year (e.g., 2025)
+- `quarter`: Target quarter (1, 2, 3, or 4)
+- `delay`: Delay between downloads (seconds)
+- `start_from`: Start from specific company ID
+- `only_missing_files`: Skip existing files (default: true)
+- `upload_to_sheets`: Upload matrix to Google Sheets (default: true)
+
+**Automated Features**:
+- ✅ Downloads all companies from StockID_TWSE_TPEX.csv
+- ✅ Automatically commits downloaded PDFs to repository
+- ✅ Uploads matrix view to Google Sheets (if configured)
+- ✅ Creates CSV backup of matrix data in `data/reports/`
+- ✅ Generates comprehensive status reports
+- ✅ 5-day retry window for maximum success rate
+
+### Quarter Download Timing
+
+**Important**: The system downloads reports AFTER the filing deadline, not during the quarter:
+
+```
+Q1 2025 (Jan-Mar 2025)
+├── Quarter Period: January 1 - March 31, 2025
+├── Quarter Ends: March 31, 2025
+├── Filing Deadline: May 15, 2025
+└── Auto-Download: May 15-19, 2025 ✅ (reports are available)
+
+Q4 2025 (Oct-Dec 2025)
+├── Quarter Period: October 1 - December 31, 2025
+├── Quarter Ends: December 31, 2025
+├── Filing Deadline: March 31, 2026 (next year!)
+└── Auto-Download: March 31 - April 4, 2026 ✅ (reports are available)
+```
+
+**Why This Timing?**
+1. Companies need time after quarter ends to prepare financial statements
+2. Taiwan law gives companies 45 days (Q1-Q3) or 90 days (Q4) to file
+3. Most companies file near the deadline
+4. The 5-day retry window catches late filers
+5. This ensures reports are actually available when download runs
+
+**Retry Logic**:
+Each quarter has a 5-day retry window:
+- **Day 1**: First attempt downloads all available reports
+- **Days 2-5**: Only download files that failed or weren't available on previous days
+- Smart skip logic prevents re-downloading existing files
+- Commit messages show retry attempt: "Retry 1/5", "Retry 2/5", etc.
+
 ## 🎯 Goals and Objectives
 
 ### Primary Goal
@@ -68,6 +160,7 @@ Download MOPS quarterly financial reports based on user-specified criteria and o
 - Error handling and retry mechanisms
 - Progress tracking and comprehensive logging
 - **Real-time report availability analysis**
+- **GitHub Actions automation** aligned with MOPS filing deadlines
 
 ## 📥 User Requirements
 
@@ -133,7 +226,7 @@ The system now uses **flexible targeting** to handle real-world variations in MO
 6. Save files with organized structure and consistent naming
 7. **Provide comprehensive download summary** with missing quarter analysis
 
-## 🏗️ System Architecture
+## 🗏️ System Architecture
 
 ### 5-Stage Enhanced Pipeline Architecture
 
@@ -197,8 +290,10 @@ downloads/
 │   ├── 202403_{company_id}_AXX.pdf  # Q3 (original MOPS filename)
 │   ├── 202404_{company_id}_AXX.pdf  # Q4 (original MOPS filename)
 │   └── metadata.json                # Enhanced metadata with analysis
-└── logs/
-    └── mops_downloader_{timestamp}.log
+├── logs/
+│   └── mops_downloader_{timestamp}.log
+└── data/reports/
+    └── mops_matrix_{timestamp}.csv  # Matrix backup from sheets uploader
 
 Example for company 2330 (current AI1 pattern):
 downloads/
@@ -471,16 +566,16 @@ MAX_CONCURRENT_DOWNLOADS = 1  # Sequential for reliability
 ### Command Line Interface - Enhanced
 ```bash
 # Download with flexible targeting (default mode)
-python mops_downloader.py --company_id 2330 --year 2024
+python scripts/mops_downloader.py --company_id 2330 --year 2024
 
 # Download with strict targeting (individual reports only)
-python mops_downloader.py --company_id 2330 --year 2024 --strict_mode
+python scripts/mops_downloader.py --company_id 2330 --year 2024 --strict_mode
 
 # Download specific quarter with detailed logging
-python mops_downloader.py --company_id 8272 --year 2023 --quarter 2 --log_level DEBUG
+python scripts/mops_downloader.py --company_id 8272 --year 2023 --quarter 2 --log_level DEBUG
 
 # Custom output directory
-python mops_downloader.py --company_id 2382 --year 2023 --output ./financial_reports
+python scripts/mops_downloader.py --company_id 2382 --year 2023 --output ./financial_reports
 ```
 
 ### Enhanced Python API Interface
@@ -568,6 +663,7 @@ Result: 0/4 reports downloaded (strict mode rejected available consolidated repo
 4. **Real-world compatibility** with various MOPS response formats
 5. **Comprehensive logging** and monitoring capabilities
 6. **User-friendly results** with detailed success/failure reporting
+7. **GitHub Actions integration** with MOPS deadline alignment
 
 ### Performance Optimizations - Enhanced
 - **Sequential downloads** for reliability (avoiding concurrent complications)
@@ -595,12 +691,12 @@ Result: 0/4 reports downloaded (strict mode rejected available consolidated repo
 ---
 
 *Document Version: 2.0.0*  
-*Last Updated: 2025-08-05*  
-*Next Review: 2025-11-05*
+*Last Updated: 2025-10-15*  
+*Next Review: 2026-01-15*
 
 ## 🔄 Version History
 
-### v2.0.0 (2025-08-05)
+### v2.0.0 (2025-10-15)
 - **Major Enhancement**: Added flexible targeting system
 - **New Feature**: Two-step download process with PDF URL extraction
 - **Enhancement**: Comprehensive report analysis and categorization
@@ -608,6 +704,9 @@ Result: 0/4 reports downloaded (strict mode rejected available consolidated repo
 - **Addition**: Support for modern MOPS file patterns (AI1.pdf)
 - **Improvement**: Enhanced error handling and logging
 - **Feature**: Strict vs flexible mode operation
+- **Integration**: GitHub Actions automation with MOPS filing deadline alignment
+- **Automation**: 5-day retry window for each quarter
+- **Enhancement**: Google Sheets matrix upload integration
 
 ### v1.0.0 (2025-08-04)
 - Initial specification with basic individual report targeting
