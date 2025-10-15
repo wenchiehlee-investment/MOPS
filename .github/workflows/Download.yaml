@@ -713,45 +713,43 @@ jobs:
           MATRIX_RESULTS="Matrix upload disabled by user"
         fi
         
-        # Create release notes as a variable (avoiding problematic heredoc)
-        RELEASE_NOTES="## Downloaded MOPS PDFs for ${{ inputs.year }} Q${{ inputs.quarter }}
-
-**Download Parameters:**
-- Year: ${{ inputs.year }}
-- Quarter: ${{ inputs.quarter }}
-- Delay: ${{ inputs.delay }}s
-- Start from: ${{ inputs.start_from || 'Beginning' }}
-- Skip existing files: ${{ inputs.only_missing_files }}
-- Upload to sheets: ${{ inputs.upload_to_sheets }}
-
-**Results:**
-- ${RESULTS_TEXT}
-- ${MATRIX_RESULTS}
-
-**Files:**
-- Check downloads/ directory for PDF files organized by company ID
-- Log files available in logs/ directory
-- Matrix CSV files available in data/reports/ directory
-
-**File Structure:**
-\`\`\`
-downloads/{company_id}/YYYYQQ_{company_id}_AXX.pdf
-data/reports/mops_matrix_{timestamp}.csv
-logs/mops_downloader_{timestamp}.log
-\`\`\`
-
-**MOPS Filing Deadlines:**
-- Q1 (Jan-Mar): May 15
-- Q2 (Apr-Jun): Aug 14
-- Q3 (Jul-Sep): Nov 14
-- Q4 (Oct-Dec): March 31 (next year)"
+        # Create release notes file instead of variable
+        cat > release_notes.md << 'EOF'
+        ## Downloaded MOPS PDFs for ${{ inputs.year }} Q${{ inputs.quarter }}
+        
+        **Download Parameters:**
+        - Year: ${{ inputs.year }}
+        - Quarter: ${{ inputs.quarter }}
+        - Delay: ${{ inputs.delay }}s
+        - Start from: ${{ inputs.start_from || 'Beginning' }}
+        - Skip existing files: ${{ inputs.only_missing_files }}
+        - Upload to sheets: ${{ inputs.upload_to_sheets }}
+        
+        EOF
+        
+        # Append dynamic results
+        echo "**Results:**" >> release_notes.md
+        echo "- ${RESULTS_TEXT}" >> release_notes.md
+        echo "- ${MATRIX_RESULTS}" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "**Files:**" >> release_notes.md
+        echo "- Check downloads/ directory for PDF files organized by company ID" >> release_notes.md
+        echo "- Log files available in logs/ directory" >> release_notes.md
+        echo "- Matrix CSV files available in data/reports/ directory" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "**File Structure:**" >> release_notes.md
+        echo '```' >> release_notes.md
+        echo "downloads/{company_id}/YYYYQQ_{company_id}_AXX.pdf" >> release_notes.md
+        echo "data/reports/mops_matrix_{timestamp}.csv" >> release_notes.md
+        echo "logs/mops_downloader_{timestamp}.log" >> release_notes.md
+        echo '```' >> release_notes.md
         
         # Try to create release using GitHub CLI
         if command -v gh &> /dev/null; then
           echo "Creating release using GitHub CLI..."
           gh release create "$RELEASE_TAG" \
             --title "$RELEASE_TITLE" \
-            --notes "$RELEASE_NOTES" \
+            --notes-file release_notes.md \
             --draft=false \
             --prerelease=false || echo "Failed to create release with gh CLI"
         else
@@ -759,7 +757,7 @@ logs/mops_downloader_{timestamp}.log
           git tag "$RELEASE_TAG"
           git push origin "$RELEASE_TAG" || echo "Failed to push tag"
         fi
-    
+  
     - name: Upload PDF artifacts
       if: always()
       uses: actions/upload-artifact@v4
