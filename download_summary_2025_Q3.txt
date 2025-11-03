@@ -1,6 +1,6 @@
 MOPS Download Summary
 Year: 2025, Quarter: 3
-Download Date: Wed Oct 15 07:35:43 UTC 2025
+Download Date: Mon Nov  3 10:38:55 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -8,7 +8,7 @@ Companies processed:
   7708: 2 PDF files
   2382: 12 PDF files
   3022: 4 PDF files
-  3035: 4 PDF files
+  3035: 5 PDF files
   2646: 3 PDF files
   2345: 3 PDF files
   7805: 4 PDF files
@@ -21,7 +21,7 @@ Companies processed:
   6526: 4 PDF files
   6125: 4 PDF files
   3034: 12 PDF files
-  3029: 4 PDF files
+  3029: 5 PDF files
   5904: 2 PDF files
   7712: 4 PDF files
   8299: 12 PDF files
@@ -36,7 +36,7 @@ Companies processed:
   6231: 4 PDF files
   8272: 6 PDF files
   7547: 2 PDF files
-  2379: 7 PDF files
+  2379: 12 PDF files
   3026: 4 PDF files
   2359: 3 PDF files
   6669: 4 PDF files
@@ -66,13 +66,13 @@ Companies processed:
   6597: 3 PDF files
   4953: 2 PDF files
   2383: 3 PDF files
-  2317: 4 PDF files
+  2317: 9 PDF files
   8016: 4 PDF files
   7728: 4 PDF files
   3014: 4 PDF files
   2354: 4 PDF files
   7705: 2 PDF files
-  2480: 12 PDF files
+  2480: 13 PDF files
   2347: 4 PDF files
   6506: 4 PDF files
   6997: 2 PDF files
@@ -89,13 +89,13 @@ Companies processed:
   3231: 7 PDF files
   6699: 3 PDF files
   3045: 4 PDF files
-  6561: 4 PDF files
+  6561: 5 PDF files
   3260: 4 PDF files
-  2454: 7 PDF files
+  2454: 12 PDF files
   7722: 10 PDF files
   2377: 4 PDF files
   7736: 4 PDF files
-  7765: 5 PDF files
+  7765: 6 PDF files
   7713: 4 PDF files
   6918: 2 PDF files
   6510: 7 PDF files
@@ -111,16 +111,16 @@ Companies processed:
   9914: 4 PDF files
   8454: 4 PDF files
   9921: 2 PDF files
-  5203: 2 PDF files
+  5203: 3 PDF files
   6720: 4 PDF files
-  2308: 4 PDF files
+  2308: 9 PDF files
   7737: 2 PDF files
-  5434: 2 PDF files
+  5434: 3 PDF files
   6751: 3 PDF files
   3158: 4 PDF files
 
-Total: 460 PDF files from 113 companies
+Total: 487 PDF files from 113 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 10 files created
+  CSV Backup: 11 files created
