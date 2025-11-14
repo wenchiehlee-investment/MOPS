@@ -61,8 +61,21 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20251114_031744": {
+      "timestamp": "2025-11-14T03:17:44.714531",
+      "company_id": "6182",
+      "year": 2025,
+      "results": [
+        {
+          "success": false,
+          "filename": "202503_6182_AI1.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-15T11:22:58.027701",
+  "last_updated": "2025-11-14T03:17:44.714538",
   "company_id": "6182"
 }

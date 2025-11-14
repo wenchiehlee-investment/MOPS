@@ -61,8 +61,21 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20251114_032039": {
+      "timestamp": "2025-11-14T03:20:39.041583",
+      "company_id": "6902",
+      "year": 2025,
+      "results": [
+        {
+          "success": false,
+          "filename": "202503_6902_AI1.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-15T11:29:59.123266",
+  "last_updated": "2025-11-14T03:20:39.041590",
   "company_id": "6902"
 }

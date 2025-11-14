@@ -48,8 +48,22 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20251114_032231": {
+      "timestamp": "2025-11-14T03:22:31.103158",
+      "company_id": "7728",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202503_7728_AI1.pdf",
+          "path": "downloads/7728/202503_7728_AI1.pdf",
+          "size": 732900,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-08-15T11:34:03.529013",
+  "last_updated": "2025-11-14T03:22:31.103165",
   "company_id": "7728"
 }
