@@ -1,6 +1,6 @@
 MOPS Download Summary
 Year: 2025, Quarter: 3
-Download Date: Sun Nov 16 03:15:09 UTC 2025
+Download Date: Mon Nov 17 03:11:11 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -29,10 +29,10 @@ Companies processed:
   2324: 5 PDF files
   7747: 4 PDF files
   6425: 5 PDF files
-  4749: 2 PDF files
+  4749: 3 PDF files
   6902: 5 PDF files
   3558: 3 PDF files
-  4114: 2 PDF files
+  4114: 3 PDF files
   6231: 5 PDF files
   8272: 7 PDF files
   7547: 3 PDF files
@@ -78,7 +78,7 @@ Companies processed:
   6997: 3 PDF files
   7704: 3 PDF files
   2449: 5 PDF files
-  6757: 3 PDF files
+  6757: 4 PDF files
   7703: 3 PDF files
   9917: 3 PDF files
   2330: 8 PDF files
@@ -119,8 +119,8 @@ Companies processed:
   6751: 4 PDF files
   3158: 5 PDF files
 
-Total: 586 PDF files from 113 companies
+Total: 589 PDF files from 113 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 16 files created
+  CSV Backup: 17 files created
