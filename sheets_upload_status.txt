@@ -1,8 +1,8 @@
 Google Sheets Upload Status Report
-Date: Mon Nov 17 03:11:11 UTC 2025
+Date: Tue Nov 18 03:17:40 UTC 2025
 Trigger: schedule
 =================
 ✅ Credentials: Available
 📊 Sheet ID: 1BmpE_ZeusMlgEeESoHxAzxtW7gyij6eF11RkvtjlgR0
-✅ CSV backups: 17 files created
+✅ CSV backups: 18 files created
 📥 Source data: 589 PDFs from 113 companies

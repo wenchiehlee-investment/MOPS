@@ -1,6 +1,6 @@
 MOPS Download Summary
 Year: 2025, Quarter: 3
-Download Date: Mon Nov 17 03:11:11 UTC 2025
+Download Date: Tue Nov 18 03:17:40 UTC 2025
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -123,4 +123,4 @@ Total: 589 PDF files from 113 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 17 files created
+  CSV Backup: 18 files created
