@@ -1,0 +1,36 @@
+name: Sync Revenue Report to Multiple Repos
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *"  # Runs every 2 hours
+  push:
+    branches:
+      - main
+jobs:
+  # sync-to-investment:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     - name: Sync to MkDocs Investment
+  #       uses: BetaHuhn/repo-file-sync-action@latest
+  #       with:
+  #         GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE }}
+  #         CONFIG_PATH: .github/sync-investment.yml
+  #         COMMIT_EACH_FILE: false
+  #         PR_LABELS: "automated-sync"
+  #         SKIP_PR: true
+
+  sync-to-money:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync to Money xxxx.TW
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_MONEY }}
+          CONFIG_PATH: .github/sync-money.yml
+          COMMIT_EACH_FILE: false
+          PR_LABELS: "automated-sync"
+          SKIP_PR: true
