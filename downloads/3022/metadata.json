@@ -62,8 +62,22 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20260217_033617": {
+      "timestamp": "2026-02-17T03:36:17.126474",
+      "company_id": "3022",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202403_3022_AI1.pdf",
+          "path": "downloads/3022/202403_3022_AI1.pdf",
+          "size": 1233408,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-11-09T07:27:17.929432",
+  "last_updated": "2026-02-17T03:36:17.126479",
   "company_id": "3022"
 }

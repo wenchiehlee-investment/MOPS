@@ -62,8 +62,21 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20260217_040233": {
+      "timestamp": "2026-02-17T04:02:33.336852",
+      "company_id": "7728",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202403_7728_AI1.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-11-14T03:22:31.103165",
+  "last_updated": "2026-02-17T04:02:33.336858",
   "company_id": "7728"
 }

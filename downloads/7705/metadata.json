@@ -60,8 +60,21 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20260217_035916": {
+      "timestamp": "2026-02-17T03:59:16.803684",
+      "company_id": "7705",
+      "year": 2024,
+      "results": [
+        {
+          "success": false,
+          "filename": "202403_7705_AI1.pdf",
+          "error": "<urlopen error timed out>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-11-14T03:21:34.542473",
+  "last_updated": "2026-02-17T03:59:16.803690",
   "company_id": "7705"
 }

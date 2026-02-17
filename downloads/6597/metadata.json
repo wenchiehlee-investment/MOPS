@@ -68,8 +68,22 @@
           "skipped": false
         }
       ]
+    },
+    "2024_20260217_035057": {
+      "timestamp": "2026-02-17T03:50:57.228783",
+      "company_id": "6597",
+      "year": 2024,
+      "results": [
+        {
+          "success": true,
+          "filename": "202403_6597_AI2.pdf",
+          "path": "downloads/6597/202403_6597_AI2.pdf",
+          "size": 517571,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2025-11-14T03:19:31.122347",
+  "last_updated": "2026-02-17T03:50:57.228789",
   "company_id": "6597"
 }
