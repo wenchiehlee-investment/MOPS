@@ -68,6 +68,11 @@ on:
         required: false
         type: boolean
         default: true
+      fail_on_partial_failure:
+        description: 'Fail workflow if any year fails in single-company all-year mode'
+        required: false
+        type: boolean
+        default: false
   
   # Scheduled trigger - Aligned with MOPS filing deadlines
   # Q4 (Oct-Dec): Deadline March 31 → Download March 31 - April 4
@@ -205,6 +210,7 @@ jobs:
         echo "Start From: ${{ inputs.start_from || 'Beginning' }}"
         echo "Only Missing Files: ${{ inputs.only_missing_files }}"
         echo "Upload to Sheets: ${{ inputs.upload_to_sheets }}"
+        echo "Fail On Partial Failure: ${{ inputs.fail_on_partial_failure }}"
         
         # Show skip behavior info
         if [ "${{ inputs.only_missing_files }}" == "true" ]; then
@@ -219,6 +225,7 @@ jobs:
         YEAR_INPUT="${{ inputs.year }}"
         START_YEAR_INPUT="${{ inputs.start_year }}"
         END_YEAR_INPUT="${{ inputs.end_year }}"
+        FAIL_ON_PARTIAL="${{ inputs.fail_on_partial_failure }}"
         ONLY_MISSING_FLAG=""
         if [ "${{ inputs.only_missing_files }}" == "true" ]; then
           ONLY_MISSING_FLAG="--only-missing-files"
@@ -272,6 +279,7 @@ jobs:
             
             echo "📅 Downloading company $COMPANY_ID for years $START_YEAR_INPUT to $END_YEAR_INPUT, quarter=$QUARTER_INPUT"
             FAILED_YEARS=0
+            FAILED_YEAR_LIST=""
             
             for target_year in $(seq "$START_YEAR_INPUT" "$END_YEAR_INPUT"); do
               echo "----------------------------------------"
@@ -279,12 +287,21 @@ jobs:
               if ! run_single_company_download "$target_year" "$QUARTER_INPUT"; then
                 echo "⚠️ Failed: company $COMPANY_ID, year $target_year"
                 FAILED_YEARS=$((FAILED_YEARS + 1))
+                if [ -z "$FAILED_YEAR_LIST" ]; then
+                  FAILED_YEAR_LIST="$target_year"
+                else
+                  FAILED_YEAR_LIST="$FAILED_YEAR_LIST,$target_year"
+                fi
               fi
             done
             
             if [ "$FAILED_YEARS" -gt 0 ]; then
-              echo "❌ Single-company all-year run completed with $FAILED_YEARS failed years"
-              exit 1
+              echo "⚠️ Single-company all-year run completed with $FAILED_YEARS failed years: $FAILED_YEAR_LIST"
+              if [ "$FAIL_ON_PARTIAL" = "true" ]; then
+                echo "❌ fail_on_partial_failure=true, exiting with failure"
+                exit 1
+              fi
+              echo "✅ Continuing because fail_on_partial_failure=false"
             fi
             
             echo "✅ Single-company all-year run completed successfully"
@@ -994,6 +1011,7 @@ jobs:
           echo "- Start From: ${{ inputs.start_from || 'Beginning' }}" >> status_report.md
           echo "- Skip Existing Files: ${{ inputs.only_missing_files }}" >> status_report.md
           echo "- Upload to Sheets: ${{ inputs.upload_to_sheets }}" >> status_report.md
+          echo "- Fail On Partial Failure: ${{ inputs.fail_on_partial_failure }}" >> status_report.md
         else
           MONTH=$(date +%m)
           DAY=$(date +%d)
