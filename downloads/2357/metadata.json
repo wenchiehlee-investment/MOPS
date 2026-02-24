@@ -76,8 +76,108 @@
           "skipped": false
         }
       ]
+    },
+    "2020_20260224_132330": {
+      "timestamp": "2026-02-24T13:23:30.636407",
+      "company_id": "2357",
+      "year": 2020,
+      "results": [
+        {
+          "success": true,
+          "filename": "202001_2357_AI1.pdf",
+          "path": "downloads/2357/202001_2357_AI1.pdf",
+          "size": 1506324,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202002_2357_AI1.pdf",
+          "path": "downloads/2357/202002_2357_AI1.pdf",
+          "size": 1558357,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202003_2357_AI1.pdf",
+          "path": "downloads/2357/202003_2357_AI1.pdf",
+          "size": 1960674,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202004_2357_AI1.pdf",
+          "path": "downloads/2357/202004_2357_AI1.pdf",
+          "size": 1542223,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202004_2357_AI3.pdf",
+          "path": "downloads/2357/202004_2357_AI3.pdf",
+          "size": 890502,
+          "skipped": false
+        }
+      ]
+    },
+    "2021_20260224_132346": {
+      "timestamp": "2026-02-24T13:23:46.367283",
+      "company_id": "2357",
+      "year": 2021,
+      "results": [
+        {
+          "success": false,
+          "filename": "202101_2357_AI1.pdf",
+          "error": "Could not find PDF URL for 202101_2357_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202102_2357_AI1.pdf",
+          "error": "Could not find PDF URL for 202102_2357_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202103_2357_AI1.pdf",
+          "error": "Could not find PDF URL for 202103_2357_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202104_2357_AI1.pdf",
+          "error": "Could not find PDF URL for 202104_2357_AI1.pdf",
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202104_2357_AI3.pdf",
+          "error": "Could not find PDF URL for 202104_2357_AI3.pdf",
+          "skipped": false
+        }
+      ]
+    },
+    "2025_20260224_132518": {
+      "timestamp": "2026-02-24T13:25:18.932411",
+      "company_id": "2357",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202502_2357_AI1.pdf",
+          "path": "downloads/2357/202502_2357_AI1.pdf",
+          "size": 1167100,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202503_2357_AI1.pdf",
+          "path": "downloads/2357/202503_2357_AI1.pdf",
+          "size": 1653485,
+          "skipped": true
+        }
+      ]
     }
   },
-  "last_updated": "2026-02-17T03:30:41.082099",
+  "last_updated": "2026-02-24T13:25:18.932417",
   "company_id": "2357"
 }

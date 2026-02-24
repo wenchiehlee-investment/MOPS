@@ -1,0 +1,127 @@
+MOPS Download Summary
+Year: 2020-2026, Quarter: all
+Company ID: 2357 (single-company mode)
+Download Date: Tue Feb 24 13:25:27 UTC 2026
+Skip Existing Files: true
+Upload to Sheets: true
+=================
+Companies processed:
+  7708: 3 PDF files
+  2382: 13 PDF files
+  3022: 6 PDF files
+  3035: 6 PDF files
+  2646: 4 PDF files
+  2345: 4 PDF files
+  7805: 5 PDF files
+  3356: 6 PDF files
+  7732: 6 PDF files
+  2405: 4 PDF files
+  2458: 6 PDF files
+  2301: 5 PDF files
+  5536: 4 PDF files
+  6526: 6 PDF files
+  6125: 6 PDF files
+  3034: 13 PDF files
+  3029: 6 PDF files
+  5904: 4 PDF files
+  7712: 6 PDF files
+  8299: 13 PDF files
+  5269: 4 PDF files
+  2324: 5 PDF files
+  7747: 5 PDF files
+  6425: 6 PDF files
+  4749: 3 PDF files
+  6902: 6 PDF files
+  3558: 4 PDF files
+  4114: 4 PDF files
+  6231: 6 PDF files
+  8272: 7 PDF files
+  7547: 4 PDF files
+  2379: 13 PDF files
+  3026: 6 PDF files
+  2359: 5 PDF files
+  6669: 5 PDF files
+  3467: 5 PDF files
+  7769: 5 PDF files
+  7709: 5 PDF files
+  3293: 6 PDF files
+  6035: 2 PDF files
+  7749: 3 PDF files
+  7734: 7 PDF files
+  6123: 4 PDF files
+  6850: 3 PDF files
+  2332: 5 PDF files
+  2376: 6 PDF files
+  5274: 4 PDF files
+  6442: 6 PDF files
+  2474: 6 PDF files
+  3150: 5 PDF files
+  6462: 5 PDF files
+  6695: 6 PDF files
+  6962: 3 PDF files
+  2303: 5 PDF files
+  6763: 8 PDF files
+  1587: 5 PDF files
+  2412: 13 PDF files
+  8045: 6 PDF files
+  6597: 5 PDF files
+  4953: 3 PDF files
+  2383: 5 PDF files
+  2317: 10 PDF files
+  8016: 6 PDF files
+  7728: 5 PDF files
+  3014: 6 PDF files
+  2354: 5 PDF files
+  7705: 3 PDF files
+  2480: 13 PDF files
+  2347: 5 PDF files
+  6506: 6 PDF files
+  6997: 4 PDF files
+  7704: 4 PDF files
+  2449: 6 PDF files
+  6757: 5 PDF files
+  7703: 4 PDF files
+  9917: 3 PDF files
+  2330: 8 PDF files
+  2357: 11 PDF files
+  2603: 5 PDF files
+  2395: 6 PDF files
+  4938: 3 PDF files
+  3231: 8 PDF files
+  6699: 3 PDF files
+  3045: 6 PDF files
+  6561: 5 PDF files
+  3260: 6 PDF files
+  2454: 13 PDF files
+  7722: 11 PDF files
+  2377: 6 PDF files
+  7736: 6 PDF files
+  7765: 6 PDF files
+  7713: 5 PDF files
+  6918: 5 PDF files
+  6510: 8 PDF files
+  6925: 4 PDF files
+  2451: 6 PDF files
+  6182: 5 PDF files
+  6996: 9 PDF files
+  6214: 6 PDF files
+  3048: 6 PDF files
+  2450: 6 PDF files
+  6613: 6 PDF files
+  2356: 8 PDF files
+  9914: 5 PDF files
+  8454: 6 PDF files
+  9921: 3 PDF files
+  5203: 4 PDF files
+  6720: 6 PDF files
+  2308: 10 PDF files
+  7737: 2 PDF files
+  5434: 4 PDF files
+  6751: 5 PDF files
+  3158: 5 PDF files
+
+Total: 657 PDF files from 113 companies
+
+Google Sheets Upload:
+  Status: Attempted (check logs for results)
+  CSV Backup: 20 files created
