@@ -9,21 +9,45 @@ on:
   # Manual trigger with year and quarter parameters
   workflow_dispatch:
     inputs:
+      company_id:
+        description: 'Single company ID (4 digits). Leave empty for batch mode.'
+        required: false
+        type: string
+        default: ''
+      year_mode:
+        description: 'Year mode: single year or all years in a range'
+        required: false
+        type: choice
+        options:
+          - 'single'
+          - 'all'
+        default: 'single'
       year:
-        description: 'Year to download (e.g., 2025)'
-        required: true
+        description: 'Year to download when year_mode=single (e.g., 2025)'
+        required: false
         type: string
         default: '2025'
+      start_year:
+        description: 'Start year when year_mode=all (e.g., 2020)'
+        required: false
+        type: string
+        default: '2020'
+      end_year:
+        description: 'End year when year_mode=all (default: current year)'
+        required: false
+        type: string
+        default: ''
       quarter:
-        description: 'Quarter to download (1, 2, 3, or 4)'
+        description: 'Quarter to download (all, 1, 2, 3, or 4)'
         required: true
         type: choice
         options:
+          - 'all'
           - '1'
           - '2'
           - '3'
           - '4'
-        default: '1'
+        default: 'all'
       delay:
         description: 'Delay between downloads (seconds)'
         required: false
@@ -171,7 +195,11 @@ jobs:
         export LANG=C.UTF-8
         
         echo "🚀 Starting manual MOPS download..."
+        echo "Company ID: ${{ inputs.company_id || 'BATCH_MODE' }}"
+        echo "Year Mode: ${{ inputs.year_mode || 'single' }}"
         echo "Year: ${{ inputs.year }}"
+        echo "Start Year: ${{ inputs.start_year }}"
+        echo "End Year: ${{ inputs.end_year || 'current year' }}"
         echo "Quarter: ${{ inputs.quarter }}"
         echo "Delay: ${{ inputs.delay }}"
         echo "Start From: ${{ inputs.start_from || 'Beginning' }}"
@@ -185,45 +213,142 @@ jobs:
           echo "🔄 Force download mode: Will re-download all files even if they exist"
         fi
         
-        # Build command arguments for DownloadAll.py (based on actual CLI interface)
-        CMD_ARGS=""
-        CMD_ARGS="$CMD_ARGS --year ${{ inputs.year }}"
-        CMD_ARGS="$CMD_ARGS --quarter ${{ inputs.quarter }}"
-        CMD_ARGS="$CMD_ARGS --delay ${{ inputs.delay }}"
-        
-        # Add start-from if provided (note: hyphen, not underscore)
-        if [ -n "${{ inputs.start_from }}" ]; then
-          CMD_ARGS="$CMD_ARGS --start-from ${{ inputs.start_from }}"
-        fi
-        
-        # Add only-missing-files if enabled
+        COMPANY_ID="$(echo "${{ inputs.company_id }}" | xargs)"
+        YEAR_MODE="${{ inputs.year_mode || 'single' }}"
+        QUARTER_INPUT="${{ inputs.quarter }}"
+        YEAR_INPUT="${{ inputs.year }}"
+        START_YEAR_INPUT="${{ inputs.start_year }}"
+        END_YEAR_INPUT="${{ inputs.end_year }}"
+        ONLY_MISSING_FLAG=""
         if [ "${{ inputs.only_missing_files }}" == "true" ]; then
-          CMD_ARGS="$CMD_ARGS --only-missing-files"
+          ONLY_MISSING_FLAG="--only-missing-files"
         fi
         
-        echo "Running: python DownloadAll.py $CMD_ARGS"
-        python DownloadAll.py $CMD_ARGS || {
-          echo "❌ DownloadAll.py failed, trying alternative approach..."
+        # Single-company mode
+        if [ -n "$COMPANY_ID" ]; then
+          echo "🎯 Running single-company mode for: $COMPANY_ID"
           
-          # Fallback: Use individual CLI calls for a few companies as test
-          echo "Testing individual downloads..."
-          
-          # Build CLI args for fallback
-          CLI_ARGS="--year ${{ inputs.year }} --quarter ${{ inputs.quarter }} --log_level INFO"
-          if [ "${{ inputs.only_missing_files }}" == "true" ]; then
-            CLI_ARGS="$CLI_ARGS --only-missing-files"
-            echo "📥 Fallback using skip mode: Will skip existing files > 100KB"
-          else
-            echo "🔄 Fallback using force download mode"
+          if ! [[ "$COMPANY_ID" =~ ^[0-9]{4}$ ]]; then
+            echo "❌ Invalid company_id: $COMPANY_ID (must be exactly 4 digits)"
+            exit 1
           fi
           
-          head -5 StockID_TWSE_TPEX.csv | tail -n +2 | while IFS=, read -r company_id company_name exchange || [ -n "$company_id" ]; do
-            if [ -n "$company_id" ]; then
-              echo "Testing download for company: $company_id"
-              python scripts/mops_downloader.py --company_id "$company_id" $CLI_ARGS || echo "Failed for company $company_id"
+          run_single_company_download() {
+            local target_year="$1"
+            local target_quarter="$2"
+            local cmd=(python scripts/mops_downloader.py --company_id "$COMPANY_ID" --year "$target_year" --log_level INFO)
+            
+            if [ "$target_quarter" = "all" ]; then
+              cmd+=(--quarter all)
+            else
+              cmd+=(--quarter "$target_quarter")
             fi
-          done
-        }
+            
+            if [ -n "$ONLY_MISSING_FLAG" ]; then
+              cmd+=("$ONLY_MISSING_FLAG")
+            fi
+            
+            echo "Running: ${cmd[*]}"
+            "${cmd[@]}"
+          }
+          
+          if [ "$YEAR_MODE" = "all" ]; then
+            if ! [[ "$START_YEAR_INPUT" =~ ^[0-9]{4}$ ]]; then
+              echo "❌ start_year must be a 4-digit year when year_mode=all"
+              exit 1
+            fi
+            
+            if [ -z "$END_YEAR_INPUT" ]; then
+              END_YEAR_INPUT=$(date +%Y)
+            elif ! [[ "$END_YEAR_INPUT" =~ ^[0-9]{4}$ ]]; then
+              echo "❌ end_year must be empty or a 4-digit year"
+              exit 1
+            fi
+            
+            if [ "$START_YEAR_INPUT" -gt "$END_YEAR_INPUT" ]; then
+              echo "❌ Invalid year range: start_year ($START_YEAR_INPUT) > end_year ($END_YEAR_INPUT)"
+              exit 1
+            fi
+            
+            echo "📅 Downloading company $COMPANY_ID for years $START_YEAR_INPUT to $END_YEAR_INPUT, quarter=$QUARTER_INPUT"
+            FAILED_YEARS=0
+            
+            for target_year in $(seq "$START_YEAR_INPUT" "$END_YEAR_INPUT"); do
+              echo "----------------------------------------"
+              echo "Year: $target_year"
+              if ! run_single_company_download "$target_year" "$QUARTER_INPUT"; then
+                echo "⚠️ Failed: company $COMPANY_ID, year $target_year"
+                FAILED_YEARS=$((FAILED_YEARS + 1))
+              fi
+            done
+            
+            if [ "$FAILED_YEARS" -gt 0 ]; then
+              echo "❌ Single-company all-year run completed with $FAILED_YEARS failed years"
+              exit 1
+            fi
+            
+            echo "✅ Single-company all-year run completed successfully"
+          else
+            if ! [[ "$YEAR_INPUT" =~ ^[0-9]{4}$ ]]; then
+              echo "❌ year must be a 4-digit year when year_mode=single"
+              exit 1
+            fi
+            
+            run_single_company_download "$YEAR_INPUT" "$QUARTER_INPUT"
+            echo "✅ Single-company single-year run completed successfully"
+          fi
+          
+        # Batch mode (existing behavior)
+        else
+          # Build command arguments for DownloadAll.py (based on actual CLI interface)
+          CMD_ARGS=""
+          CMD_ARGS="$CMD_ARGS --year ${{ inputs.year }}"
+          CMD_ARGS="$CMD_ARGS --delay ${{ inputs.delay }}"
+          
+          # Quarter is optional in DownloadAll.py; omit quarter when 'all'
+          if [ "$QUARTER_INPUT" != "all" ]; then
+            CMD_ARGS="$CMD_ARGS --quarter $QUARTER_INPUT"
+          fi
+          
+          # Add start-from if provided (note: hyphen, not underscore)
+          if [ -n "${{ inputs.start_from }}" ]; then
+            CMD_ARGS="$CMD_ARGS --start-from ${{ inputs.start_from }}"
+          fi
+          
+          # Add only-missing-files if enabled
+          if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+            CMD_ARGS="$CMD_ARGS --only-missing-files"
+          fi
+          
+          echo "Running: python DownloadAll.py $CMD_ARGS"
+          python DownloadAll.py $CMD_ARGS || {
+            echo "❌ DownloadAll.py failed, trying alternative approach..."
+            
+            # Fallback: Use individual CLI calls for a few companies as test
+            echo "Testing individual downloads..."
+            
+            # Build CLI args for fallback
+            CLI_ARGS="--year ${{ inputs.year }} --log_level INFO"
+            if [ "$QUARTER_INPUT" = "all" ]; then
+              CLI_ARGS="$CLI_ARGS --quarter all"
+            else
+              CLI_ARGS="$CLI_ARGS --quarter $QUARTER_INPUT"
+            fi
+            if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+              CLI_ARGS="$CLI_ARGS --only-missing-files"
+              echo "📥 Fallback using skip mode: Will skip existing files > 100KB"
+            else
+              echo "🔄 Fallback using force download mode"
+            fi
+            
+            head -5 StockID_TWSE_TPEX.csv | tail -n +2 | while IFS=, read -r company_id company_name exchange || [ -n "$company_id" ]; do
+              if [ -n "$company_id" ]; then
+                echo "Testing download for company: $company_id"
+                python scripts/mops_downloader.py --company_id "$company_id" $CLI_ARGS || echo "Failed for company $company_id"
+              fi
+            done
+          }
+        fi
     
     - name: Download PDFs (Scheduled Trigger) 📅
       if: github.event_name == 'schedule'
@@ -507,9 +632,20 @@ jobs:
         # No additional organization needed, but we can create a summary
         
         YEAR="${{ inputs.year || '2025' }}"
-        QUARTER="${{ inputs.quarter || '1' }}"
+        QUARTER="${{ inputs.quarter || 'all' }}"
         ONLY_MISSING="${{ inputs.only_missing_files || 'true' }}"
         UPLOAD_SHEETS="${{ inputs.upload_to_sheets || 'true' }}"
+        COMPANY_ID="$(echo "${{ inputs.company_id }}" | xargs)"
+        YEAR_MODE="${{ inputs.year_mode || 'single' }}"
+        
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "$YEAR_MODE" == "all" ]; then
+          START_YEAR="${{ inputs.start_year }}"
+          END_YEAR="${{ inputs.end_year }}"
+          if [ -z "$END_YEAR" ]; then
+            END_YEAR=$(date +%Y)
+          fi
+          YEAR="${START_YEAR}-${END_YEAR}"
+        fi
         
         if [ "${{ github.event_name }}" == "schedule" ]; then
           MONTH=$(date +%m)
@@ -546,6 +682,11 @@ jobs:
         SUMMARY_FILE="download_summary_${YEAR}_Q${QUARTER}.txt"
         echo "MOPS Download Summary" > "$SUMMARY_FILE"
         echo "Year: $YEAR, Quarter: $QUARTER" >> "$SUMMARY_FILE"
+        if [ -n "$COMPANY_ID" ]; then
+          echo "Company ID: $COMPANY_ID (single-company mode)" >> "$SUMMARY_FILE"
+        else
+          echo "Company Scope: Batch mode (all companies)" >> "$SUMMARY_FILE"
+        fi
         echo "Download Date: $(date)" >> "$SUMMARY_FILE"
         echo "Skip Existing Files: $ONLY_MISSING" >> "$SUMMARY_FILE"
         echo "Upload to Sheets: $UPLOAD_SHEETS" >> "$SUMMARY_FILE"
@@ -608,10 +749,36 @@ jobs:
         else
           # Determine commit message based on trigger type
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            if [ "${{ inputs.only_missing_files }}" == "true" ]; then
-              COMMIT_MSG="📥 MOPS PDFs Download (Skip Mode) - ${{ inputs.year }} Q${{ inputs.quarter }}"
+            COMPANY_ID="$(echo "${{ inputs.company_id }}" | xargs)"
+            YEAR_MODE="${{ inputs.year_mode || 'single' }}"
+            YEAR_LABEL="${{ inputs.year }}"
+            QUARTER_LABEL="${{ inputs.quarter }}"
+            
+            if [ "$YEAR_MODE" == "all" ]; then
+              START_YEAR="${{ inputs.start_year }}"
+              END_YEAR="${{ inputs.end_year }}"
+              if [ -z "$END_YEAR" ]; then
+                END_YEAR=$(date +%Y)
+              fi
+              YEAR_LABEL="${START_YEAR}-${END_YEAR}"
+            fi
+            
+            if [ "$QUARTER_LABEL" == "all" ]; then
+              QUARTER_TEXT="All Quarters"
             else
-              COMMIT_MSG="🔄 MOPS PDFs Download (Force Mode) - ${{ inputs.year }} Q${{ inputs.quarter }}"
+              QUARTER_TEXT="Q${QUARTER_LABEL}"
+            fi
+            
+            if [ "${{ inputs.only_missing_files }}" == "true" ]; then
+              COMMIT_PREFIX="📥 MOPS PDFs Download (Skip Mode)"
+            else
+              COMMIT_PREFIX="🔄 MOPS PDFs Download (Force Mode)"
+            fi
+            
+            if [ -n "$COMPANY_ID" ]; then
+              COMMIT_MSG="${COMMIT_PREFIX} - Company ${COMPANY_ID} - ${YEAR_LABEL} ${QUARTER_TEXT}"
+            else
+              COMMIT_MSG="${COMMIT_PREFIX} - ${YEAR_LABEL} ${QUARTER_TEXT}"
             fi
             
             # Add sheets upload info to commit message
@@ -683,9 +850,39 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        COMPANY_ID="$(echo "${{ inputs.company_id }}" | xargs)"
+        YEAR_MODE="${{ inputs.year_mode || 'single' }}"
+        YEAR_LABEL="${{ inputs.year }}"
+        QUARTER_LABEL="${{ inputs.quarter }}"
+        
+        if [ "$YEAR_MODE" == "all" ]; then
+          START_YEAR="${{ inputs.start_year }}"
+          END_YEAR="${{ inputs.end_year }}"
+          if [ -z "$END_YEAR" ]; then
+            END_YEAR=$(date +%Y)
+          fi
+          YEAR_LABEL="${START_YEAR}-${END_YEAR}"
+        fi
+        
+        if [ "$QUARTER_LABEL" == "all" ]; then
+          QUARTER_TAG="all-quarters"
+          QUARTER_TITLE="All Quarters"
+        else
+          QUARTER_TAG="q${QUARTER_LABEL}"
+          QUARTER_TITLE="Q${QUARTER_LABEL}"
+        fi
+        
+        COMPANY_TAG=""
+        if [ -n "$COMPANY_ID" ]; then
+          COMPANY_TAG="-c${COMPANY_ID}"
+        fi
+        
         # Create release using GitHub CLI
-        RELEASE_TAG="mops-${{ inputs.year }}-q${{ inputs.quarter }}-$(date +%Y%m%d-%H%M%S)"
-        RELEASE_TITLE="MOPS PDFs ${{ inputs.year }} Q${{ inputs.quarter }}"
+        RELEASE_TAG="mops-${YEAR_LABEL}-${QUARTER_TAG}${COMPANY_TAG}-$(date +%Y%m%d-%H%M%S)"
+        RELEASE_TITLE="MOPS PDFs ${YEAR_LABEL} ${QUARTER_TITLE}"
+        if [ -n "$COMPANY_ID" ]; then
+          RELEASE_TITLE="${RELEASE_TITLE} (Company ${COMPANY_ID})"
+        fi
         
         # Count files for release description
         if [ -d "downloads" ]; then
@@ -715,10 +912,14 @@ jobs:
         
         # Create release notes file instead of variable
         cat > release_notes.md << 'EOF'
-        ## Downloaded MOPS PDFs for ${{ inputs.year }} Q${{ inputs.quarter }}
+        ## Downloaded MOPS PDFs
         
         **Download Parameters:**
+        - Company ID: ${{ inputs.company_id || 'Batch mode (all companies)' }}
+        - Year Mode: ${{ inputs.year_mode || 'single' }}
         - Year: ${{ inputs.year }}
+        - Start Year (year_mode=all): ${{ inputs.start_year }}
+        - End Year (year_mode=all): ${{ inputs.end_year || 'current year' }}
         - Quarter: ${{ inputs.quarter }}
         - Delay: ${{ inputs.delay }}s
         - Start from: ${{ inputs.start_from || 'Beginning' }}
@@ -783,7 +984,11 @@ jobs:
         
         if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
           echo "**Parameters:**" >> status_report.md
+          echo "- Company ID: ${{ inputs.company_id || 'Batch mode (all companies)' }}" >> status_report.md
+          echo "- Year Mode: ${{ inputs.year_mode || 'single' }}" >> status_report.md
           echo "- Year: ${{ inputs.year }}" >> status_report.md
+          echo "- Start Year (year_mode=all): ${{ inputs.start_year }}" >> status_report.md
+          echo "- End Year (year_mode=all): ${{ inputs.end_year || 'current year' }}" >> status_report.md
           echo "- Quarter: ${{ inputs.quarter }}" >> status_report.md
           echo "- Delay: ${{ inputs.delay }}s" >> status_report.md
           echo "- Start From: ${{ inputs.start_from || 'Beginning' }}" >> status_report.md
