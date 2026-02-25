@@ -29,6 +29,9 @@ logger = logging.getLogger(__name__)
 # Patterns
 PAGE_NUM_PATTERN = re.compile(r'^~\s*\d+\s*~$')
 CONT_PATTERN = re.compile(r'^\(續\s*[次上]\s*頁\)$')
+# Cross-page table continuation markers
+CONT_NEXT_RE = re.compile(r'[（(](?:接次頁|續次頁)[）)]')
+CONT_PREV_RE = re.compile(r'[（(](?:承前頁|續上頁)[）)]')
 # Matches "五、 合併資產負債表" on one line (title only, page number on next line)
 TOC_TITLE_PATTERN = re.compile(
     r'^(一|二|三|四|五|六|七|八|九|十)、\s*(.+)$'
@@ -249,6 +252,152 @@ def format_grid_table(rows: List[List[str]]) -> List[str]:
     return md
 
 
+def _rows_similar(row1: List[str], row2: List[str], threshold: float = 0.6) -> bool:
+    """Check if two table rows have similar content (for repeated header detection)."""
+    if not row1 and not row2:
+        return True
+    if not row1 or not row2:
+        return False
+    s1 = ''.join(c.strip() for c in row1)
+    s2 = ''.join(c.strip() for c in row2)
+    if not s1 and not s2:
+        return True
+    if not s1 or not s2:
+        return False
+    shorter, longer = (s1, s2) if len(s1) <= len(s2) else (s2, s1)
+    return len(shorter) / len(longer) >= threshold
+
+
+def _skip_continuation_header(orig_rows: List[List[str]],
+                               cont_rows: List[List[str]]) -> List[List[str]]:
+    """Skip repeated header rows at the top of a continuation table.
+
+    Financial tables repeat column headers on each continuation page.
+    Matches the continuation's leading rows against the original table's
+    first rows; skips all that are sufficiently similar.
+    """
+    if not cont_rows:
+        return []
+    skip = 0
+    for i in range(min(4, len(orig_rows), len(cont_rows))):
+        if _rows_similar(orig_rows[i], cont_rows[i]):
+            skip = i + 1
+        else:
+            break
+    return cont_rows[skip:]
+
+
+def _merge_cross_page_tables(all_content: list) -> list:
+    """Merge tables split across PDF pages.
+
+    Scans the sorted all_content list for the pattern:
+        table  →  [text(接次頁)]  →  page  →  [text(承前頁)]  →  table
+    and merges the two table fragments, stripping repeated headers from
+    the continuation table.  Any leftover continuation-marker text items
+    are removed.  Handles chains (table spanning 3+ pages) by re-checking
+    each merged table.
+    """
+    items = list(all_content)
+    result = []
+    skip_set: set = set()
+
+    i = 0
+    while i < len(items):
+        if i in skip_set:
+            i += 1
+            continue
+
+        key, ctype, data = items[i]
+
+        if ctype != "table":
+            result.append(items[i])
+            i += 1
+            continue
+
+        # --- look ahead for cross-page continuation ---
+        j = i + 1
+        found_cont_next = False
+        found_page = False
+        found_cont_prev = False
+        cont_table_idx = None
+        candidate_skips: List[int] = []
+
+        _page_num_re = re.compile(r'^[-~]+\s*\d+\s*[-~]+$')
+
+        while j < len(items) and j < i + 15:
+            if j in skip_set:
+                j += 1
+                continue
+            jkey, jtype, jdata = items[j]
+
+            if jtype == "text":
+                text_str = str(jdata).strip()
+                if not found_page and CONT_NEXT_RE.search(text_str):
+                    found_cont_next = True
+                    candidate_skips.append(j)
+                elif found_page and CONT_PREV_RE.search(text_str):
+                    found_cont_prev = True
+                    candidate_skips.append(j)
+                elif not found_page and not found_cont_next:
+                    # Allow page-number footers (- 15 - or ~ 15 ~) to pass through
+                    if _page_num_re.match(text_str):
+                        j += 1
+                        continue
+                    # Any other real text before the page break = not cross-page
+                    break
+            elif jtype == "page":
+                found_page = True
+                candidate_skips.append(j)
+            elif jtype == "table":
+                if found_page:
+                    cont_table_idx = j
+                break
+            elif jtype == "section":
+                break  # section boundary — never merge across it
+
+            j += 1
+
+        should_merge = (
+            cont_table_idx is not None
+            and found_page
+            and (found_cont_next or found_cont_prev)
+        )
+
+        if should_merge:
+            orig_rows = data
+            cont_rows = items[cont_table_idx][2]
+            tail_rows = _skip_continuation_header(orig_rows, cont_rows)
+
+            # Only merge if the continuation actually contributes data rows;
+            # an empty tail means the entire continuation was repeated headers
+            # (or a false positive) — skip silently.
+            if not tail_rows:
+                result.append(items[i])
+                i += 1
+            else:
+                merged_rows = orig_rows + tail_rows
+                items[i] = (key, "table", merged_rows)
+
+                for idx in candidate_skips:
+                    skip_set.add(idx)
+                skip_set.add(cont_table_idx)
+
+                logger.info(
+                    f"🔗 Merged cross-page table at item {i}: "
+                    f"{len(orig_rows)}+{len(tail_rows)} rows"
+                )
+                # Re-check merged table for further continuations (3+ page tables)
+                # Safety cap to prevent runaway chaining
+                if len(merged_rows) > 5000:
+                    result.append(items[i])
+                    i += 1
+        else:
+            result.append(items[i])
+            i += 1
+
+    return result
+
+
 def _find_page_tables(page, force_text: bool = False) -> List:
     """Find tables on a page using best available strategy.
 
@@ -389,6 +538,9 @@ def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None) -> boo
         # Sort by position
         all_content.sort(key=lambda x: x[0])
 
+        # Merge tables that were split across PDF pages
+        all_content = _merge_cross_page_tables(all_content)
+
         # --- Final Assembly ---
         md_final = [f"# MOPS Report: {pdf_path.name}",
                     f"- **Source**: {pdf_path}", ""]
@@ -408,6 +560,9 @@ def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None) -> boo
             elif content_type == "table":
                 md_final.extend(format_grid_table(data))
             elif content_type == "text":
+                # Skip any remaining cross-page continuation markers
+                if CONT_NEXT_RE.search(data) or CONT_PREV_RE.search(data):
+                    continue
                 md_final.append(data)
                 md_final.append("")
 
