@@ -268,6 +268,9 @@ def _rows_similar(row1: List[str], row2: List[str], threshold: float = 0.6) -> b
     return len(shorter) / len(longer) >= threshold
 
 
+_HEADER_ROW_MAX_CHARS = 120  # rows longer than this are data rows, not headers
+
+
 def _skip_continuation_header(orig_rows: List[List[str]],
                                cont_rows: List[List[str]]) -> List[List[str]]:
     """Skip repeated header rows at the top of a continuation table.
@@ -275,11 +278,19 @@ def _skip_continuation_header(orig_rows: List[List[str]],
     Financial tables repeat column headers on each continuation page.
     Matches the continuation's leading rows against the original table's
     first rows; skips all that are sufficiently similar.
+
+    Safeguard: only rows whose total content is short (≤ _HEADER_ROW_MAX_CHARS)
+    are treated as candidate headers.  Long rows are data rows and are never
+    skipped, even if their character-length ratio happens to be ≥ threshold.
     """
     if not cont_rows:
         return []
     skip = 0
     for i in range(min(4, len(orig_rows), len(cont_rows))):
+        cont_content = ''.join(c.strip() for c in cont_rows[i])
+        # If the continuation row is long it is a data row, never a header
+        if len(cont_content) > _HEADER_ROW_MAX_CHARS:
+            break
         if _rows_similar(orig_rows[i], cont_rows[i]):
             skip = i + 1
         else:
@@ -300,6 +311,7 @@ def _merge_cross_page_tables(all_content: list) -> list:
     items = list(all_content)
     result = []
     skip_set: set = set()
+    _page_num_re = re.compile(r'^[-~]+\s*\d+\s*[-~]+$')
 
     i = 0
     while i < len(items):
@@ -322,30 +334,45 @@ def _merge_cross_page_tables(all_content: list) -> list:
         cont_table_idx = None
         candidate_skips: List[int] = []
 
-        _page_num_re = re.compile(r'^[-~]+\s*\d+\s*[-~]+$')
-
-        while j < len(items) and j < i + 15:
+        eff = 0  # effective (non-skip) steps
+        while j < len(items) and eff < 12:
             if j in skip_set:
                 j += 1
                 continue
             jkey, jtype, jdata = items[j]
 
+            # Free-pass: page-number footers before the page break don't consume
+            # effective steps (important after multi-page chain merges)
             if jtype == "text":
                 text_str = str(jdata).strip()
-                if not found_page and CONT_NEXT_RE.search(text_str):
-                    found_cont_next = True
-                    candidate_skips.append(j)
-                elif found_page and CONT_PREV_RE.search(text_str):
-                    found_cont_prev = True
-                    candidate_skips.append(j)
-                elif not found_page and not found_cont_next:
-                    # Allow page-number footers (- 15 - or ~ 15 ~) to pass through
+                if not found_page and not found_cont_next:
                     if _page_num_re.match(text_str):
+                        j += 1
+                        continue  # free pass — no eff consumed
+                    # Check for continuation markers before counting eff
+                    if CONT_NEXT_RE.search(text_str):
+                        eff += 1
+                        found_cont_next = True
+                        candidate_skips.append(j)
                         j += 1
                         continue
                     # Any other real text before the page break = not cross-page
                     break
-            elif jtype == "page":
+                elif found_page:
+                    if CONT_PREV_RE.search(text_str):
+                        eff += 1
+                        found_cont_prev = True
+                    # Any text between the page marker and the continuation table
+                    # (title text, date, sub-title, etc.) belongs to the continuation
+                    # page's header and must be added to skip_set to avoid breaking
+                    # the structural look-ahead on subsequent chain iterations.
+                    candidate_skips.append(j)
+                    j += 1
+                    continue
+                # Other text after page break — count it
+            eff += 1
+
+            if jtype == "page":
                 found_page = True
                 candidate_skips.append(j)
             elif jtype == "table":
@@ -392,8 +419,78 @@ def _merge_cross_page_tables(all_content: list) -> list:
                     result.append(items[i])
                     i += 1
         else:
-            result.append(items[i])
-            i += 1
+            # --- Secondary: structural merge (no markers) ---
+            # Pattern: table → (page-num text?) → page → table
+            # Condition: continuation table's first row ≈ original's first row
+            #            (repeated header) AND same column count.
+            j2 = i + 1
+            found_page2 = False
+            struct_table_idx = None
+            struct_skips: List[int] = []
+            eff_steps = 0  # count only non-skip items toward window
+
+            while j2 < len(items) and eff_steps < 10:
+                if j2 in skip_set:
+                    j2 += 1
+                    continue
+                jkey2, jtype2, jdata2 = items[j2]
+
+                # Free-pass: page-number footers and short noise don't consume
+                # effective steps (important when many merged pages leave behind
+                # their page-number texts between the merged table and the next page)
+                if jtype2 == "text":
+                    text_str2 = str(jdata2).strip()
+                    if not found_page2:
+                        if _page_num_re.match(text_str2) or len(text_str2) <= 6:
+                            j2 += 1
+                            continue  # free pass — no eff_steps consumed
+                        break  # real text before page break — not a continuation
+
+                eff_steps += 1
+
+                if jtype2 == "page":
+                    found_page2 = True
+                    struct_skips.append(j2)
+                elif jtype2 == "table":
+                    if found_page2:
+                        struct_table_idx = j2
+                    break
+                elif jtype2 == "section":
+                    break
+                j2 += 1
+
+            struct_merge = False
+            if struct_table_idx is not None and found_page2 and data:
+                orig_rows = data
+                cont_rows = items[struct_table_idx][2]
+                if cont_rows:
+                    # Same column count (within ±1) AND similar first (header) row
+                    orig_cols = len(orig_rows[0]) if orig_rows else 0
+                    cont_cols = len(cont_rows[0]) if cont_rows else 0
+                    same_cols = abs(orig_cols - cont_cols) <= 1
+                    header_match = _rows_similar(orig_rows[0], cont_rows[0],
+                                                 threshold=0.7)
+                    if same_cols and header_match:
+                        tail_rows = _skip_continuation_header(orig_rows, cont_rows)
+                        if tail_rows:
+                            merged_rows = orig_rows + tail_rows
+                            items[i] = (key, "table", merged_rows)
+                            for idx in struct_skips:
+                                skip_set.add(idx)
+                            skip_set.add(struct_table_idx)
+                            logger.info(
+                                f"🔗 Structural merge at item {i}: "
+                                f"{len(orig_rows)}+{len(tail_rows)} rows "
+                                f"(cols {orig_cols}≈{cont_cols})"
+                            )
+                            struct_merge = True
+                            if len(merged_rows) > 5000:
+                                result.append(items[i])
+                                i += 1
+
+            if not struct_merge:
+                result.append(items[i])
+                i += 1
 
     return result
 
