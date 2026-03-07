@@ -453,7 +453,117 @@ class MOPSSheetsConnector:
         
         logger.info(f"💾 v1.1.1 增強 CSV 備份: {csv_path}")
         logger.info(f"📋 元資料檔案: {metadata_path}")
+
+        # Auto-update README.md with new download status
+        self._update_readme_status(csv_path, matrix_df)
+
         return csv_path
+
+    def _update_readme_status(self, csv_path: str, matrix_df: pd.DataFrame) -> None:
+        """Update README.md Current Download Status section from the generated CSV"""
+        import re
+        from pathlib import Path
+        from collections import Counter
+
+        # Find README.md relative to output_dir
+        readme_path = None
+        for d in [
+            Path(self.config.output_dir).parent,
+            Path(self.config.output_dir).parent.parent,
+            Path('.'),
+        ]:
+            candidate = d / 'README.md'
+            if candidate.exists():
+                readme_path = candidate
+                break
+
+        if not readme_path:
+            logger.warning("⚠️ README.md 找不到，跳過狀態更新")
+            return
+
+        # Extract date from csv filename: mops_matrix_YYYYMMDD_HHMMSS.csv
+        date_match = re.search(r'(\d{8})', Path(csv_path).stem)
+        if date_match:
+            d = date_match.group(1)
+            last_updated = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+        else:
+            last_updated = datetime.now().strftime('%Y-%m-%d')
+
+        # Quarter columns only (exclude 代號, 名稱, and summary cols)
+        quarter_cols = [c for c in matrix_df.columns if ' Q' in c]
+        total = len(matrix_df)
+
+        filing_deadlines = {
+            'Q1': 'May 15', 'Q2': 'Aug 14', 'Q3': 'Nov 14', 'Q4': 'Mar 31 (next year)'
+        }
+
+        # Build coverage table
+        table_lines = [
+            "| Quarter | Downloaded | Coverage | Notes |",
+            "|---------|-----------|----------|-------|",
+        ]
+        for col in quarter_cols:
+            count = int((matrix_df[col] != '-').sum())
+            if count == 0:
+                pct = "—"
+                q_key = col.split(' ')[1]
+                note = f"Filing deadline: {filing_deadlines.get(q_key, '')}"
+            else:
+                pct = f"{count / total * 100:.0f}%"
+                note = ""
+            table_lines.append(f"| {col} | {count} / {total} | {pct} | {note} |")
+
+        # Report types for most recent non-empty quarter
+        type_section = ""
+        for col in quarter_cols:
+            filled = matrix_df.loc[matrix_df[col] != '-', col]
+            if not filled.empty:
+                types = Counter(filled)
+                rows = "\n".join(f"| {t} | {c} |" for t, c in sorted(types.items()))
+                type_section = (
+                    f"### Report Types ({col})\n\n"
+                    f"| Type | Count |\n|------|-------|\n{rows}\n"
+                )
+                break
+
+        # Companies missing recent data (show quarters with partial coverage)
+        missing_parts = []
+        for col in quarter_cols:
+            count = int((matrix_df[col] != '-').sum())
+            if 0 < count < total:
+                missing = matrix_df.loc[matrix_df[col] == '-', ['代號', '名稱']]
+                names = "\u3001".join(f"{r['代號']} {r['名稱']}" for _, r in missing.iterrows())
+                missing_parts.append(f"**Missing {col}** ({len(missing)} companies):\n{names}")
+                if len(missing_parts) >= 3:
+                    break
+
+        missing_text = "\n\n".join(missing_parts) if missing_parts else "_No recent missing data_"
+
+        # Assemble the new section
+        new_section = (
+            "## 📊 Current Download Status\n\n"
+            f"> **Last Updated**: {last_updated} | **Source**: `{Path(csv_path).name}`\n\n"
+            f"**{total} companies tracked**\n\n"
+            + "\n".join(table_lines) + "\n\n"
+            + (type_section + "\n" if type_section else "")
+            + f"### Companies Missing Recent Data\n\n{missing_text}\n\n---\n"
+        )
+
+        # Replace existing section in README.md
+        readme_text = readme_path.read_text(encoding='utf-8')
+        updated = re.sub(
+            r'## 📊 Current Download Status.*?---\n',
+            new_section,
+            readme_text,
+            flags=re.DOTALL,
+        )
+
+        if updated == readme_text:
+            logger.warning("⚠️ README.md 未找到 '📊 Current Download Status' 區塊，跳過更新")
+            return
+
+        readme_path.write_text(updated, encoding='utf-8')
+        logger.info(f"✅ README.md 下載狀態已更新: {readme_path}")
     
     def test_connection(self) -> bool:
         """Enhanced connection test with detailed feedback"""

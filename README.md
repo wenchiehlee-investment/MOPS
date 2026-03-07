@@ -442,6 +442,52 @@ mops-downloader/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 📊 Current Download Status
+
+> **Last Updated**: 2026-02-24 | **Source**: `mops_matrix_20260224_132527.csv`
+
+**118 companies tracked**
+
+| Quarter | Downloaded | Coverage | Notes |
+|---------|-----------|----------|-------|
+| 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
+| 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
+| 2025 Q3 | 109 / 118 | 92% |  |
+| 2025 Q2 | 111 / 118 | 94% |  |
+| 2025 Q1 | 105 / 118 | 89% |  |
+| 2024 Q4 | 90 / 118 | 76% |  |
+| 2024 Q3 | 78 / 118 | 66% |  |
+| 2024 Q2 | 17 / 118 | 14% |  |
+| 2024 Q1 | 15 / 118 | 13% |  |
+| 2023 Q4 | 12 / 118 | 10% |  |
+| 2023 Q3 | 9 / 118 | 8% |  |
+| 2023 Q2 | 11 / 118 | 9% |  |
+| 2023 Q1 | 9 / 118 | 8% |  |
+| 2020 Q4 | 1 / 118 | 1% |  |
+| 2020 Q3 | 1 / 118 | 1% |  |
+| 2020 Q2 | 1 / 118 | 1% |  |
+| 2020 Q1 | 1 / 118 | 1% |  |
+
+### Report Types (2025 Q3)
+
+| Type | Count |
+|------|-------|
+| AI1 | 98 |
+| AI2 | 11 |
+
+### Companies Missing Recent Data
+
+**Missing 2025 Q3** (9 companies):
+2353 宏碁、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
+
+**Missing 2025 Q2** (7 companies):
+2353 宏碁、6285 啟碁、6690 安碁資訊、6811 宏碁資訊、6962 奕力-KY、7749 意騰-KY、7794 宏碁智新
+
+**Missing 2025 Q1** (13 companies):
+2345 智邦、2353 宏碁、2359 所羅門、2383 台光電、2405 輔信、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
+
+---
+
 ## 📝 Version History
 
 ### v2.0.0 (Current)
