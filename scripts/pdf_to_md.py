@@ -15,11 +15,27 @@ from typing import Optional, List, Tuple, Dict
 import logging
 import traceback
 
+FITZ_AVAILABLE = False
+PYPDF_AVAILABLE = False
+
 try:
     import fitz  # PyMuPDF
+    FITZ_AVAILABLE = True
 except ImportError:
-    print("❌ Error: PyMuPDF is not installed. Please install it using:")
+    fitz = None
+
+try:
+    from pypdf import PdfReader
+    PYPDF_AVAILABLE = True
+except ImportError:
+    PdfReader = None
+
+if not FITZ_AVAILABLE and not PYPDF_AVAILABLE:
+    print("❌ Error: Neither PyMuPDF nor pypdf is installed.")
+    print("   Install one of them using:")
     print("   pip install pymupdf")
+    print("   or")
+    print("   pip install pypdf")
     sys.exit(1)
 
 # Set up logging
@@ -297,11 +313,55 @@ def _find_page_tables(page, force_text: bool = False) -> List:
     return valid_text_tables
 
 
+def convert_pdf_to_md_fallback(pdf_path: Path, output_path: Path) -> bool:
+    """Fallback converter using pypdf when PyMuPDF is unavailable."""
+    if not PYPDF_AVAILABLE:
+        logger.error("❌ pypdf is unavailable for fallback conversion.")
+        return False
+
+    logger.info(f"📄 Converting (Fallback Mode): {pdf_path} -> {output_path}")
+    try:
+        reader = PdfReader(str(pdf_path))
+        md_final = [f"# MOPS Report: {pdf_path.name}",
+                    f"- **Source**: {pdf_path}",
+                    "",
+                    "> Generated with pypdf fallback (text extraction only).",
+                    ""]
+
+        for page_num, page in enumerate(reader.pages, start=1):
+            md_final.append(f"\n---\n<!-- Page {page_num} -->\n")
+            text = page.extract_text() or ""
+            lines = []
+            for line in text.splitlines():
+                clean_line = line.strip()
+                if clean_line and not _is_noise_line(clean_line):
+                    lines.append(clean_line)
+
+            if lines:
+                md_final.append("\n".join(lines))
+                md_final.append("")
+            else:
+                md_final.append(f"> **TODO:OCR** - Page {page_num} has no extractable text")
+                md_final.append("")
+
+        with open(output_path, 'w', encoding='utf-8') as f:
+            f.write("\n".join(md_final))
+        logger.info(f"✅ Successfully converted with fallback: {output_path}")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Failed fallback conversion for {pdf_path}: {e}")
+        traceback.print_exc()
+        return False
+
+
 def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None) -> bool:
     if not pdf_path.exists():
         return False
     if not output_path:
         output_path = pdf_path.with_suffix('.md')
+
+    if not FITZ_AVAILABLE:
+        return convert_pdf_to_md_fallback(pdf_path, output_path)
 
     logger.info(f"📄 Converting (AI-TOC Mode): {pdf_path} -> {output_path}")
 
