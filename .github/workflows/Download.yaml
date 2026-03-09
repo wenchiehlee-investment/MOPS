@@ -760,7 +760,10 @@ jobs:
         git add status_report.md || true
         git add sheets_upload_status.txt || true
         git add data/reports/mops_matrix_*.csv || true
-        
+
+        # Auto-update README Current Download Status
+        python scripts/update_readme_status.py && git add README.md || true
+
         if git diff --staged --quiet; then
           echo "No MOPS download changes to commit"
         else

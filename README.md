@@ -6,9 +6,11 @@
 
 A Python-based tool for automatically downloading quarterly financial reports from Taiwan's Market Observation Post System (MOPS). Designed to handle real-world variations in report availability with intelligent fallback mechanisms.
 
+<!-- BEGIN_STATUS -->
+
 ## 📊 Current Download Status
 
-> **Last Updated**: 2026-02-24 | **Source**: `mops_matrix_20260224_132527.csv`
+> **Last Updated**: 2026-03-09 | **Source**: `mops_matrix_20260305_101315.csv`
 
 **118 companies tracked**
 
@@ -18,21 +20,21 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 |---------|--------|----------|-------|
 | 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
 | 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
-| 2025 Q3 | 109 / 118 | 92% | |
-| 2025 Q2 | 111 / 118 | 94% | |
-| 2025 Q1 | 105 / 118 | 89% | |
-| 2024 Q4 | 90 / 118 | 76% | |
-| 2024 Q3 | 78 / 118 | 66% | |
-| 2024 Q2 | 17 / 118 | 14% | |
-| 2024 Q1 | 15 / 118 | 13% | |
-| 2023 Q4 | 12 / 118 | 10% | |
-| 2023 Q3 | 9 / 118 | 8% | |
-| 2023 Q2 | 11 / 118 | 9% | |
-| 2023 Q1 | 9 / 118 | 8% | |
-| 2020 Q4 | 1 / 118 | 1% | |
-| 2020 Q3 | 1 / 118 | 1% | |
-| 2020 Q2 | 1 / 118 | 1% | |
-| 2020 Q1 | 1 / 118 | 1% | |
+| 2025 Q3 | 109 / 118 | 92% |  |
+| 2025 Q2 | 111 / 118 | 94% |  |
+| 2025 Q1 | 105 / 118 | 89% |  |
+| 2024 Q4 | 90 / 118 | 76% |  |
+| 2024 Q3 | 78 / 118 | 66% |  |
+| 2024 Q2 | 17 / 118 | 14% |  |
+| 2024 Q1 | 15 / 118 | 13% |  |
+| 2023 Q4 | 12 / 118 | 10% |  |
+| 2023 Q3 | 9 / 118 | 8% |  |
+| 2023 Q2 | 11 / 118 | 9% |  |
+| 2023 Q1 | 9 / 118 | 8% |  |
+| 2020 Q4 | 1 / 118 | 1% |  |
+| 2020 Q3 | 1 / 118 | 1% |  |
+| 2020 Q2 | 1 / 118 | 1% |  |
+| 2020 Q1 | 1 / 118 | 1% |  |
 
 ---
 
@@ -44,13 +46,13 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 | 公司 | 法說會 PDF/MD | 逐字稿 | 新聞 |
 |------|:------------:|:------:|:----:|
-| [2357 華碩](#2357-華碩-asus) | 11 季 | 2 | 2 |
+| [2357 華碩](#2357-華碩) | 11 季 | 2 | 2 |
 
 **覆蓋率**：1 / 118 companies
 
 ---
 
-#### 2357 華碩 (ASUS)
+#### 2357 華碩
 
 <details>
 <summary>法說會（季度）</summary>
@@ -76,10 +78,12 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 | 日期 | 標題 |
 |------|------|
-| 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
 | 2026-01-29 | [華碩全力衝 AI 伺服器 2026年獨立事業群「福將」朱培蘭掌旗](downloads/2357/News/news_20260129_udn_asus_server_bg.md) |
+| 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
 
 </details>
+
+<!-- END_STATUS -->
 
 ### Report Types (2025 Q3)
 
