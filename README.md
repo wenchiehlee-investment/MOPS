@@ -57,7 +57,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 | Quarter | 法說會 PDF/MD | 逐字稿 |
 |---------|:------------:|:------:|
-| 2025 Q3 | [MD](downloads/2357/InvestorRelation/2025Q3_IR_Chinese.md) | [2025-11-11](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-11-11.txt) / [2025-12-08](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-12-08.txt) |
+| 2025 Q3 | [MD](downloads/2357/InvestorRelation/2025Q3_IR_Chinese.md) | [2025-11-11](downloads/2357/InvestorRelation/法說會逐字稿/華碩_2025-11-11.md) / [2025-12-08](downloads/2357/InvestorRelation/法說會逐字稿/華碩_2025-12-08.md) |
 | 2025 Q2 | [MD](downloads/2357/InvestorRelation/2025Q2_IR_Chinese.md) | — |
 | 2025 Q1 | [MD](downloads/2357/InvestorRelation/2025Q1_IR_Chinese.md) | — |
 | 2024 Q4 | [MD](downloads/2357/InvestorRelation/2024Q4_IR_Chinese.md) | — |
