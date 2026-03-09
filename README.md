@@ -6,6 +6,101 @@
 
 A Python-based tool for automatically downloading quarterly financial reports from Taiwan's Market Observation Post System (MOPS). Designed to handle real-world variations in report availability with intelligent fallback mechanisms.
 
+## 📊 Current Download Status
+
+> **Last Updated**: 2026-02-24 | **Source**: `mops_matrix_20260224_132527.csv`
+
+**118 companies tracked**
+
+### 季財報 概況
+
+| Quarter | 季財報 | Coverage | Notes |
+|---------|--------|----------|-------|
+| 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
+| 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
+| 2025 Q3 | 109 / 118 | 92% | |
+| 2025 Q2 | 111 / 118 | 94% | |
+| 2025 Q1 | 105 / 118 | 89% | |
+| 2024 Q4 | 90 / 118 | 76% | |
+| 2024 Q3 | 78 / 118 | 66% | |
+| 2024 Q2 | 17 / 118 | 14% | |
+| 2024 Q1 | 15 / 118 | 13% | |
+| 2023 Q4 | 12 / 118 | 10% | |
+| 2023 Q3 | 9 / 118 | 8% | |
+| 2023 Q2 | 11 / 118 | 9% | |
+| 2023 Q1 | 9 / 118 | 8% | |
+| 2020 Q4 | 1 / 118 | 1% | |
+| 2020 Q3 | 1 / 118 | 1% | |
+| 2020 Q2 | 1 / 118 | 1% | |
+| 2020 Q1 | 1 / 118 | 1% | |
+
+---
+
+### 📂 法說會 & 新聞 資料庫
+
+#### 完成度概況
+
+> 各公司法說會簡報、逐字稿、新聞收錄數量。點擊公司名稱展開詳細連結。
+
+| 公司 | 法說會 PDF/MD | 逐字稿 | 新聞 |
+|------|:------------:|:------:|:----:|
+| [2357 華碩](#2357-華碩-asus) | 11 季 | 2 | 2 |
+
+**覆蓋率**：1 / 118 companies
+
+---
+
+#### 2357 華碩 (ASUS)
+
+<details>
+<summary>法說會（季度）</summary>
+
+| Quarter | 法說會 PDF/MD | 逐字稿 |
+|---------|:------------:|:------:|
+| 2025 Q3 | [MD](downloads/2357/InvestorRelation/2025Q3_IR_Chinese.md) | [2025-11-11](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-11-11.txt) / [2025-12-08](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-12-08.txt) |
+| 2025 Q2 | [MD](downloads/2357/InvestorRelation/2025Q2_IR_Chinese.md) | — |
+| 2025 Q1 | [MD](downloads/2357/InvestorRelation/2025Q1_IR_Chinese.md) | — |
+| 2024 Q4 | [MD](downloads/2357/InvestorRelation/2024Q4_IR_Chinese.md) | — |
+| 2024 Q3 | [MD](downloads/2357/InvestorRelation/2024Q3_IR_Chinese.md) | — |
+| 2024 Q2 | [MD](downloads/2357/InvestorRelation/2024Q2_IR_Chinese.md) | — |
+| 2024 Q1 | [MD](downloads/2357/InvestorRelation/2024Q1_IR_Chinese.md) | — |
+| 2023 Q4 | [MD](downloads/2357/InvestorRelation/2023Q4_IR_Chinese.md) | — |
+| 2023 Q3 | [MD](downloads/2357/InvestorRelation/2023Q3_IR_Chinese.md) | — |
+| 2023 Q2 | [MD](downloads/2357/InvestorRelation/2023Q2_IR_Chinese.md) | — |
+| 2023 Q1 | [MD](downloads/2357/InvestorRelation/2023Q1_IR_Chinese.md) | — |
+
+</details>
+
+<details>
+<summary>新聞</summary>
+
+| 日期 | 標題 |
+|------|------|
+| 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
+| 2026-01-29 | [華碩全力衝 AI 伺服器 2026年獨立事業群「福將」朱培蘭掌旗](downloads/2357/News/news_20260129_udn_asus_server_bg.md) |
+
+</details>
+
+### Report Types (2025 Q3)
+
+| Type | Count |
+|------|-------|
+| AI1 | 98 |
+| AI2 | 11 |
+
+### Companies Missing Recent Data
+
+**Missing 2025 Q3** (9 companies):
+2353 宏碁、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
+
+**Missing 2025 Q2** (7 companies):
+2353 宏碁、6285 啟碁、6690 安碁資訊、6811 宏碁資訊、6962 奕力-KY、7749 意騰-KY、7794 宏碁智新
+
+**Missing 2025 Q1** (13 companies):
+2345 智邦、2353 宏碁、2359 所羅門、2383 台光電、2405 輔信、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
+
+---
+
 ## 🎯 What This Tool Does
 
 - **Automates MOPS Downloads**: Fetches IFRSs financial reports in Chinese format from Taiwan's official MOPS system
@@ -441,101 +536,6 @@ mops-downloader/
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📊 Current Download Status
-
-> **Last Updated**: 2026-02-24 | **Source**: `mops_matrix_20260224_132527.csv`
-
-**118 companies tracked**
-
-### 季財報 概況
-
-| Quarter | 季財報 | Coverage | Notes |
-|---------|--------|----------|-------|
-| 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
-| 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
-| 2025 Q3 | 109 / 118 | 92% | |
-| 2025 Q2 | 111 / 118 | 94% | |
-| 2025 Q1 | 105 / 118 | 89% | |
-| 2024 Q4 | 90 / 118 | 76% | |
-| 2024 Q3 | 78 / 118 | 66% | |
-| 2024 Q2 | 17 / 118 | 14% | |
-| 2024 Q1 | 15 / 118 | 13% | |
-| 2023 Q4 | 12 / 118 | 10% | |
-| 2023 Q3 | 9 / 118 | 8% | |
-| 2023 Q2 | 11 / 118 | 9% | |
-| 2023 Q1 | 9 / 118 | 8% | |
-| 2020 Q4 | 1 / 118 | 1% | |
-| 2020 Q3 | 1 / 118 | 1% | |
-| 2020 Q2 | 1 / 118 | 1% | |
-| 2020 Q1 | 1 / 118 | 1% | |
-
----
-
-### 📂 法說會 & 新聞 資料庫
-
-#### 完成度概況
-
-> 各公司法說會簡報、逐字稿、新聞收錄數量。點擊公司名稱展開詳細連結。
-
-| 公司 | 法說會 PDF/MD | 逐字稿 | 新聞 |
-|------|:------------:|:------:|:----:|
-| [2357 華碩](#2357-華碩-asus) | 11 季 | 2 | 2 |
-
-**覆蓋率**：1 / 118 companies
-
----
-
-#### 2357 華碩 (ASUS)
-
-<details>
-<summary>法說會（季度）</summary>
-
-| Quarter | 法說會 PDF/MD | 逐字稿 |
-|---------|:------------:|:------:|
-| 2025 Q3 | [MD](downloads/2357/InvestorRelation/2025Q3_IR_Chinese.md) | [2025-11-11](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-11-11.txt) / [2025-12-08](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-12-08.txt) |
-| 2025 Q2 | [MD](downloads/2357/InvestorRelation/2025Q2_IR_Chinese.md) | — |
-| 2025 Q1 | [MD](downloads/2357/InvestorRelation/2025Q1_IR_Chinese.md) | — |
-| 2024 Q4 | [MD](downloads/2357/InvestorRelation/2024Q4_IR_Chinese.md) | — |
-| 2024 Q3 | [MD](downloads/2357/InvestorRelation/2024Q3_IR_Chinese.md) | — |
-| 2024 Q2 | [MD](downloads/2357/InvestorRelation/2024Q2_IR_Chinese.md) | — |
-| 2024 Q1 | [MD](downloads/2357/InvestorRelation/2024Q1_IR_Chinese.md) | — |
-| 2023 Q4 | [MD](downloads/2357/InvestorRelation/2023Q4_IR_Chinese.md) | — |
-| 2023 Q3 | [MD](downloads/2357/InvestorRelation/2023Q3_IR_Chinese.md) | — |
-| 2023 Q2 | [MD](downloads/2357/InvestorRelation/2023Q2_IR_Chinese.md) | — |
-| 2023 Q1 | [MD](downloads/2357/InvestorRelation/2023Q1_IR_Chinese.md) | — |
-
-</details>
-
-<details>
-<summary>新聞</summary>
-
-| 日期 | 標題 |
-|------|------|
-| 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
-| 2026-01-29 | [華碩全力衝 AI 伺服器 2026年獨立事業群「福將」朱培蘭掌旗](downloads/2357/News/news_20260129_udn_asus_server_bg.md) |
-
-</details>
-
-### Report Types (2025 Q3)
-
-| Type | Count |
-|------|-------|
-| AI1 | 98 |
-| AI2 | 11 |
-
-### Companies Missing Recent Data
-
-**Missing 2025 Q3** (9 companies):
-2353 宏碁、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
-
-**Missing 2025 Q2** (7 companies):
-2353 宏碁、6285 啟碁、6690 安碁資訊、6811 宏碁資訊、6962 奕力-KY、7749 意騰-KY、7794 宏碁智新
-
-**Missing 2025 Q1** (13 companies):
-2345 智邦、2353 宏碁、2359 所羅門、2383 台光電、2405 輔信、6035 悠遊卡、6285 啟碁、6690 安碁資訊、6699 奇邑、6811 宏碁資訊、6850 光鼎生技、7737 凱鈿、7794 宏碁智新
-
----
 
 ## 📝 Version History
 
