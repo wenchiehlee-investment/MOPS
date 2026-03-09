@@ -448,25 +448,74 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **118 companies tracked**
 
-| Quarter | Downloaded | Coverage | Notes |
-|---------|-----------|----------|-------|
+### 季財報 概況
+
+| Quarter | 季財報 | Coverage | Notes |
+|---------|--------|----------|-------|
 | 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
 | 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
-| 2025 Q3 | 109 / 118 | 92% |  |
-| 2025 Q2 | 111 / 118 | 94% |  |
-| 2025 Q1 | 105 / 118 | 89% |  |
-| 2024 Q4 | 90 / 118 | 76% |  |
-| 2024 Q3 | 78 / 118 | 66% |  |
-| 2024 Q2 | 17 / 118 | 14% |  |
-| 2024 Q1 | 15 / 118 | 13% |  |
-| 2023 Q4 | 12 / 118 | 10% |  |
-| 2023 Q3 | 9 / 118 | 8% |  |
-| 2023 Q2 | 11 / 118 | 9% |  |
-| 2023 Q1 | 9 / 118 | 8% |  |
-| 2020 Q4 | 1 / 118 | 1% |  |
-| 2020 Q3 | 1 / 118 | 1% |  |
-| 2020 Q2 | 1 / 118 | 1% |  |
-| 2020 Q1 | 1 / 118 | 1% |  |
+| 2025 Q3 | 109 / 118 | 92% | |
+| 2025 Q2 | 111 / 118 | 94% | |
+| 2025 Q1 | 105 / 118 | 89% | |
+| 2024 Q4 | 90 / 118 | 76% | |
+| 2024 Q3 | 78 / 118 | 66% | |
+| 2024 Q2 | 17 / 118 | 14% | |
+| 2024 Q1 | 15 / 118 | 13% | |
+| 2023 Q4 | 12 / 118 | 10% | |
+| 2023 Q3 | 9 / 118 | 8% | |
+| 2023 Q2 | 11 / 118 | 9% | |
+| 2023 Q1 | 9 / 118 | 8% | |
+| 2020 Q4 | 1 / 118 | 1% | |
+| 2020 Q3 | 1 / 118 | 1% | |
+| 2020 Q2 | 1 / 118 | 1% | |
+| 2020 Q1 | 1 / 118 | 1% | |
+
+---
+
+### 📂 法說會 & 新聞 資料庫
+
+#### 完成度概況
+
+> 各公司法說會簡報、逐字稿、新聞收錄數量。點擊公司名稱展開詳細連結。
+
+| 公司 | 法說會 PDF/MD | 逐字稿 | 新聞 |
+|------|:------------:|:------:|:----:|
+| [2357 華碩](#2357-華碩-asus) | 11 季 | 2 | 2 |
+
+**覆蓋率**：1 / 118 companies
+
+---
+
+#### 2357 華碩 (ASUS)
+
+<details>
+<summary>法說會（季度）</summary>
+
+| Quarter | 法說會 PDF/MD | 逐字稿 |
+|---------|:------------:|:------:|
+| 2025 Q3 | [MD](downloads/2357/InvestorRelation/2025Q3_IR_Chinese.md) | [2025-11-11](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-11-11.txt) / [2025-12-08](downloads/2357/InvestorRelation/公開法說會逐字稿/華碩_2025-12-08.txt) |
+| 2025 Q2 | [MD](downloads/2357/InvestorRelation/2025Q2_IR_Chinese.md) | — |
+| 2025 Q1 | [MD](downloads/2357/InvestorRelation/2025Q1_IR_Chinese.md) | — |
+| 2024 Q4 | [MD](downloads/2357/InvestorRelation/2024Q4_IR_Chinese.md) | — |
+| 2024 Q3 | [MD](downloads/2357/InvestorRelation/2024Q3_IR_Chinese.md) | — |
+| 2024 Q2 | [MD](downloads/2357/InvestorRelation/2024Q2_IR_Chinese.md) | — |
+| 2024 Q1 | [MD](downloads/2357/InvestorRelation/2024Q1_IR_Chinese.md) | — |
+| 2023 Q4 | [MD](downloads/2357/InvestorRelation/2023Q4_IR_Chinese.md) | — |
+| 2023 Q3 | [MD](downloads/2357/InvestorRelation/2023Q3_IR_Chinese.md) | — |
+| 2023 Q2 | [MD](downloads/2357/InvestorRelation/2023Q2_IR_Chinese.md) | — |
+| 2023 Q1 | [MD](downloads/2357/InvestorRelation/2023Q1_IR_Chinese.md) | — |
+
+</details>
+
+<details>
+<summary>新聞</summary>
+
+| 日期 | 標題 |
+|------|------|
+| 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
+| 2026-01-29 | [華碩全力衝 AI 伺服器 2026年獨立事業群「福將」朱培蘭掌旗](downloads/2357/News/news_20260129_udn_asus_server_bg.md) |
+
+</details>
 
 ### Report Types (2025 Q3)
 
