@@ -89,8 +89,28 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20260331_050325": {
+      "timestamp": "2026-03-31T05:03:25.200900",
+      "company_id": "6125",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202504_6125_AI1.pdf",
+          "path": "downloads/6125/202504_6125_AI1.pdf",
+          "size": 1961202,
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202504_6125_AI3.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-02-17T03:44:19.444491",
+  "last_updated": "2026-03-31T05:03:25.200906",
   "company_id": "6125"
 }

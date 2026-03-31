@@ -10,7 +10,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 ## 📊 Current Download Status
 
-> **Last Updated**: 2026-03-09 | **Source**: `mops_matrix_20260305_101315.csv`
+> **Last Updated**: 2026-03-31 | **Source**: `mops_matrix_20260331_054129.csv`
 
 **118 companies tracked**
 
@@ -19,7 +19,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 | Quarter | 季財報 | Coverage | Notes |
 |---------|--------|----------|-------|
 | 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
-| 2025 Q4 | 0 / 118 | — | Filing deadline: Mar 31 (next year) |
+| 2025 Q4 | 78 / 118 | 66% | Filing deadline: Mar 31 (next year) |
 | 2025 Q3 | 109 / 118 | 92% |  |
 | 2025 Q2 | 111 / 118 | 94% |  |
 | 2025 Q1 | 105 / 118 | 89% |  |
@@ -47,8 +47,9 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 | 公司 | 法說會 PDF/MD | 逐字稿 | 新聞 |
 |------|:------------:|:------:|:----:|
 | [2357 華碩](#2357-華碩) | 11 季 | 2 | 2 |
+| [2382 廣達](#2382-廣達) | — | 1 | — |
 
-**覆蓋率**：1 / 118 companies
+**覆蓋率**：2 / 118 companies
 
 ---
 
@@ -82,6 +83,10 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 | 2026-03-06 | [華碩 AI 伺服器戰略不攻大廠 北美四大 CSP 之外生意空間有多大？](downloads/2357/News/2026-03-06_udn_asus-ai-server-tier2-csp.md) |
 
 </details>
+
+---
+
+#### 2382 廣達
 
 <!-- END_STATUS -->
 

@@ -94,8 +94,22 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20260331_051936": {
+      "timestamp": "2026-03-31T05:19:36.908121",
+      "company_id": "6925",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202504_6925_AI2.pdf",
+          "path": "downloads/6925/202504_6925_AI2.pdf",
+          "size": 1323361,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-02-17T03:56:41.874115",
+  "last_updated": "2026-03-31T05:19:36.908127",
   "company_id": "6925"
 }
