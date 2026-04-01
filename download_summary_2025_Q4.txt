@@ -1,13 +1,13 @@
 MOPS Download Summary
 Year: 2025, Quarter: 4
 Company Scope: Batch mode (all companies)
-Download Date: Tue Mar 31 05:41:29 UTC 2026
+Download Date: Wed Apr  1 05:04:38 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
-  3293: 6 PDF files
-  3231: 8 PDF files
+  3293: 7 PDF files
+  3231: 10 PDF files
   6231: 7 PDF files
   4749: 4 PDF files
   4114: 6 PDF files
@@ -18,18 +18,18 @@ Companies processed:
   6123: 5 PDF files
   2345: 6 PDF files
   7749: 4 PDF files
-  2454: 13 PDF files
-  2395: 6 PDF files
-  2382: 13 PDF files
+  2454: 14 PDF files
+  2395: 8 PDF files
+  2382: 15 PDF files
   InvestorRelation: 0 PDF files
   法說會逐字稿: 0 PDF files
   6902: 8 PDF files
-  6597: 5 PDF files
+  6597: 6 PDF files
   2376: 8 PDF files
-  2412: 13 PDF files
+  2412: 15 PDF files
   4953: 3 PDF files
   6125: 7 PDF files
-  6182: 5 PDF files
+  6182: 7 PDF files
   6699: 3 PDF files
   6720: 8 PDF files
   6506: 7 PDF files
@@ -37,8 +37,8 @@ Companies processed:
   2324: 7 PDF files
   5434: 6 PDF files
   3558: 6 PDF files
-  2379: 13 PDF files
-  9921: 3 PDF files
+  2379: 15 PDF files
+  9921: 5 PDF files
   2359: 7 PDF files
   3260: 8 PDF files
   3467: 6 PDF files
@@ -51,14 +51,14 @@ Companies processed:
   4938: 5 PDF files
   3356: 7 PDF files
   7547: 6 PDF files
-  2451: 6 PDF files
+  2451: 7 PDF files
   3034: 15 PDF files
   1587: 7 PDF files
   3014: 8 PDF files
   8299: 14 PDF files
   7747: 6 PDF files
   2308: 12 PDF files
-  7769: 5 PDF files
+  7769: 7 PDF files
   2317: 12 PDF files
   6763: 9 PDF files
   2347: 7 PDF files
@@ -72,20 +72,20 @@ Companies processed:
   3022: 7 PDF files
   7722: 12 PDF files
   6751: 7 PDF files
-  2450: 6 PDF files
+  2450: 8 PDF files
   7737: 2 PDF files
-  7736: 6 PDF files
+  7736: 8 PDF files
   2332: 6 PDF files
-  3150: 5 PDF files
-  3048: 6 PDF files
+  3150: 6 PDF files
+  3048: 8 PDF files
   2377: 7 PDF files
   6695: 7 PDF files
   3026: 7 PDF files
   6425: 8 PDF files
-  6962: 3 PDF files
+  6962: 4 PDF files
   2330: 10 PDF files
   6918: 7 PDF files
-  2458: 6 PDF files
+  2458: 7 PDF files
   6035: 2 PDF files
   7732: 8 PDF files
   2357: 24 PDF files
@@ -93,40 +93,40 @@ Companies processed:
   InvestorRelation: 11 PDF files
   法說會逐字稿: 0 PDF files
   5536: 6 PDF files
-  2480: 13 PDF files
-  6510: 8 PDF files
+  2480: 15 PDF files
+  6510: 10 PDF files
   6996: 9 PDF files
-  7765: 6 PDF files
-  2405: 4 PDF files
+  7765: 7 PDF files
+  2405: 5 PDF files
   7703: 6 PDF files
   6442: 8 PDF files
   7805: 7 PDF files
-  2449: 6 PDF files
-  5904: 4 PDF files
+  2449: 8 PDF files
+  5904: 5 PDF files
   5269: 6 PDF files
   7712: 8 PDF files
   3029: 7 PDF files
-  6757: 5 PDF files
+  6757: 6 PDF files
   2646: 5 PDF files
   7705: 4 PDF files
   3045: 8 PDF files
-  6997: 4 PDF files
+  6997: 6 PDF files
   6669: 7 PDF files
   2301: 7 PDF files
   7708: 5 PDF files
-  9914: 5 PDF files
+  9914: 7 PDF files
   7728: 7 PDF files
-  2383: 5 PDF files
+  2383: 7 PDF files
   5274: 5 PDF files
   7709: 6 PDF files
-  2474: 6 PDF files
+  2474: 7 PDF files
   8016: 8 PDF files
   2603: 7 PDF files
   8454: 8 PDF files
   7713: 7 PDF files
 
-Total: 795 PDF files from 118 companies
+Total: 841 PDF files from 118 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 22 files created
+  CSV Backup: 23 files created

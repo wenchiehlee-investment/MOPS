@@ -10,7 +10,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 ## 📊 Current Download Status
 
-> **Last Updated**: 2026-03-31 | **Source**: `mops_matrix_20260331_054129.csv`
+> **Last Updated**: 2026-04-01 | **Source**: `mops_matrix_20260401_050438.csv`
 
 **118 companies tracked**
 
@@ -18,8 +18,9 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 | Quarter | 季財報 | Coverage | Notes |
 |---------|--------|----------|-------|
+| 2026 Q2 | 0 / 118 | — |  |
 | 2026 Q1 | 0 / 118 | — | Filing deadline: May 15 |
-| 2025 Q4 | 78 / 118 | 66% | Filing deadline: Mar 31 (next year) |
+| 2025 Q4 | 107 / 118 | 91% | Filing deadline: Mar 31 (next year) |
 | 2025 Q3 | 109 / 118 | 92% |  |
 | 2025 Q2 | 111 / 118 | 94% |  |
 | 2025 Q1 | 105 / 118 | 89% |  |
