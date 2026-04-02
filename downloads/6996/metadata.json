@@ -123,8 +123,22 @@
           "skipped": false
         }
       ]
+    },
+    "2025_20260402_043202": {
+      "timestamp": "2026-04-02T04:32:02.792198",
+      "company_id": "6996",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202504_6996_AI2.pdf",
+          "path": "downloads/6996/202504_6996_AI2.pdf",
+          "size": 2035317,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-04-01T05:02:24.341092",
+  "last_updated": "2026-04-02T04:32:02.792205",
   "company_id": "6996"
 }
