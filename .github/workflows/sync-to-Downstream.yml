@@ -1,0 +1,33 @@
+name: Sync to Downstream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *"  # Runs every 2 hours
+  push:
+    branches:
+      - main
+    paths:
+      - "data/reports/mops_matrix_*.csv"
+      - "raw_column_definition.md"
+      - ".github/sync-to-Downstream.yml"
+      - ".github/workflows/sync-to-Downstream.yml"
+
+concurrency:
+  group: sync-downstream
+  cancel-in-progress: false
+
+jobs:
+  sync-to-downstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync to Money and Analyzer
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_MONEY }}
+          CONFIG_PATH: .github/sync-to-Downstream.yml
+          COMMIT_EACH_FILE: false
+          PR_LABELS: "automated-sync"
+          SKIP_PR: true
