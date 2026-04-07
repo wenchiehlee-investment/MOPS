@@ -29,3 +29,8 @@ group:
         dest: MOPS/
     repos: |
         wenchiehlee-money/2454.TW
+  - files:
+      - source: raw_column_definition.md
+        dest: raw_column_definition.md
+    repos: |
+        wenchiehlee-investment/Python-Actions.GoodInfo.Analyzer
