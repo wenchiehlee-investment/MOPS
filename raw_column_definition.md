@@ -1,19 +1,9 @@
+---
+source: https://raw.githubusercontent.com/wenchiehlee-investment/MOPS/refs/heads/main/raw_column_definition.md
+destination: https://raw.githubusercontent.com/wenchiehlee-investment/Python-Actions.GoodInfo.Analyzer/refs/heads/main/raw_column_definition.md
+---
+
 # Raw CSV Column Definitions - MOPS Repo
-
-## Standard Metadata Columns (Expected for All Reports)
-
-Following the `biztrends.TW` core specification, all raw CSV files intended for the `Analyzer` layer SHOULD include these metadata columns:
-
-| Column | Position | Type | Description | Example |
-|--------|----------|------|-------------|---------|
-| `stock_code` | **Column 1** | string | 4-digit Taiwan stock code | `2330`, `1587` |
-| `company_name` | **Column 2** | string | Company name | `台積電`, `日月光` |
-| `file_type` | **Last -5** | string | Source data type identifier | `MOPS_MATRIX` |
-| `source_file` | **Last -4** | string | Original filename processed | `mops_matrix_20260401_050438.csv` |
-| `download_success` | **Last -3** | boolean/null | Whether download succeeded | `True`, `False`, or `null` |
-| `download_timestamp` | **Last -2** | datetime/null | When data was downloaded | `2026-04-01 05:04:38` |
-| `process_timestamp` | **Last -1** | datetime/null | When downloader processed the stock | `2026-04-01 05:04:38` |
-| `stage1_process_timestamp` | **Last** | datetime | When Stage 1 pipeline ran | `2026-04-01 05:04:38` |
 
 ---
 
@@ -21,7 +11,7 @@ Following the `biztrends.TW` core specification, all raw CSV files intended for 
 **No:** 60
 **Source:** `data/reports/mops_matrix_*.csv`
 **Purpose:** Summarize which financial reports are available for each company and quarter.
-**Note:** Current implementation in `MOPS` uses a wide-format matrix which may lack the standard metadata suffix in the raw output.
+**Note:** Current implementation in `MOPS` uses a wide-format matrix which lacks the standard metadata suffix in the raw output.
 
 ### Column Definitions (Matrix Format):
 
@@ -43,6 +33,3 @@ Following the `biztrends.TW` core specification, all raw CSV files intended for 
 ## [Proposed] raw_mops_financials.csv (Raw Financial Data)
 **No:** 61
 **Note:** Placeholder for future implementation where specific fields (Total Revenue, Net Income, etc.) are extracted.
-
-### Column Definitions:
-*TBD - To be aligned with TWSE official XML/XBRL fields.*
