@@ -10,7 +10,8 @@ on:
     paths:
       - "data/reports/mops_matrix_*.csv"
       - "raw_column_definition.md"
-      - ".github/sync-to-Downstream.yml"
+      - ".github/sync-money.yml"
+      - ".github/sync-investment.yml"
       - ".github/workflows/sync-to-Downstream.yml"
 
 concurrency:
@@ -23,11 +24,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync to Money and Analyzer
+      - name: Sync to Money xxxx.TW
         uses: BetaHuhn/repo-file-sync-action@latest
         with:
           GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_MONEY }}
-          CONFIG_PATH: .github/sync-to-Downstream.yml
+          CONFIG_PATH: .github/sync-money.yml
+          COMMIT_EACH_FILE: false
+          PR_LABELS: "automated-sync"
+          SKIP_PR: true
+
+      - name: Sync to Investment Analyzer
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_INVESTMENT }}
+          CONFIG_PATH: .github/sync-investment.yml
           COMMIT_EACH_FILE: false
           PR_LABELS: "automated-sync"
           SKIP_PR: true
