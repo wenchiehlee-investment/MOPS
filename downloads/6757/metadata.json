@@ -122,8 +122,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260515_070301": {
+      "timestamp": "2026-05-15T07:03:01.699629",
+      "company_id": "6757",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202601_6757_AI2.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-04-01T05:01:28.608404",
+  "last_updated": "2026-05-15T07:03:01.699646",
   "company_id": "6757"
 }

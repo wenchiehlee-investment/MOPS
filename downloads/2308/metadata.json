@@ -174,8 +174,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260515_060125": {
+      "timestamp": "2026-05-15T06:01:25.249292",
+      "company_id": "2308",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_2308_AI1.pdf",
+          "path": "downloads/2308/202601_2308_AI1.pdf",
+          "size": 1729983,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-03-31T04:39:16.062129",
+  "last_updated": "2026-05-15T06:01:25.249304",
   "company_id": "2308"
 }

@@ -97,8 +97,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260515_062641": {
+      "timestamp": "2026-05-15T06:26:41.346124",
+      "company_id": "3048",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_3048_AI1.pdf",
+          "path": "downloads/3048/202601_3048_AI1.pdf",
+          "size": 1547666,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-04-01T04:53:48.153258",
+  "last_updated": "2026-05-15T06:26:41.346129",
   "company_id": "3048"
 }

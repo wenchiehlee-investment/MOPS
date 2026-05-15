@@ -96,8 +96,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260515_062247": {
+      "timestamp": "2026-05-15T06:22:47.008735",
+      "company_id": "3026",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202601_3026_AI1.pdf",
+          "error": "<urlopen error timed out>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-03-31T04:50:41.394907",
+  "last_updated": "2026-05-15T06:22:47.008743",
   "company_id": "3026"
 }
