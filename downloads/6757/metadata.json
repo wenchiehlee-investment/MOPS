@@ -135,8 +135,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260516_053235": {
+      "timestamp": "2026-05-16T05:32:35.711078",
+      "company_id": "6757",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_6757_AI2.pdf",
+          "path": "downloads/6757/202601_6757_AI2.pdf",
+          "size": 1111512,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-15T07:03:01.699646",
+  "last_updated": "2026-05-16T05:32:35.711086",
   "company_id": "6757"
 }

@@ -122,8 +122,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260516_053303": {
+      "timestamp": "2026-05-16T05:33:03.598493",
+      "company_id": "7713",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_7713_AI1.pdf",
+          "path": "downloads/7713/202601_7713_AI1.pdf",
+          "size": 1071587,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-15T07:18:05.330020",
+  "last_updated": "2026-05-16T05:33:03.598500",
   "company_id": "7713"
 }

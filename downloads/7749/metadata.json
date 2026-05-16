@@ -55,8 +55,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260516_053328": {
+      "timestamp": "2026-05-16T05:33:28.615390",
+      "company_id": "7749",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202601_7749_AI1.pdf",
+          "error": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\r\n",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-03-31T05:30:17.323854",
+  "last_updated": "2026-05-16T05:33:28.615397",
   "company_id": "7749"
 }
