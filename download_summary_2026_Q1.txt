@@ -1,7 +1,7 @@
 MOPS Download Summary
 Year: 2026, Quarter: 1
 Company Scope: Batch mode (all companies)
-Download Date: Sat May 16 05:35:37 UTC 2026
+Download Date: Sun May 17 06:01:28 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -22,13 +22,13 @@ Companies processed:
   6699: 3 PDF files
   2303: 8 PDF files
   2405: 6 PDF files
-  8272: 8 PDF files
+  8272: 9 PDF files
   7704: 6 PDF files
   5434: 7 PDF files
   7765: 8 PDF files
   3045: 9 PDF files
   7705: 5 PDF files
-  7722: 12 PDF files
+  7722: 13 PDF files
   6425: 9 PDF files
   2474: 8 PDF files
   1587: 8 PDF files
@@ -44,7 +44,7 @@ Companies processed:
   6850: 3 PDF files
   2480: 16 PDF files
   6613: 8 PDF files
-  2330: 10 PDF files
+  2330: 11 PDF files
   2308: 13 PDF files
   2345: 7 PDF files
   6751: 8 PDF files
@@ -58,7 +58,7 @@ Companies processed:
   News: 0 PDF files
   6925: 6 PDF files
   7728: 8 PDF files
-  9917: 5 PDF files
+  9917: 6 PDF files
   2603: 8 PDF files
   6997: 7 PDF files
   2347: 8 PDF files
@@ -90,7 +90,7 @@ Companies processed:
   2395: 9 PDF files
   8016: 9 PDF files
   7712: 9 PDF files
-  3260: 8 PDF files
+  3260: 9 PDF files
   2301: 8 PDF files
   7734: 10 PDF files
   2458: 8 PDF files
@@ -102,22 +102,22 @@ Companies processed:
   2377: 8 PDF files
   8454: 9 PDF files
   4938: 6 PDF files
-  7769: 7 PDF files
+  7769: 8 PDF files
   2450: 9 PDF files
   3231: 11 PDF files
   6757: 7 PDF files
   2356: 10 PDF files
   2317: 13 PDF files
-  7749: 4 PDF files
+  7749: 5 PDF files
   2451: 8 PDF files
   2454: 15 PDF files
   6182: 8 PDF files
   6510: 11 PDF files
-  2359: 7 PDF files
+  2359: 8 PDF files
   2379: 16 PDF files
   2646: 6 PDF files
   6506: 8 PDF files
-  9914: 7 PDF files
+  9914: 8 PDF files
   3293: 8 PDF files
   3158: 8 PDF files
   6669: 8 PDF files
@@ -125,8 +125,8 @@ Companies processed:
   8045: 8 PDF files
   5536: 7 PDF files
 
-Total: 944 PDF files from 118 companies
+Total: 953 PDF files from 118 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 28 files created
+  CSV Backup: 29 files created
