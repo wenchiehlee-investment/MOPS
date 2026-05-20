@@ -8,3 +8,5 @@ __pycache__
 /old
 *.pyc
 *.pyo
+.env*
+.claude/
