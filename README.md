@@ -10,7 +10,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 ## Current MOPS PDFs
 
-> **Source**: `mops_matrix_20260519_061057.csv`
+> **Source**: `mops_matrix_20260520_072351.csv`
 
 | 代號 | 名稱 | 2026 Q2 | 2026 Q1 | 2025 Q4 | 2025 Q3 | 2025 Q2 | 2025 Q1 | 2024 Q4 | 2024 Q3 | 2024 Q2 | 2024 Q1 | 2023 Q4 | 2023 Q3 | 2023 Q2 | 2023 Q1 | 2020 Q4 | 2020 Q3 | 2020 Q2 | 2020 Q1 |
 |------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|------|
@@ -137,7 +137,7 @@ A Python-based tool for automatically downloading quarterly financial reports fr
 
 ## 📊 Current Download Status
 
-> **Last Updated**: 2026-05-20 | **Source**: `mops_matrix_20260519_061057.csv`
+> **Last Updated**: 2026-05-20 | **Source**: `mops_matrix_20260520_072351.csv`
 
 **118 companies tracked**
 
