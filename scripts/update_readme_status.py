@@ -136,18 +136,68 @@ def parse_matrix(csv_path: Path):
     total    = len(rows)
     stats    = {q: sum(1 for r in rows if r[q] and r[q] != "-") for q in quarters}
     names    = {r["代號"]: r["名稱"] for r in rows}
-    return quarters, stats, total, names
+    return rows, quarters, stats, total, names
+
+
+def _quarter_filename_prefix(quarter: str, code: str) -> str | None:
+    m = re.match(r"^(\d{4}) Q([1-4])$", quarter)
+    if not m:
+        return None
+    return f"{m.group(1)}{int(m.group(2)):02d}_{code}_"
+
+
+def _pdf_link(code: str, quarter: str, report_type: str) -> str:
+    prefix = _quarter_filename_prefix(quarter, code)
+    if not prefix:
+        return report_type
+
+    pdf_name = f"{prefix}{report_type}.pdf"
+    pdf_path = DOWNLOADS / code / pdf_name
+    if pdf_path.exists():
+        return f"[{report_type}](downloads/{code}/{pdf_name})"
+
+    matches = sorted((DOWNLOADS / code).glob(f"{prefix}{report_type}*.pdf"))
+    if matches:
+        rel = matches[0].relative_to(REPO_ROOT).as_posix()
+        return f"[{report_type}]({rel})"
+
+    return report_type
+
+
+def _pdf_cell(code: str, quarter: str, value: str) -> str:
+    if not value or value == "-":
+        return "-"
+    return " / ".join(_pdf_link(code, quarter, t.strip()) for t in value.split("/") if t.strip())
+
+
+def generate_mops_pdfs_table(rows: list[dict[str, str]], quarters: list[str], csv_path: Path) -> list[str]:
+    lines = [
+        "## Current MOPS PDFs",
+        "",
+        f"> **Source**: `{csv_path.name}`",
+        "",
+        "| 代號 | 名稱 | " + " | ".join(quarters) + " |",
+        "|------|------|" + "|".join(["------"] * len(quarters)) + "|",
+    ]
+    for row in rows:
+        code = row["代號"]
+        cells = [_pdf_cell(code, q, row[q]) for q in quarters]
+        lines.append(f"| {code} | {row['名稱']} | " + " | ".join(cells) + " |")
+    return lines
 
 
 # ── section generator ────────────────────────────────────────────────────────
 
 def generate_section(csv_path: Path) -> str:
-    quarters, stats, total, names = parse_matrix(csv_path)
+    rows, quarters, stats, total, names = parse_matrix(csv_path)
     today    = datetime.now().strftime("%Y-%m-%d")
-    lines    = []
+    lines    = generate_mops_pdfs_table(rows, quarters, csv_path)
 
     # ── 季財報 概況 ──
     lines += [
+        "",
+        "---",
+        "",
         "## 📊 Current Download Status",
         "",
         f"> **Last Updated**: {today} | **Source**: `{csv_path.name}`",
