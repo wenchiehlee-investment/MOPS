@@ -2,30 +2,30 @@ group:
   - files:
       - source: downloads/2412/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/2412.TW
+    repos:
+      - wenchiehlee-money/2412.TW
   - files:
       - source: downloads/2382/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/2382.TW
+    repos:
+      - wenchiehlee-money/2382.TW
   - files:
       - source: downloads/8299/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/8299.TW
+    repos:
+      - wenchiehlee-money/8299.TW
   - files:
       - source: downloads/2480/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/2480.TW
+    repos:
+      - wenchiehlee-money/2480.TW
   - files:
       - source: downloads/3034/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/3034.TW
+    repos:
+      - wenchiehlee-money/3034.TW
   - files:
       - source: downloads/2454/
         dest: MOPS/
-    repos: |
-        wenchiehlee-money/2454.TW
+    repos:
+      - wenchiehlee-money/2454.TW

@@ -2,5 +2,5 @@ group:
   - files:
       - source: raw_column_definition.md
         dest: definitions/raw_column_definition_MOPS.md
-    repos: |
-        wenchiehlee-investment/Python-Actions.GoodInfo.Analyzer
+    repos:
+      - wenchiehlee-investment/Python-Actions.GoodInfo.Analyzer
