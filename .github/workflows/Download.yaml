@@ -764,6 +764,10 @@ jobs:
         # Auto-update README Current Download Status
         python scripts/update_readme_status.py && git add README.md || true
 
+        # Generate MOPS health summary and latest matrix CSV
+        python scripts/generate_mops_health.py && git add data/reports/mops_health_summary.csv data/reports/mops_matrix_latest.csv || true
+
+
         if git diff --staged --quiet; then
           echo "No MOPS download changes to commit"
         else

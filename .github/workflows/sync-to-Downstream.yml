@@ -9,9 +9,13 @@ on:
       - main
     paths:
       - "data/reports/mops_matrix_*.csv"
+      - "data/reports/mops_health_summary.csv"
+      - "data/reports/mops_matrix_latest.csv"
       - "raw_column_definition.md"
+      - "raw_column_definition_MOPS.md"
       - ".github/sync-money.yml"
       - ".github/sync-investment.yml"
+      - ".github/sync-biztrends.yml"
       - ".github/workflows/sync-to-Downstream.yml"
 
 concurrency:
@@ -43,6 +47,15 @@ jobs:
         with:
           GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_INVESTMENT }}
           CONFIG_PATH: .github/sync-investment.yml
+          COMMIT_EACH_FILE: false
+          PR_LABELS: "automated-sync"
+          SKIP_PR: true
+
+      - name: Sync to Money biztrends.TW
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_MONEY }}
+          CONFIG_PATH: .github/sync-biztrends.yml
           COMMIT_EACH_FILE: false
           PR_LABELS: "automated-sync"
           SKIP_PR: true

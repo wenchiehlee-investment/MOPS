@@ -1,0 +1,10 @@
+group:
+  - files:
+      - source: data/reports/mops_health_summary.csv
+        dest: data/MOPS/mops_health_summary.csv
+      - source: data/reports/mops_matrix_latest.csv
+        dest: data/MOPS/mops_matrix_latest.csv
+      - source: raw_column_definition_MOPS.md
+        dest: definitions/raw_column_definition_MOPS.md
+    repos: |
+      wenchiehlee-money/biztrends.TW
