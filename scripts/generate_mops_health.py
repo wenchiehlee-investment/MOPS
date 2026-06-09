@@ -97,8 +97,24 @@ def main():
     
     if csvs:
         latest_csv = csvs[-1]
-        print(f"Copying latest matrix CSV: {latest_csv.name} -> mops_matrix_latest.csv")
-        shutil.copy2(latest_csv, MATRIX_LATEST_CSV)
+        print(f"Processing and copying latest matrix CSV: {latest_csv.name} -> mops_matrix_latest.csv")
+        try:
+            with open(latest_csv, "r", encoding="utf-8-sig") as f_in:
+                reader = csv.DictReader(f_in)
+                fieldnames = reader.fieldnames if reader.fieldnames else []
+                new_fieldnames = list(fieldnames)
+                if "process_timestamp" not in new_fieldnames:
+                    new_fieldnames.append("process_timestamp")
+                rows = list(reader)
+                for r in rows:
+                    r["process_timestamp"] = process_timestamp
+            with open(MATRIX_LATEST_CSV, "w", encoding="utf-8", newline="") as f_out:
+                writer = csv.DictWriter(f_out, fieldnames=new_fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+        except Exception as e:
+            print(f"Error processing matrix CSV: {e}")
+            shutil.copy2(latest_csv, MATRIX_LATEST_CSV)
     else:
         print("Warning: No mops_matrix_*.csv found to copy to mops_matrix_latest.csv")
 
@@ -113,6 +129,8 @@ def main():
         "pending_conversions": pending_conversions,
         "failed_conversions": failed_conversions,
         "latest_md_time": latest_md_time if latest_md_time else "N/A",
+        "mops_financials_extracted_count": 0,
+        "ready_to_use_rate_pct": 0.0,
         "checked_at": checked_at
     }
 
@@ -126,6 +144,8 @@ def main():
         "pending_conversions",
         "failed_conversions",
         "latest_md_time",
+        "mops_financials_extracted_count",
+        "ready_to_use_rate_pct",
         "checked_at"
     ]
 

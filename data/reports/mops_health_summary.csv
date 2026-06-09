@@ -1,2 +1,2 @@
-process_timestamp,download_timestamp,total_pdfs,total_mds,conversion_rate_pct,ocr_needed_count,pending_conversions,failed_conversions,latest_md_time,checked_at
-2026-06-08T20:50:20.297063+08:00,2026-05-20T14:15:57.034149+08:00,953,673,70.62,212,0,285,2026-03-09T14:26:39.024689+08:00,2026-06-08T20:50:20.297063+08:00
+process_timestamp,download_timestamp,total_pdfs,total_mds,conversion_rate_pct,ocr_needed_count,pending_conversions,failed_conversions,latest_md_time,mops_financials_extracted_count,ready_to_use_rate_pct,checked_at
+2026-06-09T13:58:06.341789+08:00,2026-05-20T14:15:57.034149+08:00,953,673,70.62,212,0,285,2026-03-09T14:26:39.024689+08:00,0,0.0,2026-06-09T13:58:06.341789+08:00

@@ -53,6 +53,8 @@ destination: https://raw.githubusercontent.com/wenchiehlee-investment/Python-Act
 | `pending_conversions` | int | Total number of PDFs waiting to be processed (always 0 after batch converter completes). |
 | `failed_conversions` | int | Total number of PDFs missing matching MD files or failing to read. |
 | `latest_md_time` | timestamp | Modification time of the newest MD file (Taipei Time). |
+| `mops_financials_extracted_count` | int | Number of companies with successfully extracted financial tables. |
+| `ready_to_use_rate_pct` | float | Percentage of extracted financials relative to total available MD reports (`mops_financials_extracted_count / total_mds * 100`). |
 | `checked_at` | timestamp | Execution time of the health checker (same as `process_timestamp`). |
 
 ---
