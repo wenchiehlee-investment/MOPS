@@ -11,6 +11,10 @@ DOWNLOADS = REPO_ROOT / "downloads"
 REPORTS_DIR = REPO_ROOT / "data" / "reports"
 HEALTH_SUMMARY_CSV = REPORTS_DIR / "mops_health_summary.csv"
 MATRIX_LATEST_CSV = REPORTS_DIR / "mops_matrix_latest.csv"
+# Written by batch_convert.py: PDF stems that errored out on the most recent
+# conversion attempt. Used to tell "genuinely failed" apart from "not yet
+# converted" (pending) below.
+BATCH_CONVERT_FAILURES_LOG = REPORTS_DIR / "batch_convert_failures.log"
 
 TAIPEI_TZ = timezone(timedelta(hours=8))
 
@@ -38,14 +42,29 @@ def main():
     print(f"Total PDFs found: {total_pdfs}")
     print(f"Total MDs found: {total_mds}")
 
-    # 2. Check for OCR Needed and failed conversions
+    # 2. Check for OCR Needed, genuinely failed, and pending (not yet attempted) conversions
     ocr_needed_count = 0
     failed_conversions = 0
-    
+    pending_conversions = 0
+
+    # PDF stems that batch_convert.py actually attempted and failed on its
+    # most recent run. Anything else with no matching .md is simply pending
+    # (nobody has tried to convert it yet).
+    known_failed_stems = set()
+    if BATCH_CONVERT_FAILURES_LOG.exists():
+        try:
+            known_failed_stems = {
+                line.strip() for line in
+                BATCH_CONVERT_FAILURES_LOG.read_text(encoding="utf-8", errors="replace").splitlines()
+                if line.strip()
+            }
+        except Exception as e:
+            print(f"Warning: Failed to read {BATCH_CONVERT_FAILURES_LOG.name}: {e}")
+
     existing_mds = {}
     for md in md_files:
         existing_mds[md.stem] = md
-        
+
     for pdf in pdf_files:
         stem = pdf.stem
         if stem in existing_mds:
@@ -57,17 +76,17 @@ def main():
             except Exception as e:
                 print(f"Warning: Failed to read {md_path.name}: {e}")
                 failed_conversions += 1
-        else:
-            # No matching MD file means conversion failed (or pending)
+        elif stem in known_failed_stems:
             failed_conversions += 1
+        else:
+            # No matching MD file and no record of a failed attempt -> pending
+            pending_conversions += 1
 
-    # In our pipeline context, pending is 0 since we run batch_convert.py first
-    pending_conversions = 0
-    
     # Calculate conversion rate (total_mds / total_pdfs)
     conversion_rate_pct = round((total_mds / total_pdfs * 100), 2) if total_pdfs > 0 else 0.0
-    
+
     print(f"OCR Needed count: {ocr_needed_count}")
+    print(f"Pending conversions: {pending_conversions}")
     print(f"Failed conversions: {failed_conversions}")
     print(f"Overall conversion rate: {conversion_rate_pct}%")
 

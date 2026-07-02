@@ -1,0 +1,103 @@
+name: Early Filer Download
+
+# Large-cap companies (e.g. TSMC) routinely file their MOPS financial report
+# around their own earnings call date, weeks ahead of the general filing
+# deadline that Download.yaml's seasonal cron windows are built around. This
+# workflow checks the earnings calendar synced from the InvestorConference
+# repo (data/InvestorConference/raw_event_upcoming_earnings.csv) for
+# companies whose announcement date has already passed but whose report
+# hasn't been downloaded yet, and fetches just those.
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      lookback_days:
+        description: 'How many days back to check for recent announcement dates'
+        required: false
+        type: string
+        default: '14'
+  schedule:
+    # Daily at 03:30 UTC (11:30 Taiwan time) -- offset from Download.yaml's
+    # 02:00 UTC run so the two workflows don't race on the same branch.
+    - cron: '30 3 * * *'
+
+jobs:
+  early-filer-download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_FILE_SYNC_WENCHIEHLEE_INVESTMENT1 }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Set up Git configuration
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Find early-filer candidates
+        id: candidates
+        run: |
+          export PYTHONIOENCODING=utf-8
+          python scripts/check_early_filers.py --lookback-days "${{ inputs.lookback_days || '14' }}"
+          if [ -f data/reports/early_filer_candidates.csv ]; then
+            COUNT=$(($(wc -l < data/reports/early_filer_candidates.csv) - 1))
+          else
+            COUNT=0
+          fi
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Found $COUNT candidate(s)"
+
+      - name: Download candidate reports
+        if: steps.candidates.outputs.count > 0
+        run: |
+          export PYTHONIOENCODING=utf-8
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          tail -n +2 data/reports/early_filer_candidates.csv | while IFS=, read -r company_id year quarter announce_date event_name; do
+            echo "----------------------------------------"
+            echo "📥 Downloading $company_id $year Q$quarter (announced $announce_date)"
+            python scripts/mops_downloader.py \
+              --company_id "$company_id" \
+              --year "$year" \
+              --quarter "$quarter" \
+              --only-missing-files \
+              --log_level INFO || echo "⚠️ Failed for $company_id $year Q$quarter, continuing"
+          done
+
+      - name: Convert downloaded PDFs to Markdown (text-only, no OCR)
+        if: steps.candidates.outputs.count > 0
+        run: |
+          export PYTHONIOENCODING=utf-8
+          python scripts/batch_convert.py --no-ocr || echo "⚠️ batch_convert.py reported errors, continuing"
+
+      - name: Commit early-filer downloads
+        if: always()
+        run: |
+          git add downloads/*.pdf downloads/*.md downloads/*/metadata.json || true
+          git add data/reports/early_filer_candidates.csv || true
+
+          python scripts/generate_mops_health.py && git add data/reports/mops_health_summary.csv data/reports/mops_matrix_latest.csv data/reports/batch_convert_failures.log || true
+
+          if git diff --staged --quiet; then
+            echo "No early-filer changes to commit"
+          else
+            git commit -m "📥 Early Filer Download - $(date +%Y-%m-%d)"
+            git push || true
+          fi

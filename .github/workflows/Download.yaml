@@ -706,22 +706,36 @@ jobs:
         fi
         
         echo "✅ Created download summary: $SUMMARY_FILE"
-    
+
+    - name: Convert downloaded PDFs to Markdown (text-only, no OCR)
+      if: success()
+      run: |
+        # Runs on the hosted runner, which has no Tailscale connectivity to
+        # the mac-mini-ocr API, so OCR is intentionally disabled here.
+        # Pages that need OCR keep their TODO:OCR placeholder and are filled
+        # in later via a manual `python scripts/batch_convert.py --retry-ocr`
+        # run on a machine with Tailscale access to the Mac-mini OCR service.
+        export PYTHONIOENCODING=utf-8
+        export LC_ALL=C.UTF-8
+        export LANG=C.UTF-8
+        python scripts/batch_convert.py --no-ocr || echo "⚠️ batch_convert.py reported errors, continuing"
+
     - name: Commit downloaded MOPS files
       if: success()
       run: |
         echo "Committing downloaded MOPS files..."
-        
+
         git config --global user.name "github-actions[bot]"
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        
+
         # Add downloaded files and logs (exclude cache or temporary files)
-        git add downloads/*.pdf downloads/*/metadata.json || true
+        git add downloads/*.pdf downloads/*.md downloads/*/metadata.json || true
         git add logs/*.log || true
         git add download_summary_*.txt || true
         git add status_report.md || true
         git add sheets_upload_status.txt || true
         git add data/reports/mops_matrix_*.csv || true
+        git add data/reports/batch_convert_failures.log || true
 
         # Auto-update README Current Download Status
         python scripts/update_readme_status.py && git add README.md || true

@@ -17,9 +17,12 @@ import time
 import concurrent.futures
 from pathlib import Path
 
-SCRIPT_DIR  = Path(__file__).resolve().parent
-REPO_ROOT   = SCRIPT_DIR.parent
-DOWNLOADS   = REPO_ROOT / "downloads"
+SCRIPT_DIR      = Path(__file__).resolve().parent
+REPO_ROOT       = SCRIPT_DIR.parent
+DOWNLOADS       = REPO_ROOT / "downloads"
+# Read by generate_mops_health.py to tell a genuine conversion failure apart
+# from a PDF that simply hasn't been converted yet (pending).
+FAILURES_LOG    = REPO_ROOT / "data" / "reports" / "batch_convert_failures.log"
 # Lowered from 4: OCR-eligible pages call the (single) mac-mini-ocr API, which
 # can take minutes per page -- too many concurrent workers would queue up and
 # risk each other's requests timing out.
@@ -130,6 +133,14 @@ def main():
             if err:
                 for line in err.strip().splitlines()[:2]:
                     print(f"    {line}")
+
+    # Record which PDFs actually errored out this run (as opposed to PDFs
+    # nobody has tried to convert yet), so generate_mops_health.py can
+    # distinguish "failed" from "pending" in its summary.
+    FAILURES_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with open(FAILURES_LOG, "w", encoding="utf-8") as f:
+        for path_str, _err in failures:
+            f.write(Path(path_str).stem + "\n")
 
 
 if __name__ == "__main__":
