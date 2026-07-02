@@ -12,6 +12,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 import argparse
+import random
 import subprocess
 import time
 import concurrent.futures
@@ -87,6 +88,13 @@ def main():
             except Exception:
                 continue
         retry = [p for p in all_pdfs if p.stem in ocr_stems]
+        # Shuffle so a --limit run doesn't always grind on the same
+        # early-sorted, persistently-flaky files (e.g. TSMC/2330's
+        # multi-page-scan reports need several retries to fully clear,
+        # and otherwise camp in the first N slots every single run,
+        # starving files later in the alphabetical order from ever
+        # getting a turn).
+        random.shuffle(retry)
         pending = pending + retry
         print(f"Retry OCR      : {len(retry)} PDF(s) with TODO:OCR placeholders")
 
