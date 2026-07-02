@@ -27,9 +27,12 @@ FAILURES_LOG    = REPO_ROOT / "data" / "reports" / "batch_convert_failures.log"
 # can take minutes per page -- too many concurrent workers would queue up and
 # risk each other's requests timing out.
 MAX_WORKERS = 2
-# Raised from 180s: a scanned page OCR call alone may take up to 900s
-# (see scripts/ocr_client.py), on top of normal PyMuPDF conversion time.
-CONVERT_TIMEOUT = 1200
+# Raised from 180s, then from 1200s: a single scanned page OCR call may take
+# up to 900s (see scripts/ocr_client.py), and pdf_to_md.py calls it once per
+# scanned page sequentially within one file -- reports with many scanned
+# pages (e.g. TSMC's audit-opinion-heavy filings run 8-11 pages) can
+# legitimately need north of an hour end to end.
+CONVERT_TIMEOUT = 3600
 PDF_TO_MD   = SCRIPT_DIR / "pdf_to_md.py"
 
 
