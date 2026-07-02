@@ -80,33 +80,18 @@ on:
   # Q2 (Apr-Jun): Deadline Aug 14 → Download Aug 14-18
   # Q3 (Jul-Sep): Deadline Nov 14 → Download Nov 14-18
   schedule:
-    # Q4 reports (Oct-Dec previous year) - Available by March 31
-    - cron: '0 2 31 3 *'      # March 31 at 02:00 UTC - First attempt
-    - cron: '0 2 1 4 *'       # April 1 at 02:00 UTC - Retry 1
-    - cron: '0 2 2 4 *'       # April 2 at 02:00 UTC - Retry 2
-    - cron: '0 2 3 4 *'       # April 3 at 02:00 UTC - Retry 3
-    - cron: '0 2 4 4 *'       # April 4 at 02:00 UTC - Final retry
+    # Q4 Season: Daily from March 15 to April 10 at 02:00 UTC (10:00 CST)
+    - cron: '0 2 15-31 3 *'
+    - cron: '0 2 1-10 4 *'
     
-    # Q1 reports (Jan-Mar) - Available by May 15
-    - cron: '0 2 15 5 *'      # May 15 at 02:00 UTC - First attempt
-    - cron: '0 2 16 5 *'      # May 16 at 02:00 UTC - Retry 1
-    - cron: '0 2 17 5 *'      # May 17 at 02:00 UTC - Retry 2
-    - cron: '0 2 18 5 *'      # May 18 at 02:00 UTC - Retry 3
-    - cron: '0 2 19 5 *'      # May 19 at 02:00 UTC - Final retry
+    # Q1 Season: Daily from May 1 to May 31 at 02:00 UTC
+    - cron: '0 2 * 5 *'
     
-    # Q2 reports (Apr-Jun) - Available by Aug 14
-    - cron: '0 2 14 8 *'      # Aug 14 at 02:00 UTC - First attempt
-    - cron: '0 2 15 8 *'      # Aug 15 at 02:00 UTC - Retry 1
-    - cron: '0 2 16 8 *'      # Aug 16 at 02:00 UTC - Retry 2
-    - cron: '0 2 17 8 *'      # Aug 17 at 02:00 UTC - Retry 3
-    - cron: '0 2 18 8 *'      # Aug 18 at 02:00 UTC - Final retry
+    # Q2 Season: Daily from Aug 1 to Aug 31 at 02:00 UTC
+    - cron: '0 2 * 8 *'
     
-    # Q3 reports (Jul-Sep) - Available by Nov 14
-    - cron: '0 2 14 11 *'     # Nov 14 at 02:00 UTC - First attempt
-    - cron: '0 2 15 11 *'     # Nov 15 at 02:00 UTC - Retry 1
-    - cron: '0 2 16 11 *'     # Nov 16 at 02:00 UTC - Retry 2
-    - cron: '0 2 17 11 *'     # Nov 17 at 02:00 UTC - Retry 3
-    - cron: '0 2 18 11 *'     # Nov 18 at 02:00 UTC - Final retry
+    # Q3 Season: Daily from Nov 1 to Nov 30 at 02:00 UTC
+    - cron: '0 2 * 11 *'
 
 env:
   # Google Sheets credentials (add these to your repository secrets)
@@ -393,73 +378,50 @@ jobs:
         echo "   • Q4 (Oct-Dec): March 31 (next year)"
         echo ""
         
-        # Determine which quarter to download based on MOPS filing deadlines
-        if [ "$MONTH" -eq 3 ] && [ "$DAY" -eq 31 ]; then
-          # March 31 → Q4 of PREVIOUS year (first attempt)
+        # Determine which quarter to download based on refined filing season schedules
+        # (covers general listed companies as well as financial/holding companies' 60-day deadlines)
+        MONTH_NUM=$((10#$MONTH))
+        DAY_NUM=$((10#$DAY))
+        RETRY_ATTEMPT="Daily Run"
+        
+        if { [ "$MONTH_NUM" -eq 3 ] && [ "$DAY_NUM" -ge 15 ]; } || { [ "$MONTH_NUM" -eq 4 ] && [ "$DAY_NUM" -le 10 ]; }; then
+          # March 15 to April 10 → Q4 of PREVIOUS year
           QUARTER=4
           YEAR=$((YEAR - 1))
           QUARTER_PERIOD="Oct-Dec ${YEAR}"
-          QUARTER_NAME="Q4 ${YEAR}"
           DEADLINE="March 31"
-          RETRY_ATTEMPT=1
-          
-        elif [ "$MONTH" -eq 4 ] && [ "$DAY" -ge 1 ] && [ "$DAY" -le 4 ]; then
-          # April 1-4 → Q4 of PREVIOUS year (retries)
-          QUARTER=4
-          YEAR=$((YEAR - 1))
-          QUARTER_PERIOD="Oct-Dec ${YEAR}"
-          QUARTER_NAME="Q4 ${YEAR}"
-          DEADLINE="March 31"
-          RETRY_ATTEMPT=$((DAY))  # April 1=1, 2=2, 3=3, 4=4
-          
-        elif [ "$MONTH" -eq 5 ] && [ "$DAY" -ge 15 ] && [ "$DAY" -le 19 ]; then
-          # May 15-19 → Q1 of current year
+        elif [ "$MONTH_NUM" -eq 5 ]; then
+          # May 1 to May 31 → Q1 of current year
           QUARTER=1
           QUARTER_PERIOD="Jan-Mar ${YEAR}"
-          QUARTER_NAME="Q1 ${YEAR}"
-          DEADLINE="May 15"
-          RETRY_ATTEMPT=$((DAY - 14))  # May 15=1, 16=2, 17=3, 18=4, 19=5
-          
-        elif [ "$MONTH" -eq 8 ] && [ "$DAY" -ge 14 ] && [ "$DAY" -le 18 ]; then
-          # Aug 14-18 → Q2 of current year
+          DEADLINE="May 15 (Holding Companies: May 30)"
+        elif [ "$MONTH_NUM" -eq 8 ]; then
+          # August 1 to August 31 → Q2 of current year
           QUARTER=2
           QUARTER_PERIOD="Apr-Jun ${YEAR}"
-          QUARTER_NAME="Q2 ${YEAR}"
-          DEADLINE="Aug 14"
-          RETRY_ATTEMPT=$((DAY - 13))  # Aug 14=1, 15=2, 16=3, 17=4, 18=5
-          
-        elif [ "$MONTH" -eq 11 ] && [ "$DAY" -ge 14 ] && [ "$DAY" -le 18 ]; then
-          # Nov 14-18 → Q3 of current year
+          DEADLINE="August 14 (Holding Companies: August 31)"
+        elif [ "$MONTH_NUM" -eq 11 ]; then
+          # November 1 to November 30 → Q3 of current year
           QUARTER=3
           QUARTER_PERIOD="Jul-Sep ${YEAR}"
-          QUARTER_NAME="Q3 ${YEAR}"
-          DEADLINE="Nov 14"
-          RETRY_ATTEMPT=$((DAY - 13))  # Nov 14=1, 15=2, 16=3, 17=4, 18=5
-          
+          DEADLINE="November 14 (Holding Companies: November 29)"
         else
-          # Fallback for unexpected execution (should not happen with correct cron)
-          echo "⚠️ WARNING: Running outside scheduled window (Month $MONTH, Day $DAY)"
-          echo "⚠️ This should only happen during manual testing or cron misconfiguration"
-          echo ""
-          
-          # Calculate most recent completed quarter
-          if [ "$MONTH" -ge 1 ] && [ "$MONTH" -le 3 ]; then
+          # Fallback logic for off-season manual/custom dispatch execution
+          echo "⚠️ WARNING: Running outside scheduled seasonal windows (Month $MONTH, Day $DAY)"
+          if [ "$MONTH_NUM" -ge 1 ] && [ "$MONTH_NUM" -le 3 ]; then
             QUARTER=4; YEAR=$((YEAR - 1))
-            QUARTER_PERIOD="Oct-Dec ${YEAR}"
-          elif [ "$MONTH" -ge 4 ] && [ "$MONTH" -le 5 ]; then
+          elif [ "$MONTH_NUM" -ge 4 ] && [ "$MONTH_NUM" -le 5 ]; then
             QUARTER=1
-            QUARTER_PERIOD="Jan-Mar ${YEAR}"
-          elif [ "$MONTH" -ge 6 ] && [ "$MONTH" -le 8 ]; then
+          elif [ "$MONTH_NUM" -ge 6 ] && [ "$MONTH_NUM" -le 8 ]; then
             QUARTER=2
-            QUARTER_PERIOD="Apr-Jun ${YEAR}"
           else
             QUARTER=3
-            QUARTER_PERIOD="Jul-Sep ${YEAR}"
           fi
-          QUARTER_NAME="Q${QUARTER} ${YEAR}"
-          DEADLINE="N/A (fallback mode)"
-          RETRY_ATTEMPT=1
+          QUARTER_PERIOD="Fallback Mode"
+          DEADLINE="N/A"
         fi
+        
+        QUARTER_NAME="Q${QUARTER} ${YEAR}"
         
         echo "🎯 Target Quarter: $QUARTER_NAME ($QUARTER_PERIOD)"
         echo "📋 MOPS Filing Deadline: $DEADLINE"
