@@ -61,6 +61,9 @@ def main():
     parser.add_argument('--retry-ocr', action='store_true',
                         help="Also reconvert existing .md files that still contain "
                              "a TODO:OCR placeholder (requires the matching .pdf)")
+    parser.add_argument('--limit', type=int, default=None,
+                        help="Only process the first N pending files (useful for "
+                             "a quick sample run before committing to the full batch)")
     args = parser.parse_args()
 
     if not DOWNLOADS.exists():
@@ -83,6 +86,9 @@ def main():
         retry = [p for p in all_pdfs if p.stem in ocr_stems]
         pending = pending + retry
         print(f"Retry OCR      : {len(retry)} PDF(s) with TODO:OCR placeholders")
+
+    if args.limit is not None:
+        pending = pending[:args.limit]
 
     n = len(pending)
     print(f"Downloads dir  : {DOWNLOADS}")
@@ -136,11 +142,27 @@ def main():
 
     # Record which PDFs actually errored out this run (as opposed to PDFs
     # nobody has tried to convert yet), so generate_mops_health.py can
-    # distinguish "failed" from "pending" in its summary.
+    # distinguish "failed" from "pending" in its summary. Only replace the
+    # entries for stems attempted this run -- a partial/--limit run must not
+    # erase failure records for files it didn't touch.
+    attempted_stems = {p.stem for p in pending}
+    failed_stems = {Path(path_str).stem for path_str, _err in failures}
+    prior_stems = set()
+    if FAILURES_LOG.exists():
+        try:
+            prior_stems = {
+                line.strip() for line in
+                FAILURES_LOG.read_text(encoding="utf-8", errors="replace").splitlines()
+                if line.strip()
+            }
+        except Exception:
+            pass
+    merged_stems = (prior_stems - attempted_stems) | failed_stems
+
     FAILURES_LOG.parent.mkdir(parents=True, exist_ok=True)
     with open(FAILURES_LOG, "w", encoding="utf-8") as f:
-        for path_str, _err in failures:
-            f.write(Path(path_str).stem + "\n")
+        for stem in sorted(merged_stems):
+            f.write(stem + "\n")
 
 
 if __name__ == "__main__":
