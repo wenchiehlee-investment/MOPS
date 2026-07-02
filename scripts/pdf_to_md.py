@@ -10,6 +10,7 @@ import os
 import argparse
 import sys
 import re
+import tempfile
 from pathlib import Path
 from typing import Optional, List, Tuple, Dict
 import logging
@@ -21,6 +22,12 @@ except ImportError:
     print("❌ Error: PyMuPDF is not installed. Please install it using:")
     print("   pip install pymupdf")
     sys.exit(1)
+
+try:
+    from ocr_client import transcribe_document_to_markdown
+    OCR_AVAILABLE = True
+except ImportError:
+    OCR_AVAILABLE = False
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -543,7 +550,53 @@ def _find_page_tables(page, force_text: bool = False) -> List:
     return valid_text_tables
 
 
-def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None) -> bool:
+_OCR_RESULTS_MARKER = "===============save results:==============="
+
+
+def _clean_ocr_output(raw: str) -> str:
+    """The mac-mini-ocr API response includes raw <|det|> layout-detection
+    tags followed by a clean plain-text rendering after a marker line. Keep
+    only the clean section; fall back to stripping the tags if the marker
+    is absent.
+    """
+    if _OCR_RESULTS_MARKER in raw:
+        raw = raw.split(_OCR_RESULTS_MARKER, 1)[1]
+    else:
+        raw = re.sub(r'<\|det\|>.*?<\|/det\|>', '', raw)
+    raw = raw.replace('<PAGE>', '').strip()
+    return raw
+
+
+def _ocr_page(doc, pdf_path: Path, page_num: int, dpi: int = 200) -> Optional[str]:
+    """Extract a single scanned page to a temp single-page PDF and transcribe
+    it via the mac-mini-ocr API. Returns the Markdown text, or None on failure
+    (caller falls back to the TODO:OCR placeholder).
+    """
+    tmp_path = None
+    try:
+        single_doc = fitz.open()
+        single_doc.insert_pdf(doc, from_page=page_num, to_page=page_num)
+        fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd)
+        single_doc.save(tmp_path)
+        single_doc.close()
+
+        markdown = transcribe_document_to_markdown(tmp_path, dpi=dpi)
+        markdown = _clean_ocr_output(markdown) if markdown else None
+        return markdown if markdown else None
+    except Exception as e:
+        logger.warning(f"⚠️ OCR failed for {pdf_path.name} page {page_num + 1}: {e}")
+        return None
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+
+
+def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None,
+                       use_ocr: bool = True) -> bool:
     if not pdf_path.exists():
         return False
     if not output_path:
@@ -588,9 +641,16 @@ def convert_pdf_to_md(pdf_path: Path, output_path: Optional[Path] = None) -> boo
             text = page.get_text("text").strip()
             images = page.get_images()
             if not text and images:
-                # TODO:OCR - this page is a scanned image, needs OCR to extract text
-                all_content.append((page_offset + 1, "text",
-                                    f"> **TODO:OCR** - Page {page_num + 1} 為掃描圖片，需要 OCR 處理"))
+                ocr_markdown = None
+                if use_ocr and OCR_AVAILABLE:
+                    ocr_markdown = _ocr_page(doc, pdf_path, page_num)
+                if ocr_markdown:
+                    all_content.append((page_offset + 1, "text",
+                                        f"<!-- OCR transcribed via mac-mini-ocr -->\n\n{ocr_markdown}"))
+                else:
+                    # TODO:OCR - this page is a scanned image, needs OCR to extract text
+                    all_content.append((page_offset + 1, "text",
+                                        f"> **TODO:OCR** - Page {page_num + 1} 為掃描圖片，需要 OCR 處理"))
                 continue
 
             # Find tables
@@ -680,12 +740,16 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--pdf', '-p', type=str)
     group.add_argument('--dir', '-d', type=str)
+    parser.add_argument('--no-ocr', action='store_true',
+                        help="Disable mac-mini-ocr transcription for scanned pages "
+                             "(fall back to TODO:OCR placeholder)")
     args = parser.parse_args()
+    use_ocr = not args.no_ocr
     if args.pdf:
-        convert_pdf_to_md(Path(args.pdf))
+        convert_pdf_to_md(Path(args.pdf), use_ocr=use_ocr)
     elif args.dir:
         for f in Path(args.dir).glob("*.pdf"):
-            convert_pdf_to_md(f)
+            convert_pdf_to_md(f, use_ocr=use_ocr)
 
 
 if __name__ == "__main__":
