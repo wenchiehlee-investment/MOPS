@@ -1,0 +1,48 @@
+{
+  "downloads": {
+    "2025_20260702_031415": {
+      "timestamp": "2026-07-02T03:14:15.649652",
+      "company_id": "3443",
+      "year": 2025,
+      "results": [
+        {
+          "success": true,
+          "filename": "202501_3443_AI1.pdf",
+          "path": "downloads/3443/202501_3443_AI1.pdf",
+          "size": 1302276,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202502_3443_AI1.pdf",
+          "path": "downloads/3443/202502_3443_AI1.pdf",
+          "size": 1326439,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202503_3443_AI1.pdf",
+          "path": "downloads/3443/202503_3443_AI1.pdf",
+          "size": 1327560,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202504_3443_AI1.pdf",
+          "path": "downloads/3443/202504_3443_AI1.pdf",
+          "size": 1406796,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202504_3443_AI3.pdf",
+          "path": "downloads/3443/202504_3443_AI3.pdf",
+          "size": 2287032,
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2026-07-02T03:14:15.649661",
+  "company_id": "3443"
+}

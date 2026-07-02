@@ -1,0 +1,33 @@
+{
+  "downloads": {
+    "2025_20260702_030519": {
+      "timestamp": "2026-07-02T03:05:19.638819",
+      "company_id": "3711",
+      "year": 2025,
+      "results": [
+        {
+          "success": false,
+          "filename": "202501_3711_AI1.pdf",
+          "error": "<urlopen error [Errno 111] Connection refused>",
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202502_3711_AI1.pdf",
+          "path": "downloads/3711/202502_3711_AI1.pdf",
+          "size": 2336076,
+          "skipped": false
+        },
+        {
+          "success": true,
+          "filename": "202503_3711_AI1.pdf",
+          "path": "downloads/3711/202503_3711_AI1.pdf",
+          "size": 2360640,
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2026-07-02T03:05:19.638826",
+  "company_id": "3711"
+}
