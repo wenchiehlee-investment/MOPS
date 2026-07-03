@@ -10,3 +10,4 @@ __pycache__
 *.pyo
 .env*
 .claude/
+.ocr_cache/

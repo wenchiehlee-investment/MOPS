@@ -552,6 +552,17 @@ def _find_page_tables(page, force_text: bool = False) -> List:
 
 _OCR_RESULTS_MARKER = "===============save results:==============="
 
+# Cache successful per-page OCR results on disk. Reports with many scanned
+# pages (e.g. TSMC/2330 running 8+ pages, each OCR call up to 900s) can
+# legitimately exceed the subprocess timeout before finishing -- without a
+# cache, every retry re-OCRs pages that already succeeded, discarding all
+# prior progress and effectively never finishing such files.
+OCR_CACHE_DIR = Path(__file__).resolve().parent.parent / ".ocr_cache"
+
+
+def _ocr_cache_path(pdf_path: Path, page_num: int) -> Path:
+    return OCR_CACHE_DIR / f"{pdf_path.stem}_p{page_num + 1}.txt"
+
 
 def _clean_ocr_output(raw: str) -> str:
     """The mac-mini-ocr API response includes raw <|det|> layout-detection
@@ -572,6 +583,16 @@ def _ocr_page(doc, pdf_path: Path, page_num: int, dpi: int = 200) -> Optional[st
     it via the mac-mini-ocr API. Returns the Markdown text, or None on failure
     (caller falls back to the TODO:OCR placeholder).
     """
+    cache_path = _ocr_cache_path(pdf_path, page_num)
+    if cache_path.exists():
+        try:
+            cached = cache_path.read_text(encoding="utf-8")
+            if cached.strip():
+                logger.info(f"📦 Using cached OCR result for {pdf_path.name} page {page_num + 1}")
+                return cached
+        except Exception:
+            pass
+
     tmp_path = None
     try:
         single_doc = fitz.open()
@@ -583,6 +604,12 @@ def _ocr_page(doc, pdf_path: Path, page_num: int, dpi: int = 200) -> Optional[st
 
         markdown = transcribe_document_to_markdown(tmp_path, dpi=dpi)
         markdown = _clean_ocr_output(markdown) if markdown else None
+        if markdown:
+            try:
+                OCR_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+                cache_path.write_text(markdown, encoding="utf-8")
+            except OSError:
+                pass
         return markdown if markdown else None
     except Exception as e:
         logger.warning(f"⚠️ OCR failed for {pdf_path.name} page {page_num + 1}: {e}")

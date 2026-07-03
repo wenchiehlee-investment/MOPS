@@ -28,12 +28,13 @@ FAILURES_LOG    = REPO_ROOT / "data" / "reports" / "batch_convert_failures.log"
 # can take minutes per page -- too many concurrent workers would queue up and
 # risk each other's requests timing out.
 MAX_WORKERS = 2
-# Raised from 180s, then from 1200s: a single scanned page OCR call may take
-# up to 900s (see scripts/ocr_client.py), and pdf_to_md.py calls it once per
-# scanned page sequentially within one file -- reports with many scanned
-# pages (e.g. TSMC's audit-opinion-heavy filings run 8-11 pages) can
-# legitimately need north of an hour end to end.
-CONVERT_TIMEOUT = 3600
+# pdf_to_md.py now caches each page's OCR result to disk (.ocr_cache/), so a
+# file that hits this timeout mid-way doesn't lose already-completed pages --
+# the next retry-ocr attempt picks up where it left off. That makes a
+# moderate timeout safer than a very long one: it bounds how long a single
+# stuck item can block a batch, and multi-page-scan files (e.g. TSMC/2330's
+# 8-11 pages) converge over a few retries instead of needing one huge run.
+CONVERT_TIMEOUT = 1800
 PDF_TO_MD   = SCRIPT_DIR / "pdf_to_md.py"
 
 
