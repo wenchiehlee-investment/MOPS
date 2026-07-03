@@ -82,8 +82,9 @@ def main():
             # No matching MD file and no record of a failed attempt -> pending
             pending_conversions += 1
 
-    # Calculate conversion rate (total_mds / total_pdfs)
-    conversion_rate_pct = round((total_mds / total_pdfs * 100), 2) if total_pdfs > 0 else 0.0
+    # Calculate conversion rate (completed MD without OCR or failure / total_pdfs)
+    successful_mds = total_mds - ocr_needed_count - failed_conversions
+    conversion_rate_pct = round((max(0, successful_mds) / total_pdfs * 100), 2) if total_pdfs > 0 else 0.0
 
     print(f"OCR Needed count: {ocr_needed_count}")
     print(f"Pending conversions: {pending_conversions}")
