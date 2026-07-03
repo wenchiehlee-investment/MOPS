@@ -23,7 +23,15 @@ while true; do
     echo "Nothing to commit this batch."
   else
     git commit -m "chore(ocr): retry-ocr batch $batch_num ($BATCH_SIZE files)"
-    git push || echo "WARNING: push failed for batch $batch_num"
+    if ! git push; then
+      echo "Push rejected (remote advanced) -- fetching and merging, then retrying push."
+      git fetch origin
+      if git merge origin/main -m "Merge origin/main into ocr-retry progress (batch $batch_num)"; then
+        git push || echo "WARNING: push still failed for batch $batch_num after merge -- will retry next batch"
+      else
+        echo "WARNING: merge conflict for batch $batch_num -- leaving for manual resolution, not auto-resolving"
+      fi
+    fi
   fi
 
   ocr_remaining=$(tail -1 data/reports/mops_health_summary.csv | awk -F',' '{print $6}')
