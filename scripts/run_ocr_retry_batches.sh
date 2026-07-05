@@ -15,6 +15,15 @@ while true; do
   echo "Batch $batch_num (limit=$BATCH_SIZE)  $(date)"
   echo "=================================================================="
 
+  # A prior iteration's merge-conflict may have been left unresolved (e.g.
+  # this script's own auto-merge failed). Converting on top of a conflicted
+  # tree just wastes OCR calls on commits that can never succeed -- stop
+  # here instead of looping blindly.
+  if git status --porcelain | grep -q '^UU'; then
+    echo "ERROR: unresolved merge conflict from a previous batch -- stopping. Resolve manually (see data/reports/*.csv) and re-run."
+    exit 1
+  fi
+
   python scripts/batch_convert.py --retry-ocr --limit "$BATCH_SIZE"
   python scripts/generate_mops_health.py
 
@@ -29,7 +38,9 @@ while true; do
       if git merge origin/main -m "Merge origin/main into ocr-retry progress (batch $batch_num)"; then
         git push || echo "WARNING: push still failed for batch $batch_num after merge -- will retry next batch"
       else
-        echo "WARNING: merge conflict for batch $batch_num -- leaving for manual resolution, not auto-resolving"
+        echo "ERROR: merge conflict for batch $batch_num -- aborting merge and stopping (continuing would waste OCR calls on commits that can't land). Resolve manually and re-run."
+        git merge --abort
+        exit 1
       fi
     fi
   fi
