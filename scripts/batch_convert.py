@@ -81,21 +81,25 @@ def main():
     pending = [p for p in all_pdfs if p.stem not in existing_stems]
 
     if args.retry_ocr:
-        ocr_stems = set()
+        ocr_remaining = {}
         for md in all_mds:
             try:
-                if "TODO:OCR" in md.read_text(encoding="utf-8", errors="replace"):
-                    ocr_stems.add(md.stem)
+                count = md.read_text(encoding="utf-8", errors="replace").count("TODO:OCR")
+                if count > 0:
+                    ocr_remaining[md.stem] = count
             except Exception:
                 continue
-        retry = [p for p in all_pdfs if p.stem in ocr_stems]
-        # Shuffle so a --limit run doesn't always grind on the same
-        # early-sorted, persistently-flaky files (e.g. TSMC/2330's
-        # multi-page-scan reports need several retries to fully clear,
-        # and otherwise camp in the first N slots every single run,
-        # starving files later in the alphabetical order from ever
-        # getting a turn).
+        retry = [p for p in all_pdfs if p.stem in ocr_remaining]
+        # Shuffle first (random tie-break for files with an equal remaining
+        # count), then stable-sort by remaining TODO:OCR page count ascending.
+        # Per-page results are cached (see pdf_to_md.py's OCR_CACHE_DIR), so a
+        # file that's already down to 1-2 remaining pages finishes -- and
+        # frees up a slot -- much faster than starting a fresh multi-page
+        # file cold; this prioritizes clearing near-complete files instead of
+        # spreading effort evenly (which left large reports like TSMC/2330,
+        # 8-11 pages, needing many more rounds than smaller strays).
         random.shuffle(retry)
+        retry.sort(key=lambda p: ocr_remaining[p.stem])
         pending = pending + retry
         print(f"Retry OCR      : {len(retry)} PDF(s) with TODO:OCR placeholders")
 
