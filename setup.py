@@ -31,7 +31,7 @@ setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'mops-downloader=mops_downloader.cli:main',
+            'mops-downloader=mops_downloader.skill_cli:main',
         ],
     },
     classifiers=[

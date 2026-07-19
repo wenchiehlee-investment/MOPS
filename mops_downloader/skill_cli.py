@@ -1,11 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""Deprecated compatibility wrapper for the MOPS downloader CLI.
-
-Public workflows should use skill-mops-financialreport-pdf-md so every official
-MOPS PDF gets a same-stem Markdown sidecar. The underlying mops_downloader
-package remains the internal acquisition implementation used by that skill.
-"""
+"""Deprecated public console entry point routed through the MOPS PDF/MD skill."""
 from __future__ import annotations
 
 import argparse
@@ -15,6 +8,10 @@ from pathlib import Path
 
 
 def _find_repo_root() -> Path:
+    candidates = [Path.cwd(), *Path.cwd().parents, Path(__file__).resolve().parents[1]]
+    for candidate in candidates:
+        if (candidate / "mops_downloader").is_dir():
+            return candidate.resolve()
     return Path(__file__).resolve().parents[1]
 
 
@@ -47,19 +44,11 @@ def main() -> int:
 
     repo = _find_repo_root()
     runner = _find_skill_runner(repo)
-    cmd = [
-        sys.executable,
-        str(runner),
-        args.company_id,
-        str(args.year),
-        str(args.quarter),
-        "--log-level",
-        args.log_level,
-    ]
+    cmd = [sys.executable, str(runner), args.company_id, str(args.year), str(args.quarter), "--log-level", args.log_level]
     if args.only_missing_files:
         cmd.append("--only-missing-files")
 
-    print("DEPRECATED: scripts/mops_downloader.py is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
+    print("DEPRECATED: mops-downloader console script is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
     return subprocess.run(cmd, cwd=repo).returncode
 
 

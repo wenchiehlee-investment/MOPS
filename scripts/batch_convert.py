@@ -1,185 +1,71 @@
 #!/usr/bin/env python3
-"""
-batch_convert.py -- Parallel PDF-to-Markdown batch converter for MOPS downloads/.
+# -*- coding: utf-8 -*-
+"""Deprecated compatibility wrapper for batch PDF-to-Markdown conversion.
 
-Finds all PDFs in downloads/ that don't already have a matching .md file,
-converts each using pdf_to_md.py:convert_pdf_to_md() directly,
-runs up to 4 workers via concurrent.futures.ProcessPoolExecutor.
+The maintained path is skill-mops-financialreport-pdf-md, which downloads MOPS
+financial-report PDFs and creates same-stem Markdown sidecars through
+skill-mac-mini-ocr.
 """
-
-import sys
-sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+from __future__ import annotations
 
 import argparse
-import random
 import subprocess
-import time
-import concurrent.futures
+import sys
 from pathlib import Path
 
-SCRIPT_DIR      = Path(__file__).resolve().parent
-REPO_ROOT       = SCRIPT_DIR.parent
-DOWNLOADS       = REPO_ROOT / "downloads"
-# Read by generate_mops_health.py to tell a genuine conversion failure apart
-# from a PDF that simply hasn't been converted yet (pending).
-FAILURES_LOG    = REPO_ROOT / "data" / "reports" / "batch_convert_failures.log"
-# Lowered from 4: OCR-eligible pages call the (single) mac-mini-ocr API, which
-# can take minutes per page -- too many concurrent workers would queue up and
-# risk each other's requests timing out.
-MAX_WORKERS = 2
-# pdf_to_md.py now caches each page's OCR result to disk (.ocr_cache/), so a
-# file that hits this timeout mid-way doesn't lose already-completed pages --
-# the next retry-ocr attempt picks up where it left off. That makes a
-# moderate timeout safer than a very long one: it bounds how long a single
-# stuck item can block a batch, and multi-page-scan files (e.g. TSMC/2330's
-# 8-11 pages) converge over a few retries instead of needing one huge run.
-CONVERT_TIMEOUT = 1800
-PDF_TO_MD   = SCRIPT_DIR / "pdf_to_md.py"
+
+def _find_repo_root() -> Path:
+    return Path(__file__).resolve().parents[1]
 
 
-def _convert_one(pdf_path_str: str, no_ocr: bool = False) -> tuple:
-    """Worker thread: convert a single PDF via subprocess."""
-    try:
-        cmd = [sys.executable, str(PDF_TO_MD), "--pdf", pdf_path_str]
-        if no_ocr:
-            cmd.append("--no-ocr")
-        result = subprocess.run(
-            cmd,
-            capture_output=True, text=True, timeout=CONVERT_TIMEOUT,
-            encoding="utf-8", errors="replace"
-        )
-        ok = result.returncode == 0
-        err = result.stderr if not ok else ""
-        return (pdf_path_str, ok, err)
-    except subprocess.TimeoutExpired:
-        return (pdf_path_str, False, f"Timeout after {CONVERT_TIMEOUT}s")
-    except Exception as e:
-        return (pdf_path_str, False, str(e))
+def _find_skill_runner(repo: Path) -> Path:
+    candidates = [
+        repo.parent / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    raise SystemExit("Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/.")
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Batch convert MOPS PDFs to Markdown")
-    parser.add_argument('--no-ocr', action='store_true',
-                        help="Disable mac-mini-ocr transcription for scanned pages")
-    parser.add_argument('--retry-ocr', action='store_true',
-                        help="Also reconvert existing .md files that still contain "
-                             "a TODO:OCR placeholder (requires the matching .pdf)")
-    parser.add_argument('--limit', type=int, default=None,
-                        help="Only process the first N pending files (useful for "
-                             "a quick sample run before committing to the full batch)")
+def _pending_targets(downloads: Path) -> list[tuple[str, str, str]]:
+    targets = set()
+    for pdf in downloads.rglob("*.pdf"):
+        if pdf.with_suffix(".md").is_file():
+            continue
+        parts = pdf.stem.split("_")
+        if len(parts) < 3 or len(parts[0]) < 6:
+            continue
+        period, company_id = parts[0], parts[1]
+        targets.add((company_id, period[:4], str(int(period[5:6]))))
+    return sorted(targets)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-mops-financialreport-pdf-md.")
+    parser.add_argument("--force-convert", action="store_true")
+    parser.add_argument("--no-refine", action="store_true")
     args = parser.parse_args()
 
-    if not DOWNLOADS.exists():
-        print(f"ERROR: downloads/ not found at {DOWNLOADS}", file=sys.stderr)
-        sys.exit(1)
+    repo = _find_repo_root()
+    runner = _find_skill_runner(repo)
+    targets = _pending_targets(repo / "downloads")
+    print("DEPRECATED: scripts/batch_convert.py is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
+    print(f"Targets needing Markdown: {len(targets)}")
 
-    all_pdfs = sorted(DOWNLOADS.rglob("*.pdf"))
-    all_mds = sorted(DOWNLOADS.rglob("*.md"))
-    existing_stems = {p.stem for p in all_mds}
-    pending = [p for p in all_pdfs if p.stem not in existing_stems]
-
-    if args.retry_ocr:
-        ocr_remaining = {}
-        for md in all_mds:
-            try:
-                count = md.read_text(encoding="utf-8", errors="replace").count("TODO:OCR")
-                if count > 0:
-                    ocr_remaining[md.stem] = count
-            except Exception:
-                continue
-        retry = [p for p in all_pdfs if p.stem in ocr_remaining]
-        # Shuffle first (random tie-break for files with an equal remaining
-        # count), then stable-sort by remaining TODO:OCR page count ascending.
-        # Per-page results are cached (see pdf_to_md.py's OCR_CACHE_DIR), so a
-        # file that's already down to 1-2 remaining pages finishes -- and
-        # frees up a slot -- much faster than starting a fresh multi-page
-        # file cold; this prioritizes clearing near-complete files instead of
-        # spreading effort evenly (which left large reports like TSMC/2330,
-        # 8-11 pages, needing many more rounds than smaller strays).
-        random.shuffle(retry)
-        retry.sort(key=lambda p: ocr_remaining[p.stem])
-        pending = pending + retry
-        print(f"Retry OCR      : {len(retry)} PDF(s) with TODO:OCR placeholders")
-
-    if args.limit is not None:
-        pending = pending[:args.limit]
-
-    n = len(pending)
-    print(f"Downloads dir  : {DOWNLOADS}")
-    print(f"Total PDFs     : {len(all_pdfs)}")
-    print(f"Existing MDs   : {len(existing_stems)}")
-    print(f"To convert     : {n}")
-    if n == 0:
-        print("Nothing to do -- all PDFs already have a matching .md file.")
-        return
-    print(f"Workers        : {MAX_WORKERS}")
-    print(f"OCR enabled    : {not args.no_ocr}")
-    print("-" * 70, flush=True)
-
-    succeeded, failed = 0, 0
-    failures = []
-    done = 0
-    t_start = time.time()
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = {executor.submit(_convert_one, str(p), args.no_ocr): p for p in pending}
-        for future in concurrent.futures.as_completed(futures):
-            done += 1
-            pdf_path_str, ok, err = future.result()
-            rel = Path(pdf_path_str).relative_to(DOWNLOADS)
-            elapsed = time.time() - t_start
-            avg = elapsed / done
-            eta = avg * (n - done)
-            if ok:
-                succeeded += 1
-                status = "OK  "
-            else:
-                failed += 1
-                failures.append((pdf_path_str, err))
-                status = "FAIL"
-            print(
-                f"[{done:4d}/{n}] {status}  {str(rel):<55}  "
-                f"elapsed={elapsed:6.0f}s  eta={eta:6.0f}s",
-                flush=True,
-            )
-
-    print("-" * 70)
-    print(f"Conversion complete.  Succeeded: {succeeded}  Failed: {failed}")
-    if failures:
-        print("\nFailed files:")
-        for path_str, err in failures:
-            rel = Path(path_str).relative_to(DOWNLOADS)
-            print(f"  {rel}")
-            if err:
-                for line in err.strip().splitlines()[:2]:
-                    print(f"    {line}")
-
-    # Record which PDFs actually errored out this run (as opposed to PDFs
-    # nobody has tried to convert yet), so generate_mops_health.py can
-    # distinguish "failed" from "pending" in its summary. Only replace the
-    # entries for stems attempted this run -- a partial/--limit run must not
-    # erase failure records for files it didn't touch.
-    attempted_stems = {p.stem for p in pending}
-    failed_stems = {Path(path_str).stem for path_str, _err in failures}
-    prior_stems = set()
-    if FAILURES_LOG.exists():
-        try:
-            prior_stems = {
-                line.strip() for line in
-                FAILURES_LOG.read_text(encoding="utf-8", errors="replace").splitlines()
-                if line.strip()
-            }
-        except Exception:
-            pass
-    merged_stems = (prior_stems - attempted_stems) | failed_stems
-
-    FAILURES_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with open(FAILURES_LOG, "w", encoding="utf-8") as f:
-        for stem in sorted(merged_stems):
-            f.write(stem + "\n")
+    exit_code = 0
+    for company_id, year, quarter in targets:
+        cmd = [sys.executable, str(runner), company_id, year, quarter, "--skip-download"]
+        if args.force_convert:
+            cmd.append("--force-convert")
+        if args.no_refine:
+            cmd.append("--no-refine")
+        result = subprocess.run(cmd, cwd=repo)
+        exit_code = exit_code or result.returncode
+    return exit_code
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

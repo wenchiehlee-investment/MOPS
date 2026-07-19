@@ -3,19 +3,21 @@
 ## Project Structure & Module Organization
 - Primary automation lives in `.github/workflows/Download.yaml`.
 - Supporting runtime code:
-  - `DownloadAll.py`: batch download orchestrator used by the workflow.
-  - `scripts/mops_downloader.py` + `mops_downloader/`: single-company downloader CLI and package.
+  - `DownloadAll.py`: batch orchestrator used by the workflow; delegates to `skill-mops-financialreport-pdf-md`.
+  - `../skills/common/skill-mops-financialreport-pdf-md/`: maintained public workflow for MOPS PDF download plus Markdown sidecar generation.
+  - `mops_downloader/`: internal downloader package used by the skill.
   - `scripts/sheets_uploader.py` + `mops_sheets_uploader/`: matrix generation and Google Sheets upload.
 - Generated artifacts:
-  - `downloads/<company_id>/*.pdf`
+  - `downloads/<company_id>/*.pdf` and same-stem `*.md` sidecars
   - `logs/*.log`
   - `data/reports/mops_matrix_*.csv`
 
 ## Build, Test, and Development Commands
 - `python -m venv venv && source venv/bin/activate`: local dev environment.
 - `pip install -r requirements.txt && pip install -e .`: match CI dependency setup.
-- `python scripts/mops_downloader.py --help`: quick CLI sanity check.
-- `python DownloadAll.py --year 2025 --quarter 1 --only-missing-files`: reproduce manual download path.
+- `python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py --help`: quick skill runner sanity check.
+- `python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2382 2025 all --only-missing-files`: single-company download plus Markdown conversion.
+- `python DownloadAll.py --year 2025 --quarter 1 --only-missing-files`: reproduce batch path through the skill.
 - `python scripts/sheets_uploader.py --csv-only`: validate matrix export without credentials.
 - `python scripts/sheets_uploader.py --upload`: test upload path when `.env` or secrets are configured.
 
@@ -42,3 +44,7 @@
 ## Security & Configuration Tips
 - Never commit secrets. Use GitHub Secrets: `GOOGLE_SHEETS_CREDENTIALS`, `GOOGLE_SHEET_ID`.
 - Treat generated PDFs/CSVs as artifacts; review large diffs before merging.
+
+## Retired Entry Points
+- `scripts/pdf_to_md.py` and `scripts/batch_convert.py` are compatibility wrappers only. Do not add new conversion logic there; extend `skill-mops-financialreport-pdf-md` or `skill-mac-mini-ocr`.
+- Avoid calling `scripts/mops_downloader.py` as the public workflow. Direct PDF acquisition remains in `mops_downloader/` for the skill to use internally.

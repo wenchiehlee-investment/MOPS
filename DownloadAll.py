@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-DownloadAll.py - Enhanced version with --only-missing-files support
+DownloadAll.py - batch orchestrator using skill-mops-financialreport-pdf-md
 
 This version adds the ability to skip existing files to avoid redundant downloads.
 
@@ -16,6 +16,20 @@ import os
 import time
 import glob
 from typing import List, Tuple, Optional
+
+
+def find_skill_runner() -> str:
+    """Locate skill-mops-financialreport-pdf-md runner from the MOPS repo."""
+    repo = os.path.dirname(os.path.abspath(__file__))
+    candidates = [
+        os.path.join(os.path.dirname(repo), 'skills', 'common', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+        os.path.join(repo, 'skills', 'common', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+        os.path.join(repo, 'skills', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+    ]
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+    raise FileNotFoundError('Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/.')
 
 
 def read_company_ids(csv_file: str) -> List[Tuple[int, str]]:
@@ -64,28 +78,28 @@ def check_existing_file(company_id: int, year: int, quarter: Optional[int], min_
     if not os.path.exists(company_dir):
         return False
     
-    # Check for existing PDF files
+    # Check for existing PDF files. Skip mode is only complete when the
+    # same-stem Markdown sidecar also exists; otherwise the skill must run to
+    # create or repair the .md file.
     if quarter is not None:
-        # Specific quarter: look for pattern YYYYQQ_COMPANYID_*.pdf
-        quarter_str = f"{year}{quarter:02d}"  # Format as YYYYQQ (e.g., 202501)
+        quarter_str = f"{year}{quarter:02d}"
         pattern = os.path.join(company_dir, f"{quarter_str}_{company_id}_*.pdf")
     else:
-        # All quarters: look for any PDF files from this year
         pattern = os.path.join(company_dir, f"{year}*_{company_id}_*.pdf")
-    
+
     existing_files = glob.glob(pattern)
-    
+
     if not existing_files:
         return False
-    
-    # Check if any existing file meets size requirement
+
     for file_path in existing_files:
+        md_path = os.path.splitext(file_path)[0] + '.md'
         try:
-            if os.path.getsize(file_path) >= min_size:
+            if os.path.getsize(file_path) >= min_size and os.path.exists(md_path) and os.path.getsize(md_path) > 0:
                 return True
         except OSError:
             continue
-    
+
     return False
 
 
@@ -101,7 +115,7 @@ def should_skip_download(company_id: int, company_name: str, year: int,
         return False
     
     if check_existing_file(company_id, year, quarter, min_size):
-        print(f"  --> SKIP: {company_id} ({company_name}) - Existing file found (>={min_size//1024}KB)")
+        print(f"  --> SKIP: {company_id} ({company_name}) - Existing PDF+MD found (>={min_size//1024}KB)")
         return True
     
     return False
@@ -111,23 +125,22 @@ def download_company_pdf_simple(company_id: int, company_name: str, year: int,
                                quarter: Optional[int] = None, delay: float = 1.0,
                                only_missing: bool = False) -> bool:
     """
-    Download PDF for a single company using mops_downloader (enhanced version).
-    This version supports skipping existing files.
+    Download and convert reports for a single company through skill-mops-financialreport-pdf-md.
     """
     # Check if we should skip this download
     if should_skip_download(company_id, company_name, year, quarter, only_missing):
         return True  # Count as success since file already exists
     
-    # Build the command
+    # Build the command through the maintained skill. The skill owns the public
+    # workflow: MOPS download plus same-stem Markdown sidecar generation.
     cmd = [
-        sys.executable, '-m', 'mops_downloader.cli',
-        '--company_id', str(company_id),
-        '--year', str(year)
+        sys.executable, find_skill_runner(),
+        str(company_id),
+        str(year),
+        str(quarter) if quarter is not None else 'all'
     ]
-    
-    # Add quarter if specified
-    if quarter is not None:
-        cmd.extend(['--quarter', str(quarter)])
+    if only_missing:
+        cmd.append('--only-missing-files')
     
     print(f"Downloading {company_id} ({company_name}) - Year: {year}" + 
           (f", Quarter: {quarter}" if quarter else ""))
@@ -169,7 +182,7 @@ def download_company_pdf_simple(company_id: int, company_name: str, year: int,
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Download MOPS PDFs for all companies (Enhanced version with skip existing support)',
+        description='Download MOPS PDFs and Markdown sidecars for all companies via skill-mops-financialreport-pdf-md',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -224,7 +237,7 @@ Examples:
     parser.add_argument(
         '--only-missing-files',
         action='store_true',
-        help='Skip files that already exist locally and are larger than minimum size (100KB)'
+        help='Skip companies that already have a valid PDF and same-stem Markdown sidecar'
     )
     
     parser.add_argument(
@@ -262,12 +275,13 @@ Examples:
         for company_id, company_name in companies:
             if args.only_missing_files:
                 if should_skip_download(company_id, company_name, args.year, args.quarter, True, args.min_file_size):
-                    print(f"  SKIP: {company_id} ({company_name}) - Existing file found")
+                    print(f"  SKIP: {company_id} ({company_name}) - Existing PDF+MD found")
                     continue
             
-            cmd_str = f"python -m mops_downloader.cli --company_id {company_id} --year {args.year}"
-            if args.quarter:
-                cmd_str += f" --quarter {args.quarter}"
+            quarter = args.quarter if args.quarter else 'all'
+            cmd_str = f"python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py {company_id} {args.year} {quarter}"
+            if args.only_missing_files:
+                cmd_str += " --only-missing-files"
             print(f"  {cmd_str}  # {company_name}")
         return
     
@@ -278,11 +292,11 @@ Examples:
             if check_existing_file(company_id, args.year, args.quarter, args.min_file_size):
                 existing_count += 1
         
-        print(f"Skip mode enabled: {existing_count} companies already have valid files (>={args.min_file_size//1024}KB)")
+        print(f"Skip mode enabled: {existing_count} companies already have valid PDF+MD sidecars (>={args.min_file_size//1024}KB)")
         print(f"Will attempt to download {len(companies) - existing_count} companies")
     
     # Start downloading
-    print(f"\nStarting download for year {args.year}" + 
+    print(f"\nStarting skill-driven download/convert for year {args.year}" + 
           (f", quarter {args.quarter}" if args.quarter else " (all quarters)"))
     print(f"Delay between requests: {args.delay}s")
     print(f"Skip existing files: {args.only_missing_files}")
@@ -318,11 +332,11 @@ Examples:
     
     # Summary
     print("\n" + "=" * 50)
-    print("DOWNLOAD SUMMARY")
+    print("DOWNLOAD/CONVERSION SUMMARY")
     print("=" * 50)
     print(f"Total companies: {len(companies)}")
-    print(f"Successful downloads: {successful}")
-    print(f"Failed downloads: {failed}")
+    print(f"Successful skill runs: {successful}")
+    print(f"Failed skill runs: {failed}")
     if args.only_missing_files:
         print(f"Skipped (existing files): {skipped}")
         print(f"Attempted downloads: {len(companies) - skipped}")
