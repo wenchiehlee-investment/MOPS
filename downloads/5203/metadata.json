@@ -109,8 +109,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260801_053613": {
+      "timestamp": "2026-08-01T05:36:13.293156",
+      "company_id": "5203",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202602_5203_AI1.pdf",
+          "path": "downloads/5203/202602_5203_AI1.pdf",
+          "size": 4933347,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-15T06:40:19.084194",
+  "last_updated": "2026-08-01T05:36:13.293164",
   "company_id": "5203"
 }
