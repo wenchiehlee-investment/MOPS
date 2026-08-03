@@ -1,13 +1,13 @@
 MOPS Download/Conversion Summary
 Year: 2026, Quarter: 2
 Company Scope: Batch mode (all companies)
-Download Date: Sun Aug  2 05:54:33 UTC 2026
+Download Date: Mon Aug  3 06:04:45 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
   2408: 0 PDF files
-  2301: 8 PDF files
+  2301: 9 PDF files
   2882: 0 PDF files
   7747: 7 PDF files
   6811: 0 PDF files
@@ -31,7 +31,7 @@ Companies processed:
   2353: 0 PDF files
   3443: 5 PDF files
   2379: 16 PDF files
-  2303: 8 PDF files
+  2303: 9 PDF files
   3260: 9 PDF files
   2881: 0 PDF files
   6506: 8 PDF files
@@ -59,7 +59,7 @@ Companies processed:
   7728: 8 PDF files
   8272: 9 PDF files
   6526: 9 PDF files
-  2450: 9 PDF files
+  2450: 10 PDF files
   6962: 5 PDF files
   2330: 11 PDF files
   6561: 9 PDF files
@@ -87,7 +87,7 @@ Companies processed:
   8299: 15 PDF files
   7732: 9 PDF files
   3665: 4 PDF files
-  5904: 6 PDF files
+  5904: 7 PDF files
   0: 0 PDF files
   50: 0 PDF files
   2458: 8 PDF files
@@ -127,14 +127,14 @@ Companies processed:
   6902: 9 PDF files
   6182: 8 PDF files
   2345: 7 PDF files
-  2383: 8 PDF files
+  2383: 9 PDF files
   7705: 5 PDF files
   6035: 2 PDF files
   3048: 9 PDF files
   3014: 9 PDF files
   6510: 11 PDF files
   2474: 8 PDF files
-  2395: 9 PDF files
+  2395: 10 PDF files
   6699: 3 PDF files
   2360: 0 PDF files
   2354: 8 PDF files
@@ -142,8 +142,8 @@ Companies processed:
   2337: 1 PDF files
   6125: 8 PDF files
 
-Total: 976 PDF files and 976 Markdown files from 135 companies
+Total: 982 PDF files and 982 Markdown files from 135 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 37 files created
+  CSV Backup: 38 files created
