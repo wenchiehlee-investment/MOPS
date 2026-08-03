@@ -1,2 +1,2 @@
 process_timestamp,download_timestamp,total_pdfs,total_mds,conversion_rate_pct,ocr_needed_count,pending_conversions,failed_conversions,latest_md_time,mops_financials_extracted_count,ready_to_use_rate_pct,checked_at
-2026-08-03T14:04:47.841190+08:00,2026-08-03T14:01:14.255738+08:00,982,982,89.21,106,0,0,2026-08-03T14:01:15.588740+08:00,0,0.0,2026-08-03T14:04:47.841190+08:00
+2026-08-03T14:49:15.228212+08:00,2026-08-03T14:48:58.321416+08:00,982,982,89.21,106,0,0,2026-08-03T14:48:58.317416+08:00,0,0.0,2026-08-03T14:49:15.228212+08:00
