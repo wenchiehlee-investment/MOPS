@@ -1,0 +1,26 @@
+{
+  "downloads": {
+    "2026_20260709_092242": {
+      "timestamp": "2026-07-09T09:22:42.047027",
+      "company_id": "3653",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_3653_AI1.pdf",
+          "path": "C:\\Users\\WJLEE\\SynologyDrive\\NAS\\github.com\\MOPS\\downloads\\3653\\202601_3653_AI1.pdf",
+          "size": 2624444,
+          "skipped": false
+        },
+        {
+          "success": false,
+          "filename": "202601_3653_AIA.pdf",
+          "error": "Could not find PDF URL for 202601_3653_AIA.pdf",
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2026-07-09T09:22:42.047034",
+  "company_id": "3653"
+}

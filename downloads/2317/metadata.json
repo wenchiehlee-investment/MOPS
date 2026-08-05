@@ -118,8 +118,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260709_092147": {
+      "timestamp": "2026-07-09T09:21:47.562314",
+      "company_id": "2317",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_2317_AI1.pdf",
+          "path": "C:\\Users\\WJLEE\\SynologyDrive\\NAS\\github.com\\MOPS\\downloads\\2317\\202601_2317_AI1.pdf",
+          "size": 2252095,
+          "skipped": true
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-16T05:25:51.107542",
+  "last_updated": "2026-07-09T09:21:47.562330",
   "company_id": "2317"
 }

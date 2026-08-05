@@ -111,8 +111,29 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260709_092214": {
+      "timestamp": "2026-07-09T09:22:14.725113",
+      "company_id": "3045",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_3045_AI1.pdf",
+          "path": "C:\\Users\\WJLEE\\SynologyDrive\\NAS\\github.com\\MOPS\\downloads\\3045\\202601_3045_AI1.pdf",
+          "size": 1473556,
+          "skipped": true
+        },
+        {
+          "success": true,
+          "filename": "202601_3045_AIA.pdf",
+          "path": "C:\\Users\\WJLEE\\SynologyDrive\\NAS\\github.com\\MOPS\\downloads\\3045\\202601_3045_AIA.pdf",
+          "size": 495896,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-16T05:30:37.203487",
+  "last_updated": "2026-07-09T09:22:14.725135",
   "company_id": "3045"
 }

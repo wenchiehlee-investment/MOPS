@@ -324,8 +324,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260709_092008": {
+      "timestamp": "2026-07-09T09:20:08.408224",
+      "company_id": "2330",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202601_2330_AI1.pdf",
+          "path": "downloads\\2330\\202601_2330_AI1.pdf",
+          "size": 5271067,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-17T05:55:56.058674",
+  "last_updated": "2026-07-09T09:20:08.408231",
   "company_id": "2330"
 }
