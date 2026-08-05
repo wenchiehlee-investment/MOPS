@@ -1,58 +1,49 @@
 MOPS Download/Conversion Summary
 Year: 2026, Quarter: 2
 Company Scope: Batch mode (all companies)
-Download Date: Tue Aug  4 05:42:18 UTC 2026
+Download Date: Wed Aug  5 05:25:13 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
-  2408: 0 PDF files
   2301: 9 PDF files
-  2882: 0 PDF files
   7747: 7 PDF files
-  6811: 0 PDF files
   6425: 9 PDF files
   2308: 14 PDF files
   3467: 7 PDF files
   5434: 8 PDF files
   5269: 7 PDF files
   7708: 6 PDF files
-  2357: 25 PDF files
+  2357: 26 PDF files
   InvestorRelation: 11 PDF files
   6720: 9 PDF files
   4953: 6 PDF files
   3034: 16 PDF files
   3356: 8 PDF files
   2412: 16 PDF files
-  2382: 16 PDF files
+  2382: 17 PDF files
   6997: 7 PDF files
   6918: 8 PDF files
-  2344: 0 PDF files
-  2353: 0 PDF files
   3443: 5 PDF files
   2379: 16 PDF files
   2303: 9 PDF files
   3260: 9 PDF files
-  2881: 0 PDF files
   6506: 8 PDF files
   5274: 6 PDF files
   2332: 7 PDF files
   3158: 8 PDF files
   7765: 9 PDF files
-  6285: 0 PDF files
   2405: 6 PDF files
   8045: 8 PDF files
   3293: 8 PDF files
-  2376: 9 PDF files
-  3653: 4 PDF files
+  2376: 10 PDF files
+  3653: 5 PDF files
   6597: 7 PDF files
   6763: 10 PDF files
   2324: 8 PDF files
-  7794: 0 PDF files
   7709: 7 PDF files
   6850: 3 PDF files
   7722: 13 PDF files
-  2891: 0 PDF files
   2359: 8 PDF files
   6214: 9 PDF files
   6695: 8 PDF files
@@ -66,8 +57,8 @@ Companies processed:
   6669: 8 PDF files
   2356: 10 PDF files
   2347: 8 PDF files
-  3045: 9 PDF files
-  2603: 8 PDF files
+  3045: 10 PDF files
+  2603: 9 PDF files
   3029: 8 PDF files
   7704: 6 PDF files
   7749: 5 PDF files
@@ -86,13 +77,10 @@ Companies processed:
   2377: 8 PDF files
   8299: 15 PDF files
   7732: 9 PDF files
-  3665: 4 PDF files
+  3665: 6 PDF files
   5904: 7 PDF files
-  0: 0 PDF files
-  50: 0 PDF files
   2458: 8 PDF files
   6613: 8 PDF files
-  52: 0 PDF files
   6757: 7 PDF files
   7703: 7 PDF files
   2317: 13 PDF files
@@ -105,9 +93,7 @@ Companies processed:
   4938: 6 PDF files
   3026: 8 PDF files
   7769: 8 PDF files
-  6690: 0 PDF files
   3231: 11 PDF files
-  2884: 0 PDF files
   7805: 8 PDF files
   7713: 8 PDF files
   7712: 9 PDF files
@@ -133,17 +119,16 @@ Companies processed:
   3048: 9 PDF files
   3014: 9 PDF files
   6510: 11 PDF files
-  2474: 8 PDF files
+  2474: 9 PDF files
   2395: 10 PDF files
   6699: 3 PDF files
-  2360: 0 PDF files
   2354: 8 PDF files
   2454: 16 PDF files
   2337: 1 PDF files
   6125: 8 PDF files
 
-Total: 985 PDF files and 985 Markdown files from 135 companies
+Total: 994 PDF files and 985 Markdown files from 120 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
-  CSV Backup: 39 files created
+  CSV Backup: 40 files created
