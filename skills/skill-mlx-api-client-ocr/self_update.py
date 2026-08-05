@@ -199,11 +199,12 @@ def _git_commit_and_push(target_dir: Path, skill_folder_name: str, version: str)
         return False
     print(f"  [git] ✓ commit: {commit_msg}")
 
-    # 4. git pull --rebase（防止 remote 有新 commit 導致 push 被拒絕）
-    ok, out = _git(["pull", "--rebase"], cwd=repo_root, label="pull --rebase")
+    # 4. git pull --rebase --autostash
+    #    --autostash：自動 stash repo 內其他未提交修改，rebase 後自動 pop
+    #    解決「cannot pull with rebase: You have unstaged changes」錯誤
+    ok, out = _git(["pull", "--rebase", "--autostash"], cwd=repo_root, label="pull --rebase")
     if not ok:
-        # pull 失敗通常是網路或 conflict，記錄但嘗試繼續
-        print(f"  [git] ⚠️  pull --rebase 失敗，仍嘗試 push", file=sys.stderr)
+        print(f"  [git] ⚠️  pull --rebase --autostash 失敗，仍嘗試 push", file=sys.stderr)
 
     # 5. git push
     result = subprocess.run(
