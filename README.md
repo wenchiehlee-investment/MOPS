@@ -276,15 +276,15 @@ pip install -r requirements.txt
 
 **Download all quarters for a company and create Markdown sidecars (recommended)**:
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
 ```
 
 **Download specific quarter and create Markdown sidecars**:
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2023 2 --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2023 2 --only-missing-files
 ```
 
-**PDF-to-Markdown conversion** is handled by `skill-mac-mini-ocr` through `skill-mops-financialreport-pdf-md`. Legacy `scripts/pdf_to_md.py` and `scripts/batch_convert.py` are compatibility wrappers only.
+**PDF-to-Markdown conversion** is handled by `skill-mac-mini-ocr` through `skill-company-mops-financialreport-pdf-md`. Legacy `scripts/pdf_to_md.py` and `scripts/batch_convert.py` are compatibility wrappers only.
 
 ### Batch Processing
 
@@ -351,7 +351,7 @@ downloads/
 
 ### Example 1: Taiwan Semiconductor (TSMC) - Company 2330
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
 ```
 
 **Expected Result**: Downloads consolidated reports (AI1.pdf) as individual reports aren't available
@@ -362,7 +362,7 @@ python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_finan
 
 ### Example 2: Systex Corporation - Company 8272
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2024 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2024 all --only-missing-files
 ```
 
 **Expected Result**: Downloads individual reports (A12.pdf) - preferred type
@@ -373,7 +373,7 @@ python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_finan
 
 ### Example 3: Mixed Availability - Company 2382
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2382 2023 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2382 2023 all --only-missing-files
 ```
 
 **Expected Result**: Partial success with clear explanation
@@ -619,7 +619,7 @@ Check:
 
 ### Debug Mode
 ```bash
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files --log-level DEBUG
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files --log-level DEBUG
 ```
 
 ## 📁 Project Structure
@@ -633,7 +633,7 @@ mops-downloader/
 │   ├── validators/           # Input validation
 │   └── web/                  # Web navigation
 ├── scripts/
-│   ├── mops_downloader.py    # Deprecated wrapper; use skill-mops-financialreport-pdf-md
+│   ├── mops_downloader.py    # Deprecated wrapper; use skill-company-mops-financialreport-pdf-md
 │   ├── pdf_to_md.py          # Deprecated wrapper; conversion lives in the skill
 │   └── batch_convert.py      # Deprecated wrapper; conversion lives in the skill
 ├── .github/workflows/

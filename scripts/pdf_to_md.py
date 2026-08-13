@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deprecated compatibility wrapper for MOPS PDF-to-Markdown conversion.
 
-Use ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py
+Use ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py
 for MOPS financial-report PDF download and Markdown sidecar generation.
 """
 from __future__ import annotations
@@ -23,14 +23,14 @@ def _find_repo_root() -> Path:
 
 def _find_skill_runner(repo: Path) -> Path:
     candidates = [
-        repo.parent / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo.parent / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
     ]
     for candidate in candidates:
         if candidate.is_file():
             return candidate
-    raise SystemExit("Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/.")
+    raise SystemExit("Cannot find skill-company-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-company-mops-financialreport-pdf-md/.")
 
 
 def _infer_target(pdf: Path) -> tuple[str, str, str]:
@@ -42,7 +42,7 @@ def _infer_target(pdf: Path) -> tuple[str, str, str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-mops-financialreport-pdf-md.")
+    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-company-mops-financialreport-pdf-md.")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--pdf", "-p")
     group.add_argument("--dir", "-d")
@@ -52,7 +52,7 @@ def main() -> int:
 
     repo = _find_repo_root()
     runner = _find_skill_runner(repo)
-    print("DEPRECATED: scripts/pdf_to_md.py is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
+    print("DEPRECATED: scripts/pdf_to_md.py is retired. Delegating to skill-company-mops-financialreport-pdf-md.", file=sys.stderr)
 
     targets: list[tuple[str, str, str]] = []
     if args.pdf:

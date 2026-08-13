@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deprecated compatibility wrapper for batch PDF-to-Markdown conversion.
 
-The maintained path is skill-mops-financialreport-pdf-md, which downloads MOPS
+The maintained path is skill-company-mops-financialreport-pdf-md, which downloads MOPS
 financial-report PDFs and creates same-stem Markdown sidecars through
 skill-mac-mini-ocr.
 """
@@ -20,14 +20,14 @@ def _find_repo_root() -> Path:
 
 def _find_skill_runner(repo: Path) -> Path:
     candidates = [
-        repo.parent / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo.parent / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
     ]
     for candidate in candidates:
         if candidate.is_file():
             return candidate
-    raise SystemExit("Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/.")
+    raise SystemExit("Cannot find skill-company-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-company-mops-financialreport-pdf-md/.")
 
 
 def _pending_targets(downloads: Path) -> list[tuple[str, str, str]]:
@@ -44,7 +44,7 @@ def _pending_targets(downloads: Path) -> list[tuple[str, str, str]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-mops-financialreport-pdf-md.")
+    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-company-mops-financialreport-pdf-md.")
     parser.add_argument("--force-convert", action="store_true")
     parser.add_argument("--no-refine", action="store_true")
     args = parser.parse_args()
@@ -52,7 +52,7 @@ def main() -> int:
     repo = _find_repo_root()
     runner = _find_skill_runner(repo)
     targets = _pending_targets(repo / "downloads")
-    print("DEPRECATED: scripts/batch_convert.py is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
+    print("DEPRECATED: scripts/batch_convert.py is retired. Delegating to skill-company-mops-financialreport-pdf-md.", file=sys.stderr)
     print(f"Targets needing Markdown: {len(targets)}")
 
     exit_code = 0

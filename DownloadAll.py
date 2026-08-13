@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-DownloadAll.py - batch orchestrator using skill-mops-financialreport-pdf-md
+DownloadAll.py - batch orchestrator using skill-company-mops-financialreport-pdf-md
 
 This version adds the ability to skip existing files to avoid redundant downloads.
 
@@ -19,17 +19,17 @@ from typing import List, Tuple, Optional
 
 
 def find_skill_runner() -> str:
-    """Locate skill-mops-financialreport-pdf-md runner from the MOPS repo."""
+    """Locate skill-company-mops-financialreport-pdf-md runner from the MOPS repo."""
     repo = os.path.dirname(os.path.abspath(__file__))
     candidates = [
-        os.path.join(os.path.dirname(repo), 'skills', 'common', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
-        os.path.join(repo, 'skills', 'common', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
-        os.path.join(repo, 'skills', 'skill-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+        os.path.join(os.path.dirname(repo), 'skills', 'common', 'skill-company-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+        os.path.join(repo, 'skills', 'common', 'skill-company-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
+        os.path.join(repo, 'skills', 'skill-company-mops-financialreport-pdf-md', 'scripts', 'run_mops_financialreport_pdf_md.py'),
     ]
     for candidate in candidates:
         if os.path.isfile(candidate):
             return candidate
-    raise FileNotFoundError('Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/.')
+    raise FileNotFoundError('Cannot find skill-company-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-company-mops-financialreport-pdf-md/.')
 
 
 def read_company_ids(csv_file: str) -> List[Tuple[int, str]]:
@@ -125,7 +125,7 @@ def download_company_pdf_simple(company_id: int, company_name: str, year: int,
                                quarter: Optional[int] = None, delay: float = 1.0,
                                only_missing: bool = False) -> bool:
     """
-    Download and convert reports for a single company through skill-mops-financialreport-pdf-md.
+    Download and convert reports for a single company through skill-company-mops-financialreport-pdf-md.
     """
     # Check if we should skip this download
     if should_skip_download(company_id, company_name, year, quarter, only_missing):
@@ -182,7 +182,7 @@ def download_company_pdf_simple(company_id: int, company_name: str, year: int,
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Download MOPS PDFs and Markdown sidecars for all companies via skill-mops-financialreport-pdf-md',
+        description='Download MOPS PDFs and Markdown sidecars for all companies via skill-company-mops-financialreport-pdf-md',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -279,7 +279,7 @@ Examples:
                     continue
             
             quarter = args.quarter if args.quarter else 'all'
-            cmd_str = f"python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py {company_id} {args.year} {quarter}"
+            cmd_str = f"python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py {company_id} {args.year} {quarter}"
             if args.only_missing_files:
                 cmd_str += " --only-missing-files"
             print(f"  {cmd_str}  # {company_name}")

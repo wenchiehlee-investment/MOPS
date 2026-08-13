@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Deprecated compatibility wrapper for the MOPS downloader CLI.
 
-Public workflows should use skill-mops-financialreport-pdf-md so every official
+Public workflows should use skill-company-mops-financialreport-pdf-md so every official
 MOPS PDF gets a same-stem Markdown sidecar. The underlying mops_downloader
 package remains the internal acquisition implementation used by that skill.
 """
@@ -20,18 +20,18 @@ def _find_repo_root() -> Path:
 
 def _find_skill_runner(repo: Path) -> Path:
     candidates = [
-        repo.parent / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "common" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
-        repo / "skills" / "skill-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo.parent / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "common" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
+        repo / "skills" / "skill-company-mops-financialreport-pdf-md" / "scripts" / "run_mops_financialreport_pdf_md.py",
     ]
     for candidate in candidates:
         if candidate.is_file():
             return candidate
-    raise SystemExit("Cannot find skill-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-mops-financialreport-pdf-md/ or skills/common/...")
+    raise SystemExit("Cannot find skill-company-mops-financialreport-pdf-md runner. Expected ../skills/common/skill-company-mops-financialreport-pdf-md/ or skills/common/...")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-mops-financialreport-pdf-md.")
+    parser = argparse.ArgumentParser(description="Deprecated wrapper; use skill-company-mops-financialreport-pdf-md.")
     parser.add_argument("--company_id", required=True)
     parser.add_argument("--year", type=int, required=True)
     parser.add_argument("--quarter", default="all")
@@ -59,7 +59,7 @@ def main() -> int:
     if args.only_missing_files:
         cmd.append("--only-missing-files")
 
-    print("DEPRECATED: scripts/mops_downloader.py is retired. Delegating to skill-mops-financialreport-pdf-md.", file=sys.stderr)
+    print("DEPRECATED: scripts/mops_downloader.py is retired. Delegating to skill-company-mops-financialreport-pdf-md.", file=sys.stderr)
     return subprocess.run(cmd, cwd=repo).returncode
 
 

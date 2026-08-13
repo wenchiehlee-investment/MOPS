@@ -151,7 +151,7 @@ jobs:
         python -c "import mops_downloader; print('✅ mops_downloader package imported successfully')"
         
         # Test maintained skill runner (with basic help check)
-        python skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py --help || echo "Skill runner check completed"
+        python skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py --help || echo "Skill runner check completed"
         
         # Verify main components
         python -c "from mops_downloader.main import MOPSDownloader; print('✅ MOPSDownloader class imported successfully')"
@@ -234,7 +234,7 @@ jobs:
           run_single_company_download() {
             local target_year="$1"
             local target_quarter="$2"
-            local cmd=(python skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py "$COMPANY_ID" "$target_year")
+            local cmd=(python skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py "$COMPANY_ID" "$target_year")
             
             if [ "$target_quarter" = "all" ]; then
               cmd+=(all)
@@ -347,7 +347,7 @@ jobs:
             head -5 StockID_TWSE_TPEX.csv | tail -n +2 | while IFS=, read -r company_id company_name exchange || [ -n "$company_id" ]; do
               if [ -n "$company_id" ]; then
                 echo "Testing skill-driven download/convert for company: $company_id"
-                python skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py "$company_id" "${{ inputs.year }}" "$QUARTER_INPUT" $SKILL_FLAGS || echo "Failed for company $company_id"
+                python skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py "$company_id" "${{ inputs.year }}" "$QUARTER_INPUT" $SKILL_FLAGS || echo "Failed for company $company_id"
               fi
             done
           }

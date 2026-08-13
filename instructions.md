@@ -13,7 +13,7 @@ The MOPS Downloader System is a Python-based tool designed to automatically down
 ```
 .
 ├── .gitignore
-├── DownloadAll.py    <--- Batch all stocks via skill-mops-financialreport-pdf-md
+├── DownloadAll.py    <--- Batch all stocks via skill-company-mops-financialreport-pdf-md
 ├── Get觀察名單.py     <--- Update StockID_TWSE_TPEX.csv to newest
 ├── instructions.md   <--- this file
 ├── LICENSE
@@ -566,16 +566,16 @@ MAX_CONCURRENT_DOWNLOADS = 1  # Sequential for reliability
 ### Command Line Interface - Enhanced
 ```bash
 # Download with flexible targeting (default mode)
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
 
 # Download with strict targeting (individual reports only)
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2330 2024 all --only-missing-files
 
 # Download specific quarter with detailed logging
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2023 2 --log-level DEBUG --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 8272 2023 2 --log-level DEBUG --only-missing-files
 
 # Custom output directory
-python ../skills/common/skill-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2382 2023 all --only-missing-files
+python ../skills/common/skill-company-mops-financialreport-pdf-md/scripts/run_mops_financialreport_pdf_md.py 2382 2023 all --only-missing-files
 ```
 
 ### Enhanced Python API Interface
