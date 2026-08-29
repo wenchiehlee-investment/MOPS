@@ -1,7 +1,7 @@
 MOPS Download/Conversion Summary
 Year: 2026, Quarter: 2
 Company Scope: Batch mode (all companies)
-Download Date: Fri Aug 28 14:15:23 UTC 2026
+Download Date: Sat Aug 29 08:53:15 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
