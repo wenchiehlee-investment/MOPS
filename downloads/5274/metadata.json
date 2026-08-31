@@ -121,8 +121,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260831_094101": {
+      "timestamp": "2026-08-31T09:41:01.137499",
+      "company_id": "5274",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202602_5274_AI1.pdf",
+          "path": "downloads/5274/202602_5274_AI1.pdf",
+          "size": 1399942,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-05-15T06:42:10.582467",
+  "last_updated": "2026-08-31T09:41:01.137505",
   "company_id": "5274"
 }

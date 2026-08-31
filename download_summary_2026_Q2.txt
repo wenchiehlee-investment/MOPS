@@ -1,133 +1,148 @@
 MOPS Download/Conversion Summary
 Year: 2026, Quarter: 2
 Company Scope: Batch mode (all companies)
-Download Date: Sun Aug 30 08:10:50 UTC 2026
+Download Date: Mon Aug 31 09:58:00 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
 Companies processed:
-  6695: 8 PDF files
-  2347: 8 PDF files
-  6669: 8 PDF files
-  2458: 8 PDF files
-  6613: 8 PDF files
+  6695: 9 PDF files
+  2347: 9 PDF files
+  6669: 9 PDF files
+  2360: 1 PDF files
+  2458: 9 PDF files
+  6613: 9 PDF files
   2383: 9 PDF files
-  2317: 13 PDF files
-  6125: 8 PDF files
+  2317: 14 PDF files
+  6125: 9 PDF files
   5203: 8 PDF files
-  6510: 11 PDF files
-  2324: 8 PDF files
-  2356: 10 PDF files
-  2379: 16 PDF files
-  6757: 7 PDF files
-  2474: 9 PDF files
+  6510: 12 PDF files
+  2324: 9 PDF files
+  2356: 11 PDF files
+  2379: 17 PDF files
+  6757: 8 PDF files
+  2474: 10 PDF files
   7547: 7 PDF files
-  6997: 7 PDF files
+  6997: 8 PDF files
   6902: 9 PDF files
-  3356: 8 PDF files
-  7747: 7 PDF files
+  3356: 9 PDF files
+  2882: 0 PDF files
+  7747: 8 PDF files
   6699: 3 PDF files
-  6597: 7 PDF files
+  6597: 8 PDF files
   8454: 10 PDF files
-  8272: 9 PDF files
+  8272: 10 PDF files
   2603: 9 PDF files
   2480: 17 PDF files
-  6231: 8 PDF files
+  6231: 9 PDF files
   7765: 9 PDF files
+  2884: 0 PDF files
   2301: 9 PDF files
+  2353: 0 PDF files
   7736: 9 PDF files
-  3711: 2 PDF files
+  3711: 3 PDF files
   5904: 7 PDF files
-  7704: 6 PDF files
-  7728: 8 PDF files
+  7704: 7 PDF files
+  7728: 9 PDF files
   6561: 9 PDF files
   2405: 6 PDF files
-  6425: 9 PDF files
-  2357: 26 PDF files
+  6425: 10 PDF files
+  2881: 0 PDF files
+  2357: 27 PDF files
   InvestorRelation: 11 PDF files
-  3014: 9 PDF files
-  3026: 8 PDF files
-  3029: 8 PDF files
-  7712: 9 PDF files
-  3653: 5 PDF files
-  3260: 9 PDF files
-  6214: 9 PDF files
-  3665: 6 PDF files
-  4938: 6 PDF files
-  9917: 6 PDF files
+  3014: 10 PDF files
+  3026: 9 PDF files
+  3029: 9 PDF files
+  7712: 10 PDF files
+  3653: 6 PDF files
+  3260: 10 PDF files
+  2891: 0 PDF files
+  6214: 10 PDF files
+  3665: 7 PDF files
+  4938: 7 PDF files
+  9917: 7 PDF files
   6996: 11 PDF files
-  2449: 9 PDF files
+  2449: 10 PDF files
   3034: 16 PDF files
   6182: 8 PDF files
-  2646: 6 PDF files
-  2412: 16 PDF files
-  7749: 5 PDF files
+  2646: 7 PDF files
+  2412: 17 PDF files
+  7749: 6 PDF files
   6506: 8 PDF files
-  6962: 5 PDF files
+  6962: 6 PDF files
   2395: 10 PDF files
-  7769: 8 PDF files
-  7709: 7 PDF files
-  7805: 8 PDF files
-  2376: 10 PDF files
-  7703: 7 PDF files
+  7769: 9 PDF files
+  7709: 8 PDF files
+  7805: 9 PDF files
+  2376: 11 PDF files
+  7703: 8 PDF files
   9914: 8 PDF files
   5434: 8 PDF files
   4953: 6 PDF files
+  2344: 1 PDF files
   7713: 8 PDF files
   2308: 14 PDF files
   3158: 8 PDF files
   2303: 9 PDF files
+  50: 0 PDF files
   1587: 8 PDF files
-  5274: 6 PDF files
-  5269: 7 PDF files
-  2377: 8 PDF files
+  5274: 7 PDF files
+  5269: 8 PDF files
+  2377: 9 PDF files
+  2408: 0 PDF files
   5536: 7 PDF files
-  3231: 11 PDF files
-  7705: 5 PDF files
-  6763: 10 PDF files
-  7734: 10 PDF files
-  7722: 13 PDF files
+  3231: 12 PDF files
+  7705: 6 PDF files
+  6763: 11 PDF files
+  7734: 11 PDF files
+  0: 0 PDF files
+  6285: 0 PDF files
+  7722: 14 PDF files
   8045: 8 PDF files
-  3293: 8 PDF files
-  3022: 8 PDF files
+  3293: 9 PDF files
+  3022: 9 PDF files
   2450: 10 PDF files
   3035: 9 PDF files
   2382: 18 PDF files
-  7732: 9 PDF files
-  3048: 9 PDF files
-  6720: 9 PDF files
-  4114: 7 PDF files
-  8299: 15 PDF files
+  7732: 10 PDF files
+  3048: 10 PDF files
+  6720: 10 PDF files
+  4114: 8 PDF files
+  8299: 16 PDF files
   6918: 8 PDF files
   2337: 1 PDF files
-  7737: 2 PDF files
-  6925: 6 PDF files
+  7737: 3 PDF files
+  6925: 7 PDF files
+  6690: 0 PDF files
   3558: 7 PDF files
-  3443: 5 PDF files
-  6462: 8 PDF files
-  6751: 8 PDF files
-  2354: 8 PDF files
-  9921: 6 PDF files
-  3150: 7 PDF files
-  2330: 11 PDF files
-  6526: 9 PDF files
-  8016: 9 PDF files
+  3443: 6 PDF files
+  7794: 0 PDF files
+  6462: 9 PDF files
+  6751: 9 PDF files
+  2354: 9 PDF files
+  9921: 7 PDF files
+  3150: 8 PDF files
+  2330: 12 PDF files
+  6526: 10 PDF files
+  8016: 10 PDF files
   3467: 7 PDF files
   6850: 3 PDF files
-  2345: 7 PDF files
-  2332: 7 PDF files
-  7708: 6 PDF files
-  6442: 9 PDF files
-  4749: 5 PDF files
+  2345: 8 PDF files
+  2332: 8 PDF files
+  7708: 7 PDF files
+  6442: 10 PDF files
+  52: 0 PDF files
+  4749: 6 PDF files
   2454: 16 PDF files
-  2359: 8 PDF files
+  6811: 0 PDF files
+  2359: 9 PDF files
   2451: 9 PDF files
   3045: 10 PDF files
-  6035: 2 PDF files
+  6035: 3 PDF files
   3661: 0 PDF files
-  6123: 6 PDF files
+  6123: 7 PDF files
 
-Total: 995 PDF files and 985 Markdown files from 120 companies
+Total: 1075 PDF files and 1075 Markdown files from 135 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)

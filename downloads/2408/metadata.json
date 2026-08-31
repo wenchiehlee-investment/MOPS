@@ -1,0 +1,19 @@
+{
+  "downloads": {
+    "2026_20260831_095554": {
+      "timestamp": "2026-08-31T09:55:54.909018",
+      "company_id": "2408",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202602_2408_AI1.pdf",
+          "error": "<urlopen error timed out>",
+          "skipped": false
+        }
+      ]
+    }
+  },
+  "last_updated": "2026-08-31T09:55:54.909051",
+  "company_id": "2408"
+}
