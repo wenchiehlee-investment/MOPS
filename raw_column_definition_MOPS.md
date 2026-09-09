@@ -56,6 +56,30 @@ destination: https://raw.githubusercontent.com/wenchiehlee-investment/Python-Act
 | `mops_financials_extracted_count` | int | Number of companies with successfully extracted financial tables. |
 | `ready_to_use_rate_pct` | float | Percentage of extracted financials relative to total available MD reports (`mops_financials_extracted_count / total_mds * 100`). |
 | `checked_at` | timestamp | Execution time of the health checker (same as `process_timestamp`). |
+| `filing_focus_quarter` | string | Most recently closed reporting quarter as of `checked_at` (e.g. `2026 Q2`), per `skill-mops-fetch/scripts/filing_deadlines.py`. |
+| `filing_deadline_date` | date | Official MOPS general filing deadline for `filing_focus_quarter`. |
+| `days_since_filing_deadline` | int | Days between `filing_deadline_date` and `checked_at` (always ≥ 0 by construction of `filing_focus_quarter`). |
+| `filing_overdue_count` | int | Number of watchlist companies with no downloaded PDF for `filing_focus_quarter` (checked directly against `downloads/`, independent of `raw_mops_matrix.csv` staleness). |
+| `filing_total_companies` | int | Total companies in `StockID_TWSE_TPEX.csv` used as the denominator for `filing_overdue_count`. |
+
+---
+
+## mops_filing_overdue.csv (Companies Overdue for the Current Filing Deadline)
+**No:** 63
+**Source:** `data/reports/mops_filing_overdue.csv`
+**Purpose:** One row per watchlist company with no downloaded PDF for the current filing-focus quarter (see `filing_focus_quarter` above). Regenerated every `generate_mops_health.py` run.
+
+### Column Definitions:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `代號` | string | Stock Code. |
+| `名稱` | string | Company Name. |
+| `quarter` | string | The overdue quarter, e.g. `2026 Q2`. |
+| `deadline` | date | Official MOPS general filing deadline for `quarter`. |
+| `days_overdue` | int | Days since `deadline` as of the run that produced this file. |
+
+**Note:** Financial holding companies / banks get a documented extension (see `skill-mops-fetch`'s Filing Deadline Awareness section); this file has no per-company holding classification, so it may include a small number of holding companies still inside their legitimate extension window.
 
 ---
 

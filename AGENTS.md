@@ -4,13 +4,16 @@
 - Primary automation lives in `.github/workflows/Download.yaml`.
 - Supporting runtime code:
   - `DownloadAll.py`: batch orchestrator used by the workflow; delegates to `skill-mops-fetch`.
-  - `../skills/common/skill-mops-fetch/`: maintained public workflow for MOPS PDF download plus Markdown sidecar generation.
+  - `../skills/common/skill-mops-fetch/`: registry copy of the skill (maintained public workflow for MOPS PDF download, Markdown sidecar generation, and filing-deadline tracking). `skills/skill-mops-fetch/` is a vendored local clone of the same skill for environments without a sibling `skills` repo checkout (e.g. CI); keep it in sync with the registry copy when the skill changes.
+  - `skills/skill-mops-fetch/scripts/filing_deadlines.py` (and its registry twin): single source of truth for MOPS quarterly filing deadline dates. `generate_mops_health.py` and `update_readme_status.py` both import it; don't hardcode deadline month/day checks elsewhere.
   - `mops_downloader/`: internal downloader package used by the skill.
   - `scripts/sheets_uploader.py` + `mops_sheets_uploader/`: matrix generation and Google Sheets upload.
 - Generated artifacts:
   - `downloads/<company_id>/*.pdf` and same-stem `*.md` sidecars
   - `logs/*.log`
   - `data/reports/mops_matrix_*.csv`
+  - `data/reports/mops_health_summary.csv`: includes filing-deadline fields (`filing_focus_quarter`, `filing_overdue_count`, ...); see `raw_column_definition_MOPS.md`.
+  - `data/reports/mops_filing_overdue.csv`: companies with no downloaded PDF for the current filing-focus quarter.
 
 ## Build, Test, and Development Commands
 - `python -m venv venv && source venv/bin/activate`: local dev environment.
