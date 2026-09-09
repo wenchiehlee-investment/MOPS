@@ -30,7 +30,8 @@
 - Keep shell snippets in workflow steps POSIX-compatible and quote variable expansions.
 
 ## Download.yaml Change Rules
-- Update schedule and quarter mapping consistently across all duplicated logic blocks (download target, summary, commit message, and status report).
+- The scheduled-trigger quarter/deadline computation (download target, summary, commit message, and status report) all call `skills/common/skill-mops-fetch/scripts/filing_deadlines.py` for a single source of truth. Do not reintroduce hardcoded `MONTH`/`DAY` range checks in any of those four blocks; change the deadline schedule in `filing_deadlines.py` once instead.
+- The `schedule:` cron list has 4 daily in-season windows (aligned to each quarter's own deadline month) plus one weekly year-round catch-up (`0 2 * * 1`) that re-checks for late filers between deadline months. Scheduled runs always pass `--only-missing-files`, so the catch-up run overlapping a daily window is a safe no-op, not a duplicate download.
 - Preserve manual inputs: `year`, `quarter`, `delay`, `start_from`, `only_missing_files`, `upload_to_sheets`.
 - Keep fallback behavior intact: if bulk download fails, workflow must still attempt limited per-company download and CSV backup.
 - Do not remove `actions/upload-artifact` or status-report generation; they are operational diagnostics.

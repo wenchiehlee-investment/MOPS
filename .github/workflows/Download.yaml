@@ -79,19 +79,35 @@ on:
   # Q1 (Jan-Mar): Deadline May 15 → Download May 15-19
   # Q2 (Apr-Jun): Deadline Aug 14 → Download Aug 14-18
   # Q3 (Jul-Sep): Deadline Nov 14 → Download Nov 14-18
+  #
+  # The four daily blocks below only cover the deadline's own calendar month
+  # (e.g. Q2's deadline is Aug 14, but the daily window stops Aug 31). Any
+  # company that files even a few days late -- including holding
+  # companies/banks, whose deadline is already a few weeks past the general
+  # one -- falls into a months-long blind spot where nothing re-checks it
+  # until the *next* quarter's daily window opens. The weekly cron below
+  # closes that gap; it deliberately overlaps the daily windows too (running
+  # scheduled downloads always use --only-missing-files, so an extra Monday
+  # run during a daily-covered month is a no-op, not a duplicate download).
   schedule:
     # Q4 Season: Daily from March 15 to April 10 at 02:00 UTC (10:00 CST)
     - cron: '0 2 15-31 3 *'
     - cron: '0 2 1-10 4 *'
-    
+
     # Q1 Season: Daily from May 1 to May 31 at 02:00 UTC
     - cron: '0 2 * 5 *'
-    
+
     # Q2 Season: Daily from Aug 1 to Aug 31 at 02:00 UTC
     - cron: '0 2 * 8 *'
-    
+
     # Q3 Season: Daily from Nov 1 to Nov 30 at 02:00 UTC
     - cron: '0 2 * 11 *'
+
+    # Weekly catch-up: every Monday, year-round, to keep re-checking for late
+    # filers between deadline months (see note above). The "Determine which
+    # quarter" fallback logic already generalizes to any month, so this
+    # needs no changes anywhere else in this workflow.
+    - cron: '0 2 * * 1'
 
 env:
   # Google Sheets credentials (add these to your repository secrets)
@@ -360,78 +376,40 @@ jobs:
         export PYTHONIOENCODING=utf-8
         export LC_ALL=C.UTF-8
         export LANG=C.UTF-8
-        
-        # Get current date components
-        MONTH=$(date +%m)
-        YEAR=$(date +%Y)
-        DAY=$(date +%d)
-        
+
         echo "================================================"
         echo "📅 Scheduled MOPS Skill Download/Convert (Aligned with Filing Deadlines)"
         echo "================================================"
         echo "📅 Current date: $(date)"
-        echo "📅 Month: $MONTH, Day: $DAY, Year: $YEAR"
         echo ""
-        echo "📋 MOPS Filing Deadlines:"
-        echo "   • Q1 (Jan-Mar): May 15"
-        echo "   • Q2 (Apr-Jun): Aug 14"
-        echo "   • Q3 (Jul-Sep): Nov 14"
-        echo "   • Q4 (Oct-Dec): March 31 (next year)"
-        echo ""
-        
-        # Determine which quarter to download based on refined filing season schedules
-        # (covers general listed companies as well as financial/holding companies' 60-day deadlines)
-        MONTH_NUM=$((10#$MONTH))
-        DAY_NUM=$((10#$DAY))
-        RETRY_ATTEMPT="Daily Run"
-        
-        if { [ "$MONTH_NUM" -eq 3 ] && [ "$DAY_NUM" -ge 15 ]; } || { [ "$MONTH_NUM" -eq 4 ] && [ "$DAY_NUM" -le 10 ]; }; then
-          # March 15 to April 10 → Q4 of PREVIOUS year
-          QUARTER=4
-          YEAR=$((YEAR - 1))
-          QUARTER_PERIOD="Oct-Dec ${YEAR}"
-          DEADLINE="March 31"
-        elif [ "$MONTH_NUM" -eq 5 ]; then
-          # May 1 to May 31 → Q1 of current year
-          QUARTER=1
-          QUARTER_PERIOD="Jan-Mar ${YEAR}"
-          DEADLINE="May 15 (Holding Companies: May 30)"
-        elif [ "$MONTH_NUM" -eq 8 ]; then
-          # August 1 to August 31 → Q2 of current year
-          QUARTER=2
-          QUARTER_PERIOD="Apr-Jun ${YEAR}"
-          DEADLINE="August 14 (Holding Companies: August 31)"
-        elif [ "$MONTH_NUM" -eq 11 ]; then
-          # November 1 to November 30 → Q3 of current year
-          QUARTER=3
-          QUARTER_PERIOD="Jul-Sep ${YEAR}"
-          DEADLINE="November 14 (Holding Companies: November 29)"
-        else
-          # Fallback logic for off-season manual/custom dispatch execution
-          echo "⚠️ WARNING: Running outside scheduled seasonal windows (Month $MONTH, Day $DAY)"
-          if [ "$MONTH_NUM" -ge 1 ] && [ "$MONTH_NUM" -le 3 ]; then
-            QUARTER=4; YEAR=$((YEAR - 1))
-          elif [ "$MONTH_NUM" -ge 4 ] && [ "$MONTH_NUM" -le 5 ]; then
-            QUARTER=1
-          elif [ "$MONTH_NUM" -ge 6 ] && [ "$MONTH_NUM" -le 8 ]; then
-            QUARTER=2
-          else
-            QUARTER=3
-          fi
-          QUARTER_PERIOD="Fallback Mode"
-          DEADLINE="N/A"
-        fi
-        
-        QUARTER_NAME="Q${QUARTER} ${YEAR}"
-        
-        echo "🎯 Target Quarter: $QUARTER_NAME ($QUARTER_PERIOD)"
-        echo "📋 MOPS Filing Deadline: $DEADLINE"
-        echo "🔄 Retry Attempt: $RETRY_ATTEMPT of 5"
+
+        # Single source of truth for "which quarter is due right now": the
+        # most recently closed reporting quarter as of today. Used for BOTH
+        # the daily in-season runs and the weekly year-round catch-up run
+        # (see .github/workflows/Download.yaml's `schedule:` comments), so a
+        # late filer is re-checked every week no matter how far past its
+        # deadline month we are -- not just "quarter currently accumulating"
+        # like the old MONTH_NUM range heuristic used to compute.
+        FOCUS_JSON=$(python skills/common/skill-mops-fetch/scripts/filing_deadlines.py)
+        echo "$FOCUS_JSON"
+        eval "$(printf '%s' "$FOCUS_JSON" | python -c "
+        import json, sys
+        d = json.load(sys.stdin)
+        print(f\"YEAR='{d['focus_year']}'\")
+        print(f\"QUARTER='{d['focus_quarter']}'\")
+        print(f\"QUARTER_NAME='Q{d['focus_quarter']} {d['focus_year']}'\")
+        print(f\"DEADLINE_DATE='{d['deadline']}'\")
+        print(f\"HOLDING_DEADLINE_DATE='{d['holding_deadline']}'\")
+        print(f\"DAYS_SINCE_DEADLINE='{d['days_since_deadline']}'\")
+        ")"
+
+        echo "🎯 Target Quarter: $QUARTER_NAME"
+        echo "📋 MOPS Filing Deadline: $DEADLINE_DATE (Holding companies: $HOLDING_DEADLINE_DATE) — $DAYS_SINCE_DEADLINE day(s) ago"
         echo "📥 Download mode: Skip existing files (only_missing_files=true)"
         echo "📊 Auto-upload to Google Sheets: Enabled"
         echo "================================================"
         echo ""
-        
+
         # Run download with skip mode enabled (won't re-download existing files)
         python DownloadAll.py \
           --year $YEAR \
@@ -441,18 +419,15 @@ jobs:
           || {
             echo ""
             echo "================================================"
-            echo "❌ Download attempt $RETRY_ATTEMPT failed for $QUARTER_NAME"
-            echo "🔄 Next retry scheduled for tomorrow (if within 5-day window)"
-            echo "📅 Full retry schedule for this quarter:"
-            echo "   • $DEADLINE - Day 1 (first attempt)"
-            echo "   • Following 4 days - Retries 2-5"
+            echo "❌ Download attempt failed for $QUARTER_NAME"
+            echo "🔄 Retried again next scheduled run (daily in-season, weekly year-round)"
             echo "================================================"
             exit 1
           }
-        
+
         echo ""
         echo "================================================"
-        echo "✅ Download attempt $RETRY_ATTEMPT completed for $QUARTER_NAME"
+        echo "✅ Download attempt completed for $QUARTER_NAME"
         echo "📊 Proceeding to matrix upload..."
         echo "================================================"
     
@@ -628,32 +603,15 @@ jobs:
         fi
         
         if [ "${{ github.event_name }}" == "schedule" ]; then
-          MONTH=$(date +%m)
-          DAY=$(date +%d)
-          YEAR=$(date +%Y)
-          
-          # Determine quarter based on current month/day (same logic as download step)
-          if [ "$MONTH" -eq 3 ] || ([ "$MONTH" -eq 4 ] && [ "$DAY" -le 4 ]); then
-            QUARTER=4; YEAR=$((YEAR - 1))
-          elif [ "$MONTH" -eq 5 ] && [ "$DAY" -ge 15 ]; then
-            QUARTER=1
-          elif [ "$MONTH" -eq 8 ] && [ "$DAY" -ge 14 ]; then
-            QUARTER=2
-          elif [ "$MONTH" -eq 11 ] && [ "$DAY" -ge 14 ]; then
-            QUARTER=3
-          else
-            # Fallback
-            if [ "$MONTH" -ge 1 ] && [ "$MONTH" -le 3 ]; then
-              QUARTER=4; YEAR=$((YEAR - 1))
-            elif [ "$MONTH" -ge 4 ] && [ "$MONTH" -le 5 ]; then
-              QUARTER=1
-            elif [ "$MONTH" -ge 6 ] && [ "$MONTH" -le 8 ]; then
-              QUARTER=2
-            else
-              QUARTER=3
-            fi
-          fi
-          
+          # Same filing-focus computation as the download step above, so the
+          # summary always matches what was actually just downloaded.
+          eval "$(python skills/common/skill-mops-fetch/scripts/filing_deadlines.py | python -c "
+          import json, sys
+          d = json.load(sys.stdin)
+          print(f\"YEAR='{d['focus_year']}'\")
+          print(f\"QUARTER='{d['focus_quarter']}'\")
+          ")"
+
           ONLY_MISSING="true"  # Scheduled runs always use skip mode
           UPLOAD_SHEETS="true" # Scheduled runs always upload to sheets
         fi
@@ -788,37 +746,17 @@ jobs:
               COMMIT_MSG="${COMMIT_MSG} + 📊 Matrix Upload"
             fi
           else
-            # For scheduled runs, calculate year, quarter, and retry attempt
-            YEAR=$(date +%Y)
-            MONTH=$(date +%m)
-            DAY=$(date +%d)
-            
-            # Determine quarter and retry attempt (same logic as download step)
-            if [ "$MONTH" -eq 3 ]; then
-              QUARTER=4; YEAR=$((YEAR - 1)); RETRY_NUM=1
-            elif [ "$MONTH" -eq 4 ] && [ "$DAY" -le 4 ]; then
-              QUARTER=4; YEAR=$((YEAR - 1)); RETRY_NUM=$DAY
-            elif [ "$MONTH" -eq 5 ] && [ "$DAY" -ge 15 ]; then
-              QUARTER=1; RETRY_NUM=$((DAY - 14))
-            elif [ "$MONTH" -eq 8 ] && [ "$DAY" -ge 14 ]; then
-              QUARTER=2; RETRY_NUM=$((DAY - 13))
-            elif [ "$MONTH" -eq 11 ] && [ "$DAY" -ge 14 ]; then
-              QUARTER=3; RETRY_NUM=$((DAY - 13))
-            else
-              # Fallback
-              if [ "$MONTH" -ge 1 ] && [ "$MONTH" -le 3 ]; then
-                QUARTER=4; YEAR=$((YEAR - 1))
-              elif [ "$MONTH" -ge 4 ] && [ "$MONTH" -le 5 ]; then
-                QUARTER=1
-              elif [ "$MONTH" -ge 6 ] && [ "$MONTH" -le 8 ]; then
-                QUARTER=2
-              else
-                QUARTER=3
-              fi
-              RETRY_NUM=1
-            fi
-            
-            COMMIT_MSG="📥 Scheduled MOPS Download (Retry ${RETRY_NUM}/5) + 📊 Matrix Upload - ${YEAR} Q${QUARTER}"
+            # For scheduled runs, use the same filing-focus computation as
+            # the download step above (single source of truth).
+            eval "$(python skills/common/skill-mops-fetch/scripts/filing_deadlines.py | python -c "
+            import json, sys
+            d = json.load(sys.stdin)
+            print(f\"YEAR='{d['focus_year']}'\")
+            print(f\"QUARTER='{d['focus_quarter']}'\")
+            print(f\"DAYS_SINCE_DEADLINE='{d['days_since_deadline']}'\")
+            ")"
+
+            COMMIT_MSG="📥 Scheduled MOPS Download (${DAYS_SINCE_DEADLINE}d since deadline) + 📊 Matrix Upload - ${YEAR} Q${QUARTER}"
           fi
           
           # Count downloaded files for commit message
@@ -998,27 +936,17 @@ jobs:
           echo "- Upload to Sheets: ${{ inputs.upload_to_sheets }}" >> status_report.md
           echo "- Fail On Partial Failure: ${{ inputs.fail_on_partial_failure }}" >> status_report.md
         else
-          MONTH=$(date +%m)
-          DAY=$(date +%d)
-          
-          # Determine retry number
-          if [ "$MONTH" -eq 3 ]; then
-            RETRY_NUM=1
-          elif [ "$MONTH" -eq 4 ] && [ "$DAY" -le 4 ]; then
-            RETRY_NUM=$DAY
-          elif [ "$MONTH" -eq 5 ] && [ "$DAY" -ge 15 ]; then
-            RETRY_NUM=$((DAY - 14))
-          elif [ "$MONTH" -eq 8 ] && [ "$DAY" -ge 14 ]; then
-            RETRY_NUM=$((DAY - 13))
-          elif [ "$MONTH" -eq 11 ] && [ "$DAY" -ge 14 ]; then
-            RETRY_NUM=$((DAY - 13))
-          else
-            RETRY_NUM=1
-          fi
-          
+          eval "$(python skills/common/skill-mops-fetch/scripts/filing_deadlines.py | python -c "
+          import json, sys
+          d = json.load(sys.stdin)
+          print(f\"FOCUS_LABEL='{d['label']}'\")
+          print(f\"DEADLINE_DATE='{d['deadline']}'\")
+          print(f\"DAYS_SINCE_DEADLINE='{d['days_since_deadline']}'\")
+          ")"
+
           echo "**Parameters:**" >> status_report.md
-          echo "- Trigger: Scheduled (5-day retry window)" >> status_report.md
-          echo "- Retry Attempt: $RETRY_NUM of 5" >> status_report.md
+          echo "- Trigger: Scheduled (daily in-season, weekly year-round catch-up)" >> status_report.md
+          echo "- Filing Focus Quarter: $FOCUS_LABEL (deadline $DEADLINE_DATE, ${DAYS_SINCE_DEADLINE}d ago)" >> status_report.md
           echo "- Skip Existing Files: true (default for scheduled runs)" >> status_report.md
           echo "- Upload to Sheets: true (default for scheduled runs)" >> status_report.md
           echo "" >> status_report.md
