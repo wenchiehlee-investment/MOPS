@@ -164,8 +164,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20260914_075258": {
+      "timestamp": "2026-09-14T07:52:58.217804",
+      "company_id": "6996",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202602_6996_AI2.pdf",
+          "path": "downloads/6996/202602_6996_AI2.pdf",
+          "size": 1395241,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:28:02.829498",
+  "last_updated": "2026-09-14T07:52:58.217810",
   "company_id": "6996"
 }
