@@ -1,7 +1,7 @@
 MOPS Download/Conversion Summary
 Year: 2025, Quarter: all
 Company Scope: Batch mode (all companies)
-Download Date: Mon Sep 14 07:59:38 UTC 2026
+Download Date: Mon Sep 21 07:57:31 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -37,7 +37,7 @@ Companies processed:
   3661: 1 PDF files
   2379: 17 PDF files
   3035: 9 PDF files
-  3467: 7 PDF files
+  3467: 8 PDF files
   6763: 11 PDF files
   3260: 10 PDF files
   6231: 9 PDF files
@@ -132,7 +132,7 @@ Companies processed:
   3014: 10 PDF files
   2474: 10 PDF files
   6597: 8 PDF files
-  8045: 8 PDF files
+  8045: 9 PDF files
   4749: 6 PDF files
   6526: 10 PDF files
   2301: 9 PDF files
@@ -142,7 +142,7 @@ Companies processed:
   6902: 10 PDF files
   6182: 9 PDF files
 
-Total: 1095 PDF files and 1095 Markdown files from 135 companies
+Total: 1097 PDF files and 1097 Markdown files from 135 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)
