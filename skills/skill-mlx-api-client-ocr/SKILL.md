@@ -7,7 +7,7 @@ description: 使用自建在 Mac-mini 上的 OCR API 服務，將 PDF 或圖片�
 
 | 項目 | 內容 |
 | :--- | :--- |
-| 版本 | 1.3.0（詳見 `metadata.json`） |
+| 版本 | 1.6.1（詳見 `metadata.json`） |
 | 來源 | https://github.com/wenchiehlee/FamilyHealthyCheck |
 | 登錄庫 | https://github.com/wenchiehlee/skills （`common/skill-mlx-api-client-ocr`） |
 | 維護者 | wenchiehlee |
@@ -54,6 +54,10 @@ pip install pillow-heif
 OCR_API_URL=http://mac-mini.tail28f10.ts.net:5001/ocr
 OCR_API_KEY=<your-api-key>
 ```
+
+## 📊 AI Model Usage 統計
+
+OCR 的模型使用量由 `skill-mlx-api-server` 的 `/ocr` endpoint 送出 Amplitude `llm_call`：`service=mlx-api-server`、`stage=ocr`、`provider=baidu-ocr`、`model=baidu/Unlimited-OCR`。本 client skill 的責任是讓呼叫端能正確歸因 app，因此 HTTP request 應傳 `X-App-Name`；未傳時 server 會 fallback 到 `Baidu-OCR`，但全域報表就無法看出是哪個專案消耗 OCR。
 
 ## 🚀 使用方式與範例
 
@@ -139,6 +143,14 @@ for heic_path in sorted(Path("Images").glob("*.HEIC")):
 *   **超時控制**：由於 PDF 的轉錄需要較長時間，請求的讀取超時（timeout）設為 `900` 秒，防止大型檔案傳輸中斷。
 *   **例外捕捉**：自動補捉伺服器忙碌（503 錯誤）、網路中斷及認證失敗等異常，並拋出詳細的診斷訊息。
 *   **編碼相容性**：針對 Windows 主機提供 UTF-8 stdout 自動重新配置，防止因檔名或內容中的中文字元導致 Unicode 噴錯。
+
+## 🧭 Known TODO
+
+*   **JPG/PNG table OCR response handling**：2026-09-01 在 `TW-institutional-research` 驗證 YouTube keyframe JPG 表格時，client request 可連到 Mac-mini `/ocr` endpoint，但數分鐘內沒有回傳可用 Markdown，最後只能中斷並改用本地 Tesseract fallback。需要補強：
+    *   對單張圖片加入較短且可設定的 read timeout / progress heartbeat，避免 CLI 長時間無輸出。
+    *   在 timeout 或空 response 時輸出可稽核的錯誤 metadata（檔名、endpoint、elapsed time、HTTP 狀態若可得），不要讓呼叫端誤判為成功。
+    *   增加圖片表格專用 smoke test：JPG/PNG → Markdown table，確認 server 回傳內容不只是 raw OCR text，且不含 detector/debug/save-results 噪音。
+    *   明確記錄 fallback policy：若 MLX OCR 未成功，產出的表格必須標示為 fallback OCR / low confidence，不能宣稱為 Mac-mini OCR 成功結果。
 
 ## 🔄 版本管理與更新
 *   本技能的唯一可信來源為 skills 登錄庫中的 `common/skill-mlx-api-client-ocr`；各專案（FamilyHealthyCheck、Tax、MOPS 等）內的副本皆由登錄庫部署而來。
