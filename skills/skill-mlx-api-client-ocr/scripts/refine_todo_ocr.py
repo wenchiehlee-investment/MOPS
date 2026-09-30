@@ -42,7 +42,10 @@ if platform.system() == "Windows":
 
 # 讓 ocr_client 可以在「python scripts/refine_todo_ocr.py」與模組導入兩種情境下被找到
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ocr_client import clean_ocr_markdown, transcribe_document_to_markdown  # noqa: E402
+from ocr_client import (  # noqa: E402
+    clean_ocr_markdown,
+    transcribe_document_to_markdown,
+)
 
 TODO_RE = re.compile(r'<!-- TODO:OCR source="(?P<source>[^"]+)" page=(?P<page>\d+) reason=(?P<reason>[\w-]+) -->')
 LEGACY_TODO_RE = re.compile(
@@ -50,6 +53,74 @@ LEGACY_TODO_RE = re.compile(
     re.MULTILINE,
 )
 PAGE_SECTION_RE = r'<!-- PAGE:{page} -->.*?(?=<!-- PAGE:\d+ -->|\Z)'
+OCR_TIMEOUT_RE = re.compile(
+    r'<!-- OCR:timeout page=(?P<page>\d+) count=(?P<count>\d+) '
+    r'last="(?P<last>[^"]+)" kind="(?P<kind>[\w-]+)" -->'
+)
+NO_TEXT_RESULT = "> OCR completed; no text recognized on this page."
+
+
+def _record_ocr_timeout(md_text: str, page: int, kind: str, timestamp: str) -> tuple[str, int]:
+    """Persist a per-page timeout counter beside its TODO marker immediately."""
+    section_re = re.compile(PAGE_SECTION_RE.format(page=page), re.DOTALL)
+    section_match = section_re.search(md_text)
+    section = section_match.group(0) if section_match else ""
+
+    scope = section if section else md_text
+    previous = next(
+        (m for m in OCR_TIMEOUT_RE.finditer(scope) if int(m.group("page")) == page),
+        None,
+    )
+    count = int(previous.group("count")) + 1 if previous else 1
+    marker = (
+        f'<!-- OCR:timeout page={page} count={count} '
+        f'last="{timestamp}" kind="{kind}" -->'
+    )
+
+    if previous and section:
+        updated_section = section[:previous.start()] + marker + section[previous.end():]
+    elif previous:
+        md_text = md_text[:previous.start()] + marker + md_text[previous.end():]
+        updated_section = ""
+    else:
+        todo_match = next(
+            (m for m in TODO_RE.finditer(section) if int(m.group("page")) == page),
+            None,
+        )
+        if todo_match:
+            insert_at = todo_match.end()
+        else:
+            page_marker = re.search(rf"<!-- PAGE:{page} -->", section)
+            insert_at = page_marker.end() if page_marker else 0
+        updated_section = section[:insert_at] + "\n" + marker + section[insert_at:]
+
+    if section_match:
+        md_text = md_text[:section_match.start()] + updated_section + md_text[section_match.end():]
+    elif previous:
+        pass
+    else:
+        # Support TODO comments in Markdown files without PAGE section wrappers.
+        todo_match = next(
+            (m for m in TODO_RE.finditer(md_text) if int(m.group("page")) == page),
+            None,
+        )
+        if todo_match:
+            md_text = md_text[:todo_match.end()] + "\n" + marker + md_text[todo_match.end():]
+        else:
+            md_text += f"\n{marker}\n"
+    return md_text, count
+
+
+def _timeout_metadata(md_text: str, page: int) -> tuple[int, str, str]:
+    section_match = re.search(PAGE_SECTION_RE.format(page=page), md_text, re.DOTALL)
+    scope = section_match.group(0) if section_match else md_text
+    previous = next(
+        (m for m in OCR_TIMEOUT_RE.finditer(scope) if int(m.group("page")) == page),
+        None,
+    )
+    if not previous:
+        return 0, "", ""
+    return int(previous.group("count")), previous.group("last"), previous.group("kind")
 
 
 def find_todo_pages(md_text: str) -> list[dict]:
@@ -140,7 +211,72 @@ def _extract_single_page_pdf(pdf_path: Path, page_num: int, dest_dir: Path) -> P
     return out_path
 
 
-def refine(md_path: Path, pdf_path: Path | None, pages: set[int] | None, dpi: int) -> int:
+def _extract_embedded_page_text(pdf_path: Path, page_num: int) -> str:
+    """Return the original PDF text layer for one page, or empty when absent."""
+    try:
+        import fitz
+
+        doc = fitz.open(str(pdf_path))
+        try:
+            if not (1 <= page_num <= doc.page_count):
+                raise ValueError(f"頁碼超出範圍：{page_num}（共 {doc.page_count} 頁）")
+            return (doc.load_page(page_num - 1).get_text("text") or "").strip()
+        finally:
+            doc.close()
+    except ImportError:
+        from pypdf import PdfReader
+
+        reader = PdfReader(str(pdf_path))
+        if not (1 <= page_num <= len(reader.pages)):
+            raise ValueError(f"頁碼超出範圍：{page_num}（共 {len(reader.pages)} 頁）")
+        return (reader.pages[page_num - 1].extract_text() or "").strip()
+
+
+def repair_empty_ocr_results(md_path: Path, pdf_path: Path | None,
+                             pages: set[int] | None = None) -> int:
+    """Replace old empty-OCR placeholders with the source PDF's text layer."""
+    md_text = md_path.read_text(encoding="utf-8")
+    if pdf_path is None:
+        source_match = re.search(
+            r'<!-- mac-mini-ocr:hybrid-base source="(?P<source>[^"]+)"', md_text
+        )
+        if not source_match:
+            raise ValueError("找不到來源 PDF；請使用 --pdf 指定")
+        pdf_path = md_path.parent / source_match.group("source")
+    if not pdf_path.exists():
+        raise FileNotFoundError(f"找不到原始 PDF：{pdf_path}")
+
+    repaired = 0
+    page_sections = re.compile(r"<!-- PAGE:(?P<page>\d+) -->.*?(?=<!-- PAGE:\d+ -->|\Z)", re.DOTALL)
+    for match in reversed(list(page_sections.finditer(md_text))):
+        page = int(match.group("page"))
+        if pages and page not in pages:
+            continue
+        section = match.group(0)
+        if NO_TEXT_RESULT not in section:
+            continue
+        embedded_text = _extract_embedded_page_text(pdf_path, page)
+        if not embedded_text:
+            continue
+
+        section = section.replace(NO_TEXT_RESULT, embedded_text, 1)
+        done_marker = re.search(r"<!-- OCR:done (?P<attrs>.*?) -->", section)
+        if done_marker and "content_source=" not in done_marker.group("attrs"):
+            attrs = done_marker.group("attrs")
+            marker = f'<!-- OCR:done {attrs} content_source="pdf-text-layer-fallback" -->'
+            section = section[:done_marker.start()] + marker + section[done_marker.end():]
+        md_text = md_text[:match.start()] + section + md_text[match.end():]
+        repaired += 1
+        print(f"[repair] 第 {page} 頁已由 PDF 內嵌文字層修復。", file=sys.stderr)
+
+    if repaired:
+        md_path.write_text(md_text, encoding="utf-8", newline="\n")
+    print(f"[repair] 完成：修復 {repaired} 頁。")
+    return repaired
+
+
+def refine(md_path: Path, pdf_path: Path | None, pages: set[int] | None, dpi: int,
+           engine: str | None = None) -> int:
     """補轉錄 TODO:OCR 頁面，回傳成功補轉錄的頁數。"""
     md_text = md_path.read_text(encoding="utf-8")
     todos = find_todo_pages(md_text)
@@ -175,22 +311,55 @@ def refine(md_path: Path, pdf_path: Path | None, pages: set[int] | None, dpi: in
                 local_fallback = True
             else:
                 try:
-                    ocr_md = clean_ocr_markdown(transcribe_document_to_markdown(single, dpi=dpi)).strip()
+                    ocr_md = clean_ocr_markdown(
+                        transcribe_document_to_markdown(single, dpi=dpi, engine=engine)
+                    ).strip()
                 except Exception as remote_error:
+                    timeout_kind = getattr(remote_error, "timeout_kind", None)
+                    if timeout_kind:
+                        timestamp = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+                        md_text, timeout_count = _record_ocr_timeout(
+                            md_text, page, timeout_kind, timestamp
+                        )
+                        # Save before local fallback so the attempt remains recorded
+                        # even if fallback fails or the process is interrupted.
+                        md_path.write_text(md_text, encoding="utf-8", newline="\n")
+                        print(
+                            f"[refine] 第 {page} 頁 Mac-mini timeout 次數：{timeout_count} ({timeout_kind})",
+                            file=sys.stderr,
+                        )
                     if single.suffix.lower() != ".png":
                         raise
                     print(f"[refine] Mac-mini OCR 失敗，改用本機 Tesseract：{remote_error}", file=sys.stderr)
                     ocr_md = _ocr_image_with_tesseract(single).strip()
                     local_fallback = True
 
+            content_source = "mac-mini-ocr"
             if not ocr_md:
-                ocr_md = "> OCR completed; no text recognized on this page."
+                embedded_text = _extract_embedded_page_text(pdf_path, page)
+                if embedded_text:
+                    ocr_md = embedded_text
+                    content_source = "pdf-text-layer-fallback"
+                    print(
+                        f"[refine] 第 {page} 頁 OCR 沒有文字，改用 PDF 內嵌文字層。",
+                        file=sys.stderr,
+                    )
+                else:
+                    ocr_md = NO_TEXT_RESULT
+                    content_source = "empty-ocr"
 
-            engine = "local-tesseract" if local_fallback else "mac-mini"
+            result_engine = "local-tesseract" if local_fallback else f"mac-mini-{engine or os.getenv('OCR_ENGINE', 'baidu')}"
+            timeout_count, last_timeout, timeout_kind = _timeout_metadata(md_text, page)
+            timeout_fields = (
+                f' mac_mini_timeouts={timeout_count} '
+                f'last_timeout="{last_timeout}" timeout_kind="{timeout_kind}"'
+                if timeout_count
+                else ""
+            )
             new_section = (
                 f"<!-- PAGE:{page} -->\n"
                 f"## 第 {page} 頁\n\n"
-                f'<!-- OCR:done source="{todo["source"]}" page={page} date="{today}" engine="{engine}" -->\n'
+                f'<!-- OCR:done source="{todo["source"]}" page={page} date="{today}" engine="{result_engine}" content_source="{content_source}"{timeout_fields} -->\n'
                 f"{ocr_md}\n\n"
             )
             md_text, n = re.subn(
@@ -226,6 +395,9 @@ if __name__ == "__main__":
     parser.add_argument("--pdf", help="原始 PDF 路徑（預設依標記中的 source 於 Markdown 同目錄尋找）")
     parser.add_argument("--pages", help="只處理指定頁碼，逗號分隔（例：3,7）")
     parser.add_argument("--dpi", type=int, default=200, help="OCR 渲染解析度（預設 200）")
+    parser.add_argument("--engine", choices=("baidu", "paddle"), help="Mac-mini OCR 引擎（預設使用 OCR_ENGINE 或 baidu）")
+    parser.add_argument("--repair-empty", action="store_true",
+                        help="不重跑 OCR；將既有空結果改用 PDF 內嵌文字層修復")
     parser.add_argument("--list", action="store_true", help="只列出 TODO:OCR 頁面，不執行 OCR")
     args = parser.parse_args()
 
@@ -244,7 +416,11 @@ if __name__ == "__main__":
 
     page_set = {int(p) for p in args.pages.split(",")} if args.pages else None
     try:
-        refine(md_file, Path(args.pdf) if args.pdf else None, page_set, args.dpi)
+        pdf_file = Path(args.pdf) if args.pdf else None
+        if args.repair_empty:
+            repair_empty_ocr_results(md_file, pdf_file, page_set)
+        else:
+            refine(md_file, pdf_file, page_set, args.dpi, args.engine)
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
