@@ -901,7 +901,7 @@ jobs:
   
     - name: Upload PDF artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: mops-pdfs-${{ inputs.year || 'scheduled' }}-q${{ inputs.quarter || 'auto' }}
         path: |
