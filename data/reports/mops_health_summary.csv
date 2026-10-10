@@ -1,2 +1,2 @@
 process_timestamp,download_timestamp,total_pdfs,total_mds,conversion_rate_pct,ocr_needed_count,pending_conversions,failed_conversions,latest_md_time,mops_financials_extracted_count,ready_to_use_rate_pct,checked_at,filing_focus_quarter,filing_deadline_date,days_since_filing_deadline,filing_overdue_count,filing_total_companies
-2026-10-09T18:51:06.662375+08:00,2026-10-09T18:50:50.230868+08:00,1086,1086,100.0,0,0,0,2026-10-09T18:50:50.226868+08:00,0,0.0,2026-10-09T18:51:06.662375+08:00,2026 Q2,2026-08-14,56,12,132
+2026-10-10T18:05:40.747118+08:00,2026-10-10T18:05:17.676608+08:00,1086,1086,100.0,0,0,0,2026-10-10T18:05:17.673608+08:00,0,0.0,2026-10-10T18:05:40.747118+08:00,2026 Q2,2026-08-14,57,12,132
