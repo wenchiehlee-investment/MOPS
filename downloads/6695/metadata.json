@@ -150,8 +150,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261114_085557": {
+      "timestamp": "2026-11-14T08:55:57.699678",
+      "company_id": "6695",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202603_6695_AI1.pdf",
+          "path": "downloads/6695/202603_6695_AI1.pdf",
+          "size": 1357585,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:10:44.403992",
+  "last_updated": "2026-11-14T08:55:57.699684",
   "company_id": "6695"
 }

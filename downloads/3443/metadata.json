@@ -68,8 +68,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261114_100522": {
+      "timestamp": "2026-11-14T10:05:22.141025",
+      "company_id": "3443",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_3443_AI1.pdf",
+          "error": "<urlopen error timed out>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:57:48.407831",
+  "last_updated": "2026-11-14T10:05:22.141031",
   "company_id": "3443"
 }

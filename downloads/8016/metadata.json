@@ -125,8 +125,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261114_092138": {
+      "timestamp": "2026-11-14T09:21:38.024683",
+      "company_id": "8016",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_8016_AI1.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:28:26.135233",
+  "last_updated": "2026-11-14T09:21:38.024691",
   "company_id": "8016"
 }

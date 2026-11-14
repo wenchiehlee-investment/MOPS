@@ -150,8 +150,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261114_092214": {
+      "timestamp": "2026-11-14T09:22:14.287582",
+      "company_id": "8045",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_8045_AI1.pdf",
+          "error": "<urlopen error timed out>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-09-21T07:54:36.752728",
+  "last_updated": "2026-11-14T09:22:14.287589",
   "company_id": "8045"
 }

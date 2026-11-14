@@ -125,8 +125,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261114_084251": {
+      "timestamp": "2026-11-14T08:42:51.820977",
+      "company_id": "3048",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_3048_AI1.pdf",
+          "error": "<urlopen error [Errno -2] Name or service not known>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:02:04.620203",
+  "last_updated": "2026-11-14T08:42:51.820985",
   "company_id": "3048"
 }
