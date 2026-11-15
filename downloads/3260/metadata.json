@@ -138,8 +138,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261115_085656": {
+      "timestamp": "2026-11-15T08:56:56.979788",
+      "company_id": "3260",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_3260_AI1.pdf",
+          "error": "<urlopen error [Errno 111] Connection refused>",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-11-14T09:48:28.989185",
+  "last_updated": "2026-11-15T08:56:56.979795",
   "company_id": "3260"
 }
