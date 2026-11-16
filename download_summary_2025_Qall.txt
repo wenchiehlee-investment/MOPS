@@ -1,7 +1,7 @@
 MOPS Download/Conversion Summary
 Year: 2025, Quarter: all
 Company Scope: Batch mode (all companies)
-Download Date: Sun Nov 15 09:00:14 UTC 2026
+Download Date: Mon Nov 16 09:25:16 UTC 2026
 Skip Existing Files: true
 Upload to Sheets: true
 =================
@@ -11,7 +11,7 @@ Companies processed:
   6214: 11 PDF files
   2332: 9 PDF files
   52: 0 PDF files
-  3467: 8 PDF files
+  3467: 9 PDF files
   6996: 13 PDF files
   7547: 9 PDF files
   2884: 0 PDF files
@@ -25,26 +25,26 @@ Companies processed:
   3029: 10 PDF files
   5904: 8 PDF files
   7709: 9 PDF files
-  6925: 7 PDF files
+  6925: 8 PDF files
   2317: 14 PDF files
   5203: 9 PDF files
   3443: 7 PDF files
   2359: 10 PDF files
-  3260: 10 PDF files
+  3260: 11 PDF files
   6285: 0 PDF files
   7805: 10 PDF files
   8045: 10 PDF files
-  6997: 8 PDF files
+  6997: 9 PDF files
   3558: 9 PDF files
-  3665: 7 PDF files
+  3665: 8 PDF files
   2308: 15 PDF files
   6231: 10 PDF files
-  4749: 6 PDF files
+  4749: 7 PDF files
   3048: 11 PDF files
   8272: 11 PDF files
   2451: 10 PDF files
-  8016: 10 PDF files
-  2360: 1 PDF files
+  8016: 11 PDF files
+  2360: 2 PDF files
   50: 0 PDF files
   3014: 11 PDF files
   2383: 10 PDF files
@@ -87,7 +87,7 @@ Companies processed:
   6902: 11 PDF files
   2344: 2 PDF files
   6442: 11 PDF files
-  4114: 8 PDF files
+  4114: 9 PDF files
   5434: 9 PDF files
   2603: 11 PDF files
   2337: 2 PDF files
@@ -98,7 +98,7 @@ Companies processed:
   2646: 8 PDF files
   7769: 10 PDF files
   6462: 10 PDF files
-  6182: 9 PDF files
+  6182: 10 PDF files
   8299: 17 PDF files
   2454: 17 PDF files
   6751: 10 PDF files
@@ -131,16 +131,16 @@ Companies processed:
   2376: 12 PDF files
   6811: 0 PDF files
   6690: 0 PDF files
-  6720: 10 PDF files
+  6720: 11 PDF files
   2330: 13 PDF files
   2474: 11 PDF files
   3711: 4 PDF files
   3034: 18 PDF files
   6850: 4 PDF files
-  7736: 10 PDF files
+  7736: 11 PDF files
   7712: 11 PDF files
 
-Total: 1186 PDF files and 1186 Markdown files from 133 companies
+Total: 1198 PDF files and 1198 Markdown files from 133 companies
 
 Google Sheets Upload:
   Status: Attempted (check logs for results)

@@ -228,8 +228,21 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261116_090730": {
+      "timestamp": "2026-11-16T09:07:30.643779",
+      "company_id": "6763",
+      "year": 2026,
+      "results": [
+        {
+          "success": false,
+          "filename": "202603_6763_AI1.pdf",
+          "error": "HTTP Error 502: Bad Gateway",
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-11-14T09:29:31.412061",
+  "last_updated": "2026-11-16T09:07:30.643787",
   "company_id": "6763"
 }

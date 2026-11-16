@@ -69,8 +69,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261116_092415": {
+      "timestamp": "2026-11-16T09:24:15.925292",
+      "company_id": "3665",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202603_3665_AI1.pdf",
+          "path": "downloads/3665/202603_3665_AI1.pdf",
+          "size": 1683651,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-08-31T09:57:09.420995",
+  "last_updated": "2026-11-16T09:24:15.925299",
   "company_id": "3665"
 }
