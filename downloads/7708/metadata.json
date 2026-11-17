@@ -148,8 +148,22 @@
           "skipped": false
         }
       ]
+    },
+    "2026_20261117_100522": {
+      "timestamp": "2026-11-17T10:05:22.988742",
+      "company_id": "7708",
+      "year": 2026,
+      "results": [
+        {
+          "success": true,
+          "filename": "202603_7708_AI1.pdf",
+          "path": "downloads/7708/202603_7708_AI1.pdf",
+          "size": 660418,
+          "skipped": false
+        }
+      ]
     }
   },
-  "last_updated": "2026-11-16T08:53:17.339444",
+  "last_updated": "2026-11-17T10:05:22.988749",
   "company_id": "7708"
 }
